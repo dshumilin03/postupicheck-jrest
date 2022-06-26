@@ -2,52 +2,42 @@ package ru.joinmore.postupicheck.api.controller;
 
 import org.springframework.web.bind.annotation.*;
 
-import ru.joinmore.postupicheck.api.exception.UniversityNotFoundException;
 import ru.joinmore.postupicheck.api.model.University;
-import ru.joinmore.postupicheck.api.repository.UniversityRepository;
+import ru.joinmore.postupicheck.api.service.UniversityService;
 
 import java.util.List;
 
 @RestController
 public class UniversityController {
 
-    private final UniversityRepository repository;
+    private final UniversityService service;
 
-    public UniversityController(UniversityRepository repository) {
-        this.repository = repository;
+    public UniversityController(UniversityService service) {
+        this.service = service;
     }
 
     @GetMapping("/universities")
-    List<University> all() {
-        return repository.findAll();
+    List<University> getAllUniversities() {
+        return service.getAllUniversities();
     }
 
     @PostMapping("/universities")
-    University newUniversity(@RequestBody University university) {
-        return repository.save(university);
+    University createUniversity(@RequestBody University university) {
+        return service.createUniversity(university);
     }
 
     @GetMapping("/universities/{id}")
-    University one(@PathVariable Long id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new UniversityNotFoundException(id));}
+    University getUniversity(@PathVariable Long id) {
+        return service.getUniversity(id);}
 
     @PutMapping("/universities/{id}")
     University replaceUniversity(@RequestBody University updatedUniversity, Long id) {
-        return repository.findById(id) //
-                .map(university -> {
-                    university.setName(updatedUniversity.getName());
-                    return repository.save(updatedUniversity);
-                })
-                .orElseGet(() -> {
-                    updatedUniversity.setId(id);
-                    return repository.save(updatedUniversity);
-                });
+        return service.replaceUniversity(updatedUniversity, id);
     }
 
     @DeleteMapping("/universities/{id}")
     void deleteUniversity(@PathVariable Long id) {
-        repository.deleteById(id);
+        service.deleteUniversity(id);
     }
 }
 

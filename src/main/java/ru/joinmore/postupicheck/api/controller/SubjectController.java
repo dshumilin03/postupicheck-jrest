@@ -1,53 +1,41 @@
 package ru.joinmore.postupicheck.api.controller;
 
 import org.springframework.web.bind.annotation.*;
-import ru.joinmore.postupicheck.api.exception.StudentNotFoundException;
-import ru.joinmore.postupicheck.api.exception.SubjectNotFoundException;
-import ru.joinmore.postupicheck.api.model.Student;
 import ru.joinmore.postupicheck.api.model.Subject;
-import ru.joinmore.postupicheck.api.repository.SubjectRepository;
+import ru.joinmore.postupicheck.api.service.SubjectService;
 
 import java.util.List;
 
 @RestController
 public class SubjectController {
 
-    private final SubjectRepository repository;
+    private final SubjectService service;
 
-    public SubjectController(SubjectRepository repository) {
-        this.repository = repository;
+    public SubjectController(SubjectService service) {
+        this.service = service;
     }
 
     @GetMapping("/subjects")
-    List<Subject> all() {
-        return repository.findAll();
+    List<Subject> getAllSubjects() {
+        return service.getAllSubjects();
     }
 
     @PostMapping("/subjects")
-    Subject newSubject(@RequestBody Subject subject) {
-        return repository.save(subject);
+    Subject createSubject(@RequestBody Subject subject) {
+        return service.createSubject(subject);
     }
 
     @GetMapping("/subjects/{id}")
-    Subject one(@PathVariable Long id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new SubjectNotFoundException(id));}
+    Subject getSubject(@PathVariable Long id) {
+        return service.getSubject(id);}
 
     @PutMapping("/subjects/{id}")
     Subject replaceSubject(@RequestBody Subject updatedSubject, Long id) {
-        return repository.findById(id) //
-                .map(subject -> {
-                    subject.setName(updatedSubject.getName());
-                    return repository.save(updatedSubject);
-                })
-                .orElseGet(() -> {
-                    updatedSubject.setId(id);
-                    return repository.save(updatedSubject);
-                });
+        return service.replaceSubject(updatedSubject, id);
     }
 
     @DeleteMapping("/subjects/{id}")
     void deleteSubject(@PathVariable Long id) {
-        repository.deleteById(id);
+        service.deleteSubject(id);
     }
 }

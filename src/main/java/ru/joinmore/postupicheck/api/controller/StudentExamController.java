@@ -1,54 +1,42 @@
 package ru.joinmore.postupicheck.api.controller;
 
 import org.springframework.web.bind.annotation.*;
-import ru.joinmore.postupicheck.api.exception.StudentExamResultsNotFoundException;
 import ru.joinmore.postupicheck.api.model.StudentExamResults;
-import ru.joinmore.postupicheck.api.repository.StudentExamResultsRepository;
+import ru.joinmore.postupicheck.api.service.StudentExamResultsService;
 
 import java.util.List;
 
 @RestController
 public class StudentExamController {
 
-    private final StudentExamResultsRepository repository;
+    private final StudentExamResultsService service;
 
-    public StudentExamController(StudentExamResultsRepository repository) {
-        this.repository = repository;
+    public StudentExamController(StudentExamResultsService service) {
+        this.service = service;
     }
 
     @GetMapping("/examresults")
-    List<StudentExamResults> all() {
-        return repository.findAll();
+    List<StudentExamResults> getAllResults() {
+        return service.getAllResults();
     }
 
     @PostMapping("/examresults")
-    StudentExamResults newExamResult(@RequestBody StudentExamResults examResults) {
-        return repository.save(examResults);
+    StudentExamResults createExamResult(@RequestBody StudentExamResults examResults) {
+        return service.createStudentExamResults(examResults);
     }
 
     @GetMapping("/examresults/{id}")
     StudentExamResults one(@PathVariable Long id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new StudentExamResultsNotFoundException(id));
+        return service.getResult(id);
     }
 
     @PutMapping("/examresults/{id}")
     StudentExamResults replaceExamResults(@RequestBody StudentExamResults updatedExamResults, Long id) {
-        return repository.findById(id) //
-                .map(examResults -> {
-                    examResults.setResult(updatedExamResults.getResult());
-                    examResults.setStudent(updatedExamResults.getStudent());
-                    examResults.setSubject(updatedExamResults.getSubject());
-                    return repository.save(updatedExamResults);
-                })
-                .orElseGet(() -> {
-                    updatedExamResults.setId(id);
-                    return repository.save(updatedExamResults);
-                });
+        return service.replaceExamResults(updatedExamResults, id);
     }
 
     @DeleteMapping("/examresults/{id}")
     void deleteExamResult(@PathVariable Long id) {
-        repository.deleteById(id);
+        service.deleteStudent(id);
     }
 }
