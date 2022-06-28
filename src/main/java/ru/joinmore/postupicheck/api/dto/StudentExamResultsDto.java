@@ -2,6 +2,7 @@ package ru.joinmore.postupicheck.api.dto;
 
 public class StudentExamResultsDto {
 
+    private long id;
     private long studentId;
     private long subjectId;
     private int result;
@@ -28,5 +29,13 @@ public class StudentExamResultsDto {
 
     public void setResult(int result) {
         this.result = result;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 }

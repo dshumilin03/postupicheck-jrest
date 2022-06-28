@@ -1,7 +1,9 @@
 package ru.joinmore.postupicheck.api.controllers;
 
 import org.springframework.web.bind.annotation.*;
-import ru.joinmore.postupicheck.api.models.Course;
+import ru.joinmore.postupicheck.api.dto.CourseDto;
+import ru.joinmore.postupicheck.api.entities.Course;
+import ru.joinmore.postupicheck.api.facades.CourseFacade;
 import ru.joinmore.postupicheck.api.services.CourseService;
 
 import java.util.List;
@@ -10,34 +12,34 @@ import java.util.List;
 @RequestMapping("/courses")
 public class CourseController {
 
-    private final CourseService courseService;
+    private final CourseFacade courseFacade;
 
-    public CourseController(CourseService service) {
-        this.courseService = service;
+    public CourseController(CourseFacade courseFacade) {
+        this.courseFacade = courseFacade;
     }
 
     @GetMapping
-    List<Course> getAllCourses() {
-        return courseService.getAll();
+    List<CourseDto> getAllCourses() {
+        return courseFacade.getAll();
     }
 
     @PostMapping
-    Course createCourse(@RequestBody Course course) {
-        return courseService.create(course);
+    CourseDto createCourse(@RequestBody CourseDto course) {
+        return courseFacade.create(course);
     }
 
     @GetMapping("/{id}")
-    Course getCourse(@PathVariable Long id) {
-        return courseService.get(id);
+    CourseDto getCourse(@PathVariable Long id) {
+        return courseFacade.get(id);
     }
 
     @PutMapping("/{id}")
-    Course replaceCourse(@RequestBody Course updatedCourse, Long id) {
-        return courseService.replace(updatedCourse, id);
+    CourseDto replaceCourse(@RequestBody CourseDto updatedCourse, Long id) {
+        return courseFacade.replace(updatedCourse, id);
     }
 
     @DeleteMapping("/{id}")
     void deleteCourse(@PathVariable Long id) {
-        courseService.delete(id);
+        courseFacade.delete(id);
     }
 }

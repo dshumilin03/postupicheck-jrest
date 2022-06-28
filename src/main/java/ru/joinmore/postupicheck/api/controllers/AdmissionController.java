@@ -1,7 +1,9 @@
 package ru.joinmore.postupicheck.api.controllers;
 
 import org.springframework.web.bind.annotation.*;
-import ru.joinmore.postupicheck.api.models.Admission;
+import ru.joinmore.postupicheck.api.dto.AdmissionDto;
+import ru.joinmore.postupicheck.api.entities.Admission;
+import ru.joinmore.postupicheck.api.facades.AdmissionFacade;
 import ru.joinmore.postupicheck.api.services.AdmissionService;
 
 import java.util.List;
@@ -10,34 +12,34 @@ import java.util.List;
 @RequestMapping("/admissions")
 public class AdmissionController {
 
-    private final AdmissionService admissionService;
+    private final AdmissionFacade admissionFacade;
 
-    public AdmissionController(AdmissionService service) {
-        this.admissionService = service;
+    public AdmissionController(AdmissionFacade admissionFacade) {
+        this.admissionFacade = admissionFacade;
     }
 
     @GetMapping
-    List<Admission> getAllAdmissions() {
-        return admissionService.getAll();
+    List<AdmissionDto> getAllAdmissions() {
+        return admissionFacade.getAll();
     }
 
     @PostMapping
-    Admission createAdmission(@RequestBody Admission admission) {
-        return admissionService.create(admission);
+    AdmissionDto createAdmission(@RequestBody AdmissionDto admission) {
+        return admissionFacade.create(admission);
     }
 
     @GetMapping("/{id}")
-    Admission getAdmission(@PathVariable Long id) {
-        return admissionService.get(id);
+    AdmissionDto getAdmission(@PathVariable Long id) {
+        return admissionFacade.get(id);
     }
 
     @PutMapping("/{id}")
-    Admission replaceAdmission(@RequestBody Admission updatedAdmission, Long id) {
-        return admissionService.replace(updatedAdmission, id);
+    AdmissionDto replaceAdmission(@RequestBody AdmissionDto updatedAdmission, Long id) {
+        return admissionFacade.replace(updatedAdmission, id);
     }
 
     @DeleteMapping("/{id}")
     void deleteAdmission(@PathVariable Long id) {
-        admissionService.delete(id);
+        admissionFacade.delete(id);
     }
 }

@@ -2,7 +2,9 @@ package ru.joinmore.postupicheck.api.controllers;
 
 import org.springframework.web.bind.annotation.*;
 
-import ru.joinmore.postupicheck.api.models.University;
+import ru.joinmore.postupicheck.api.dto.UniversityDto;
+import ru.joinmore.postupicheck.api.entities.University;
+import ru.joinmore.postupicheck.api.facades.UniversityFacade;
 import ru.joinmore.postupicheck.api.services.UniversityService;
 
 import java.util.List;
@@ -11,34 +13,34 @@ import java.util.List;
 @RequestMapping("/universities")
 public class UniversityController {
 
-    private final UniversityService universityService;
+    private final UniversityFacade universityFacade;
 
-    public UniversityController(UniversityService service) {
-        this.universityService = service;
+    public UniversityController(UniversityFacade universityFacade) {
+        this.universityFacade = universityFacade;
     }
 
     @GetMapping
-    List<University> getAllUniversities() {
-        return universityService.getAll();
+    List<UniversityDto> getAllUniversities() {
+        return universityFacade.getAll();
     }
 
     @PostMapping
-    University createUniversity(@RequestBody University university) {
-        return universityService.create(university);
+    UniversityDto createUniversity(@RequestBody UniversityDto university) {
+        return universityFacade.create(university);
     }
 
     @GetMapping("/{id}")
-    University getUniversity(@PathVariable Long id) {
-        return universityService.get(id);}
+    UniversityDto getUniversity(@PathVariable Long id) {
+        return universityFacade.get(id);}
 
     @PutMapping("/{id}")
-    University replaceUniversity(@RequestBody University updatedUniversity, Long id) {
-        return universityService.replace(updatedUniversity, id);
+    UniversityDto replaceUniversity(@RequestBody UniversityDto updatedUniversity, Long id) {
+        return universityFacade.replace(updatedUniversity, id);
     }
 
     @DeleteMapping("/{id}")
     void deleteUniversity(@PathVariable Long id) {
-        universityService.delete(id);
+        universityFacade.delete(id);
     }
 }
 

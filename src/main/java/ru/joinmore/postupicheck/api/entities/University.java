@@ -1,6 +1,7 @@
-package ru.joinmore.postupicheck.api.models;
+package ru.joinmore.postupicheck.api.entities;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity(name = "universities")
 public class University {
@@ -10,8 +11,8 @@ public class University {
     private Long id;
     private String name;
 
-    @OneToOne(mappedBy = "university")
-    private Admission admission;
+    @OneToMany(mappedBy = "university")
+    private List<Admission> admission;
 
     public University() {
     }

@@ -2,7 +2,7 @@ package ru.joinmore.postupicheck.api.services;
 
 import org.springframework.stereotype.Service;
 import ru.joinmore.postupicheck.api.exceptions.CourseNotFoundException;
-import ru.joinmore.postupicheck.api.models.Course;
+import ru.joinmore.postupicheck.api.entities.Course;
 import ru.joinmore.postupicheck.api.repositories.CourseRepository;
 
 import java.util.List;

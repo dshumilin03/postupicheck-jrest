@@ -2,7 +2,7 @@ package ru.joinmore.postupicheck.api.services;
 
 import org.springframework.stereotype.Service;
 import ru.joinmore.postupicheck.api.exceptions.StudentExamResultsNotFoundException;
-import ru.joinmore.postupicheck.api.models.StudentExamResults;
+import ru.joinmore.postupicheck.api.entities.StudentExamResults;
 import ru.joinmore.postupicheck.api.repositories.StudentExamResultsRepository;
 
 import java.util.List;
@@ -41,7 +41,7 @@ public class StudentExamResultsService {
 
     private StudentExamResults replaceStudent(StudentExamResults examResults, StudentExamResults updatedExamResults) {
         examResults.setResult(updatedExamResults.getResult());
-        examResults.setStudent_id(updatedExamResults.getStudent_id());
+        examResults.setStudent_id(updatedExamResults.getStudent());
         examResults.setSubject(updatedExamResults.getSubject());
         return repository.save(examResults);
     }

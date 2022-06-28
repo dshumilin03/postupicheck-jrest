@@ -1,6 +1,7 @@
-package ru.joinmore.postupicheck.api.models;
+package ru.joinmore.postupicheck.api.entities;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class Course {
@@ -11,24 +12,24 @@ public class Course {
     private String name;
     private String code;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "university_id", referencedColumnName = "id")
     private University university;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "first_subject_id", referencedColumnName = "id")
     private Subject firstSubject;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "second_subject_id", referencedColumnName = "id")
     private Subject secondSubject;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "third_subject_id", referencedColumnName = "id")
     private Subject thirdSubject;
 
-    @OneToOne(mappedBy = "course")
-    private Admission admission;
+    @OneToMany(mappedBy = "course")
+    private List<Admission> admission;
 
     public Course() {
     }

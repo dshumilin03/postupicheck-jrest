@@ -1,4 +1,4 @@
-package ru.joinmore.postupicheck.api.models;
+package ru.joinmore.postupicheck.api.entities;
 
 import javax.persistence.*;
 
@@ -11,11 +11,11 @@ public class StudentExamResults {
     private long id;
     private int result;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "student_id", referencedColumnName = "id")
     private Student student;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "subject_id", referencedColumnName = "id")
     private Subject subject;
 
@@ -44,7 +44,7 @@ public class StudentExamResults {
         this.result = result;
     }
 
-    public Student getStudent_id() {
+    public Student getStudent() {
         return student;
     }
 

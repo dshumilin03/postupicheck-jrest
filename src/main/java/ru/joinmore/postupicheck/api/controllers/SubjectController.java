@@ -1,7 +1,9 @@
 package ru.joinmore.postupicheck.api.controllers;
 
 import org.springframework.web.bind.annotation.*;
-import ru.joinmore.postupicheck.api.models.Subject;
+import ru.joinmore.postupicheck.api.dto.SubjectDto;
+import ru.joinmore.postupicheck.api.entities.Subject;
+import ru.joinmore.postupicheck.api.facades.SubjectFacade;
 import ru.joinmore.postupicheck.api.services.SubjectService;
 
 import java.util.List;
@@ -10,33 +12,33 @@ import java.util.List;
 @RequestMapping("/subjects")
 public class SubjectController {
 
-    private final SubjectService subjectService;
+    private final SubjectFacade subjectFacade;
 
-    public SubjectController(SubjectService service) {
-        this.subjectService = service;
+    public SubjectController(SubjectFacade subjectFacade) {
+        this.subjectFacade = subjectFacade;
     }
 
     @GetMapping
-    List<Subject> getAllSubjects() {
-        return subjectService.getAll();
+    List<SubjectDto> getAllSubjects() {
+        return subjectFacade.getAll();
     }
 
     @PostMapping
-    Subject createSubject(@RequestBody Subject subject) {
-        return subjectService.create(subject);
+    SubjectDto createSubject(@RequestBody SubjectDto subject) {
+        return subjectFacade.create(subject);
     }
 
     @GetMapping("/{id}")
-    Subject getSubject(@PathVariable Long id) {
-        return subjectService.get(id);}
+    SubjectDto getSubject(@PathVariable Long id) {
+        return subjectFacade.get(id);}
 
     @PutMapping("/{id}")
-    Subject replaceSubject(@RequestBody Subject updatedSubject, Long id) {
-        return subjectService.replace(updatedSubject, id);
+    SubjectDto replaceSubject(@RequestBody SubjectDto updatedSubject, Long id) {
+        return subjectFacade.replace(updatedSubject, id);
     }
 
     @DeleteMapping("/{id}")
     void deleteSubject(@PathVariable Long id) {
-        subjectService.delete(id);
+        subjectFacade.delete(id);
     }
 }

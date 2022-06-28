@@ -2,7 +2,7 @@ package ru.joinmore.postupicheck.api.services;
 
 import org.springframework.stereotype.Service;
 import ru.joinmore.postupicheck.api.exceptions.AdmissionNotFoundException;
-import ru.joinmore.postupicheck.api.models.Admission;
+import ru.joinmore.postupicheck.api.entities.Admission;
 import ru.joinmore.postupicheck.api.repositories.AdmissionRepository;
 
 import java.util.List;

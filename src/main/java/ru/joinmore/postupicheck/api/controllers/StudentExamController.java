@@ -3,10 +3,6 @@ package ru.joinmore.postupicheck.api.controllers;
 import org.springframework.web.bind.annotation.*;
 import ru.joinmore.postupicheck.api.dto.StudentExamResultsDto;
 import ru.joinmore.postupicheck.api.facades.StudentExamResultsFacade;
-import ru.joinmore.postupicheck.api.models.Student;
-import ru.joinmore.postupicheck.api.models.StudentExamResults;
-import ru.joinmore.postupicheck.api.models.Subject;
-import ru.joinmore.postupicheck.api.services.StudentExamResultsService;
 
 import java.util.List;
 
@@ -14,11 +10,9 @@ import java.util.List;
 @RequestMapping("/examresults")
 public class StudentExamController {
 
-    private final StudentExamResultsService studentExamResultsService;
     private final StudentExamResultsFacade studentExamResultsFacade;
 
-    public StudentExamController(StudentExamResultsService service, StudentExamResultsFacade studentExamResultsFacade) {
-        this.studentExamResultsService = service;
+    public StudentExamController(StudentExamResultsFacade studentExamResultsFacade) {
         this.studentExamResultsFacade = studentExamResultsFacade;
     }
 
@@ -33,17 +27,17 @@ public class StudentExamController {
     }
 
     @GetMapping("/{id}")
-    StudentExamResults getExamResult(@PathVariable Long id) {
-        return studentExamResultsService.get(id);
+    StudentExamResultsDto getExamResult(@PathVariable Long id) {
+        return studentExamResultsFacade.get(id);
     }
 
     @PutMapping("/{id}")
-    StudentExamResults replaceExamResults(@RequestBody StudentExamResults updatedExamResults, Long id) {
-        return studentExamResultsService.replace(updatedExamResults, id);
+    StudentExamResultsDto replaceExamResults(@RequestBody StudentExamResultsDto updatedExamResults, @PathVariable Long id) {
+        return studentExamResultsFacade.replace(updatedExamResults, id);
     }
 
     @DeleteMapping("/{id}")
     void deleteExamResult(@PathVariable Long id) {
-        studentExamResultsService.delete(id);
+        studentExamResultsFacade.delete(id);
     }
 }

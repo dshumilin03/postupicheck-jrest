@@ -1,6 +1,7 @@
-package ru.joinmore.postupicheck.api.models;
+package ru.joinmore.postupicheck.api.entities;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "subjects")
@@ -12,20 +13,20 @@ public class Subject {
 
     private String name;
 
-    @OneToOne(mappedBy = "subject")
-    private StudentExamResults studentExamResults;
+    @OneToMany(mappedBy = "subject")
+    private List<StudentExamResults> studentExamResults;
 
-    @OneToOne(mappedBy = "university")
-    private Course courseUniversity;
+    @OneToMany(mappedBy = "university")
+    private List<Course> courseUniversity;
 
-    @OneToOne(mappedBy = "firstSubject")
-    private Course courseFirstSubject;
+    @OneToMany(mappedBy = "firstSubject")
+    private List<Course> courseFirstSubject;
 
-    @OneToOne(mappedBy = "secondSubject")
-    private Course courseSecondSubject;
+    @OneToMany(mappedBy = "secondSubject")
+    private List<Course> courseSecondSubject;
 
-    @OneToOne(mappedBy = "thirdSubject")
-    private Course courseThirdSubject;
+    @OneToMany(mappedBy = "thirdSubject")
+    private List<Course> courseThirdSubject;
 
     public Subject() {
     }
@@ -48,6 +49,14 @@ public class Subject {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<StudentExamResults> getStudentExamResults() {
+        return studentExamResults;
+    }
+
+    public void setStudentExamResults(List<StudentExamResults> studentExamResults) {
+        this.studentExamResults = studentExamResults;
     }
 
     @Override

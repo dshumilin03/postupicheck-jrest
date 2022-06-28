@@ -2,7 +2,7 @@ package ru.joinmore.postupicheck.api.services;
 
 import org.springframework.stereotype.Service;
 import ru.joinmore.postupicheck.api.exceptions.UniversityNotFoundException;
-import ru.joinmore.postupicheck.api.models.University;
+import ru.joinmore.postupicheck.api.entities.University;
 import ru.joinmore.postupicheck.api.repositories.UniversityRepository;
 
 import java.util.List;

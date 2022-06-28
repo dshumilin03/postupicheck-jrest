@@ -1,7 +1,9 @@
 package ru.joinmore.postupicheck.api.controllers;
 
 import org.springframework.web.bind.annotation.*;
-import ru.joinmore.postupicheck.api.models.Student;
+import ru.joinmore.postupicheck.api.dto.StudentDto;
+import ru.joinmore.postupicheck.api.entities.Student;
+import ru.joinmore.postupicheck.api.facades.StudentFacade;
 import ru.joinmore.postupicheck.api.services.StudentService;
 
 import java.util.List;
@@ -11,34 +13,34 @@ import java.util.List;
 @RequestMapping("/students")
 public class StudentController {
 
-    private final StudentService studentService;
+    private final StudentFacade studentFacade;
 
-    public StudentController(StudentService service) {
-        this.studentService = service;
+    public StudentController(StudentFacade studentFacade) {
+        this.studentFacade = studentFacade;
     }
 
     @GetMapping
-    List<Student> getAllStudents() {
-        return studentService.getAll();
+    List<StudentDto> getAllStudents() {
+        return studentFacade.getAll();
     }
 
     @PostMapping
-    Student createStudent(@RequestBody Student newStudent) {
-       return studentService.create(newStudent);
+    StudentDto createStudent(@RequestBody StudentDto newStudent) {
+       return studentFacade.create(newStudent);
     }
 
     @GetMapping("/{id}")
-    Student getStudent(@PathVariable Long id) {
-        return studentService.get(id);
+    StudentDto getStudent(@PathVariable Long id) {
+        return studentFacade.get(id);
     }
 
     @PutMapping("/{id}")
-    Student replaceStudent(@RequestBody Student updatedStudent, Long id) {
-        return studentService.replace(updatedStudent, id);
+    StudentDto replaceStudent(@RequestBody StudentDto updatedStudent, Long id) {
+        return studentFacade.replace(updatedStudent, id);
     }
 
     @DeleteMapping("/{id}")
     void deleteStudent(@PathVariable Long id) {
-        studentService.delete(id);
+        studentFacade.delete(id);
     }
 }

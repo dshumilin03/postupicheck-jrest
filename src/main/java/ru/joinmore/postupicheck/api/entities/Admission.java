@@ -1,4 +1,4 @@
-package ru.joinmore.postupicheck.api.models;
+package ru.joinmore.postupicheck.api.entities;
 
 import javax.persistence.*;
 
@@ -9,15 +9,15 @@ public class Admission {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "student_id", referencedColumnName = "id")
     private Student student;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "university_id", referencedColumnName = "id")
     private University university;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "course_id", referencedColumnName = "id")
     private Course course;
 

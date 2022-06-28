@@ -1,6 +1,7 @@
-package ru.joinmore.postupicheck.api.models;
+package ru.joinmore.postupicheck.api.entities;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "students")
@@ -12,11 +13,11 @@ public class Student {
     private String name;
     private String snils;
 
-    @OneToOne(mappedBy = "student")
-    private StudentExamResults studentExamResults;
+    @OneToMany(mappedBy = "student")
+    private List<StudentExamResults> studentExamResults;
 
-    @OneToOne(mappedBy = "student")
-    private Admission admission;
+    @OneToMany(mappedBy = "student")
+    private List<Admission> admission;
 
     public Student() {}
 
