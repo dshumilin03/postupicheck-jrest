@@ -1,8 +1,8 @@
 package ru.joinmore.postupicheck.api.services;
 
 import org.springframework.stereotype.Service;
-import ru.joinmore.postupicheck.api.exceptions.AdmissionNotFoundException;
 import ru.joinmore.postupicheck.api.entities.Admission;
+import ru.joinmore.postupicheck.api.exceptions.ResourceNotFoundException;
 import ru.joinmore.postupicheck.api.repositories.AdmissionRepository;
 
 import java.util.List;
@@ -22,7 +22,7 @@ public class AdmissionService {
 
     public Admission get(long id) {
         return repository.findById(id) //
-                .orElseThrow(() -> new AdmissionNotFoundException(id));
+                .orElseThrow(ResourceNotFoundException::new);
     }
 
     public Admission create(Admission admission) {
@@ -31,7 +31,7 @@ public class AdmissionService {
 
     public Admission replace(Admission updatedAdmission, long id) {
         Admission admission = repository.findById(id) //
-                .orElseThrow(() -> new AdmissionNotFoundException(id));
+                .orElseThrow(ResourceNotFoundException::new);
         return replaceAdmission(admission, updatedAdmission);
     }
 

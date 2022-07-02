@@ -1,7 +1,7 @@
 package ru.joinmore.postupicheck.api.services;
 
 import org.springframework.stereotype.Service;
-import ru.joinmore.postupicheck.api.exceptions.SubjectNotFoundException;
+import ru.joinmore.postupicheck.api.exceptions.ResourceNotFoundException;
 import ru.joinmore.postupicheck.api.entities.Subject;
 import ru.joinmore.postupicheck.api.repositories.SubjectRepository;
 
@@ -22,7 +22,7 @@ public class SubjectService {
 
     public Subject get(long id) {
         return repository.findById(id) //
-                .orElseThrow(() -> new SubjectNotFoundException(id));
+                .orElseThrow(ResourceNotFoundException::new);
     }
 
     public Subject create(Subject subject) {
@@ -31,7 +31,7 @@ public class SubjectService {
 
     public Subject replace(Subject updatedSubject, long id) {
         Subject subject = repository.findById(id) //
-                .orElseThrow(() -> new SubjectNotFoundException(id));
+                .orElseThrow(ResourceNotFoundException::new);
         return replaceSubject(subject, updatedSubject);
     }
 

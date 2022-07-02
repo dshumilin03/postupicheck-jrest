@@ -51,6 +51,38 @@ public class Subject {
         this.name = name;
     }
 
+    public List<Course> getCourseUniversity() {
+        return courseUniversity;
+    }
+
+    public void setCourseUniversity(List<Course> courseUniversity) {
+        this.courseUniversity = courseUniversity;
+    }
+
+    public List<Course> getCourseFirstSubject() {
+        return courseFirstSubject;
+    }
+
+    public void setCourseFirstSubject(List<Course> courseFirstSubject) {
+        this.courseFirstSubject = courseFirstSubject;
+    }
+
+    public List<Course> getCourseSecondSubject() {
+        return courseSecondSubject;
+    }
+
+    public void setCourseSecondSubject(List<Course> courseSecondSubject) {
+        this.courseSecondSubject = courseSecondSubject;
+    }
+
+    public List<Course> getCourseThirdSubject() {
+        return courseThirdSubject;
+    }
+
+    public void setCourseThirdSubject(List<Course> courseThirdSubject) {
+        this.courseThirdSubject = courseThirdSubject;
+    }
+
     public List<StudentExamResults> getStudentExamResults() {
         return studentExamResults;
     }

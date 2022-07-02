@@ -50,6 +50,22 @@ public class Student {
         this.id = id;
     }
 
+    public List<StudentExamResults> getStudentExamResults() {
+        return studentExamResults;
+    }
+
+    public void setStudentExamResults(List<StudentExamResults> studentExamResults) {
+        this.studentExamResults = studentExamResults;
+    }
+
+    public List<Admission> getAdmission() {
+        return admission;
+    }
+
+    public void setAdmission(List<Admission> admission) {
+        this.admission = admission;
+    }
+
     @Override
     public String toString() {
         return "Student{" +

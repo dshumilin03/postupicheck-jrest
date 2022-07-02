@@ -33,6 +33,14 @@ public class University {
         return name;
     }
 
+    public List<Admission> getAdmission() {
+        return admission;
+    }
+
+    public void setAdmission(List<Admission> admission) {
+        this.admission = admission;
+    }
+
     public void setName(String name) {
         this.name = name;
     }

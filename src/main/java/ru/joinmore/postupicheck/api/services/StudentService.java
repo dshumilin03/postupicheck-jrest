@@ -1,7 +1,7 @@
 package ru.joinmore.postupicheck.api.services;
 
 import org.springframework.stereotype.Service;
-import ru.joinmore.postupicheck.api.exceptions.StudentNotFoundException;
+import ru.joinmore.postupicheck.api.exceptions.ResourceNotFoundException;
 import ru.joinmore.postupicheck.api.entities.Student;
 import ru.joinmore.postupicheck.api.repositories.StudentRepository;
 
@@ -22,7 +22,7 @@ public class StudentService {
 
     public Student get(long id) {
         return repository.findById(id) //
-                .orElseThrow(() -> new StudentNotFoundException(id));
+                .orElseThrow(ResourceNotFoundException::new);
     }
 
     public Student create(Student student) {
@@ -31,7 +31,7 @@ public class StudentService {
 
     public Student replace(Student updatedStudent, long id) {
         Student student = repository.findById(id) //
-                .orElseThrow(() -> new StudentNotFoundException(id));
+                .orElseThrow(ResourceNotFoundException::new);
         return replaceStudent(student, updatedStudent);
     }
 

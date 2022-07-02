@@ -1,8 +1,8 @@
 package ru.joinmore.postupicheck.api.services;
 
 import org.springframework.stereotype.Service;
-import ru.joinmore.postupicheck.api.exceptions.CourseNotFoundException;
 import ru.joinmore.postupicheck.api.entities.Course;
+import ru.joinmore.postupicheck.api.exceptions.ResourceNotFoundException;
 import ru.joinmore.postupicheck.api.repositories.CourseRepository;
 
 import java.util.List;
@@ -22,7 +22,7 @@ public class CourseService {
 
     public Course get(long id) {
         return repository.findById(id) //
-                .orElseThrow(() -> new CourseNotFoundException(id));
+                .orElseThrow(ResourceNotFoundException::new);
     }
 
     public Course create(Course course) {
@@ -31,7 +31,7 @@ public class CourseService {
 
     public Course replace(Course updatedCourse, long id) {
         Course course = repository.findById(id) //
-                .orElseThrow(() -> new CourseNotFoundException(id));
+                .orElseThrow(ResourceNotFoundException::new);
         return replaceCourse(course, updatedCourse);
     }
 

@@ -1,6 +1,8 @@
 package ru.joinmore.postupicheck.api.facades;
 
 import org.springframework.stereotype.Component;
+import ru.joinmore.postupicheck.api.converters.UniversityConverter;
+import ru.joinmore.postupicheck.api.converters.UniversityReverseConverter;
 import ru.joinmore.postupicheck.api.dto.UniversityDto;
 import ru.joinmore.postupicheck.api.entities.University;
 import ru.joinmore.postupicheck.api.services.UniversityService;
@@ -12,16 +14,22 @@ import java.util.List;
 public class UniversityFacade {
 
     private final UniversityService universityService;
+    private final UniversityConverter converter;
+    private final UniversityReverseConverter reverseConverter;
 
-    public UniversityFacade(UniversityService universityService) {
+    public UniversityFacade(UniversityService universityService,
+                            UniversityConverter converter,
+                            UniversityReverseConverter reverseConverter) {
         this.universityService = universityService;
+        this.converter = converter;
+        this.reverseConverter = reverseConverter;
     }
 
     public UniversityDto get(long id) {
 
         University university = universityService.get(id);
 
-        return setUniversityDto(university);
+        return converter.convert(university);
     }
 
     public List<UniversityDto> getAll() {
@@ -29,53 +37,33 @@ public class UniversityFacade {
         List<University> universityList = universityService.getAll();
         List<UniversityDto> universityDtoList = new ArrayList<>();
 
-        for (University university : universityList) {
-
-            UniversityDto universityDto = setUniversityDto(university);
-            universityDtoList.add(universityDto);
-        }
+        universityList.
+                forEach(university -> {
+                    UniversityDto universityDto = converter.convert(university);
+                    universityDtoList.add(universityDto);
+                });
 
         return universityDtoList;
     }
 
     public UniversityDto create(UniversityDto newUniversityDto) {
 
-        University newUniversity = setUniversity(newUniversityDto);
+        University newUniversity = reverseConverter.convert(newUniversityDto);
         University createdUniversity = universityService.create(newUniversity);
-        newUniversityDto.setId(createdUniversity.getId());
 
-        return newUniversityDto;
+        return converter.convert(createdUniversity);
     }
 
     public UniversityDto replace(UniversityDto updatedUniversityDto, long id) {
 
-        University updatedUniversity = setUniversity(updatedUniversityDto);
+        University updatedUniversity = reverseConverter.convert(updatedUniversityDto);
         University newUniversity = universityService.replace(updatedUniversity, id);
-        updatedUniversityDto.setId(newUniversity.getId());
 
-        return updatedUniversityDto;
+        return converter.convert(newUniversity);
     }
 
     public void delete(long id) {
         universityService.delete(id);
     }
 
-    private UniversityDto setUniversityDto(University university) {
-
-        long universityId = university.getId();
-        String universityName = university.getName();
-
-        UniversityDto universityDto = new UniversityDto();
-        universityDto.setId(universityId);
-        universityDto.setName(universityName);
-
-        return universityDto;
-    }
-
-    private University setUniversity(UniversityDto universityDto) {
-
-        String universityName = universityDto.getName();
-
-        return new University(universityName);
-    }
 }

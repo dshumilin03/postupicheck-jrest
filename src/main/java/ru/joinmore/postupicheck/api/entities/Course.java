@@ -99,6 +99,14 @@ public class Course {
         this.thirdSubject = thirdSubject;
     }
 
+    public List<Admission> getAdmission() {
+        return admission;
+    }
+
+    public void setAdmission(List<Admission> admission) {
+        this.admission = admission;
+    }
+
     @Override
     public String toString() {
         return "Course{" +

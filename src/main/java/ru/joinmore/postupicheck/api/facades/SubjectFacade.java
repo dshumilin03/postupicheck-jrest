@@ -1,6 +1,8 @@
 package ru.joinmore.postupicheck.api.facades;
 
 import org.springframework.stereotype.Component;
+import ru.joinmore.postupicheck.api.converters.SubjectConverter;
+import ru.joinmore.postupicheck.api.converters.SubjectReverseConverter;
 import ru.joinmore.postupicheck.api.dto.SubjectDto;
 import ru.joinmore.postupicheck.api.entities.Subject;
 import ru.joinmore.postupicheck.api.services.SubjectService;
@@ -12,16 +14,20 @@ import java.util.List;
 public class SubjectFacade {
 
     private final SubjectService subjectService;
+    private final SubjectConverter converter;
+    private final SubjectReverseConverter reverseConverter;
 
-    public SubjectFacade(SubjectService subjectService) {
+    public SubjectFacade(SubjectService subjectService, SubjectConverter converter, SubjectReverseConverter reverseConverter) {
         this.subjectService = subjectService;
+        this.converter = converter;
+        this.reverseConverter = reverseConverter;
     }
 
     public SubjectDto get(long id) {
 
         Subject subject = subjectService.get(id);
 
-        return setSubjectDto(subject);
+        return converter.convert(subject);
     }
 
     public List<SubjectDto> getAll() {
@@ -29,53 +35,33 @@ public class SubjectFacade {
         List<Subject> subjectList = subjectService.getAll();
         List<SubjectDto> subjectDtoList = new ArrayList<>();
 
-        for (Subject subject : subjectList) {
-
-            SubjectDto subjectDto = setSubjectDto(subject);
-            subjectDtoList.add(subjectDto);
-        }
+        subjectList.
+                forEach(subject -> {
+                    SubjectDto subjectDto = converter.convert(subject);
+                    subjectDtoList.add(subjectDto);
+                });
 
         return subjectDtoList;
     }
 
     public SubjectDto create(SubjectDto newSubjectDto) {
 
-        Subject newSubject = setSubject(newSubjectDto);
+        Subject newSubject = reverseConverter.convert(newSubjectDto);
         Subject createdSubject = subjectService.create(newSubject);
 
-        newSubjectDto.setId(createdSubject.getId());
-
-        return newSubjectDto;
+        return converter.convert(createdSubject);
     }
 
     public SubjectDto replace(SubjectDto updatedSubjectDto, long id) {
 
-        Subject updatedSubject = setSubject(updatedSubjectDto);
+        Subject updatedSubject = reverseConverter.convert(updatedSubjectDto);
         Subject newSubject = subjectService.replace(updatedSubject, id);
-        updatedSubjectDto.setId(newSubject.getId());
 
-        return updatedSubjectDto;
+        return converter.convert(newSubject);
     }
 
     public void delete(long id) {
         subjectService.delete(id);
     }
 
-    private SubjectDto setSubjectDto(Subject subject) {
-
-        long subjectId = subject.getId();
-        String subjectName = subject.getName();
-
-        SubjectDto subjectDto = new SubjectDto();
-        subjectDto.setId(subjectId);
-        subjectDto.setName(subjectName);
-
-        return subjectDto;
-    }
-
-    private Subject setSubject(SubjectDto SubjectDto) {
-
-        String subjectName = SubjectDto.getName();
-        return new Subject(subjectName);
-    }
 }

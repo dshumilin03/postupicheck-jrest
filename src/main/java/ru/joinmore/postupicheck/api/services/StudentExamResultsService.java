@@ -1,7 +1,7 @@
 package ru.joinmore.postupicheck.api.services;
 
 import org.springframework.stereotype.Service;
-import ru.joinmore.postupicheck.api.exceptions.StudentExamResultsNotFoundException;
+import ru.joinmore.postupicheck.api.exceptions.ResourceNotFoundException;
 import ru.joinmore.postupicheck.api.entities.StudentExamResults;
 import ru.joinmore.postupicheck.api.repositories.StudentExamResultsRepository;
 
@@ -22,7 +22,7 @@ public class StudentExamResultsService {
 
     public StudentExamResults get(long id) {
         return repository.findById(id) //
-                .orElseThrow(() -> new StudentExamResultsNotFoundException(id));
+                .orElseThrow(ResourceNotFoundException::new);
     }
 
     public StudentExamResults create(StudentExamResults examResults) {
@@ -31,7 +31,7 @@ public class StudentExamResultsService {
 
     public StudentExamResults replace(StudentExamResults updatedExamResults, long id) {
         StudentExamResults examResults = repository.findById(id) //
-                .orElseThrow(() -> new StudentExamResultsNotFoundException(id));
+                .orElseThrow(ResourceNotFoundException::new);
         return replaceStudent(examResults, updatedExamResults);
     }
 
@@ -41,7 +41,7 @@ public class StudentExamResultsService {
 
     private StudentExamResults replaceStudent(StudentExamResults examResults, StudentExamResults updatedExamResults) {
         examResults.setResult(updatedExamResults.getResult());
-        examResults.setStudent_id(updatedExamResults.getStudent());
+        examResults.setStudent(updatedExamResults.getStudent());
         examResults.setSubject(updatedExamResults.getSubject());
         return repository.save(examResults);
     }
