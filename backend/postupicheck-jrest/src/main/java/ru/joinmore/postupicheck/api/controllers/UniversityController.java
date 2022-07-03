@@ -3,9 +3,7 @@ package ru.joinmore.postupicheck.api.controllers;
 import org.springframework.web.bind.annotation.*;
 
 import ru.joinmore.postupicheck.api.dto.UniversityDto;
-import ru.joinmore.postupicheck.api.entities.University;
 import ru.joinmore.postupicheck.api.facades.UniversityFacade;
-import ru.joinmore.postupicheck.api.services.UniversityService;
 
 import java.util.List;
 

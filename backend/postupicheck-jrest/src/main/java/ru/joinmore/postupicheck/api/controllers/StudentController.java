@@ -2,9 +2,7 @@ package ru.joinmore.postupicheck.api.controllers;
 
 import org.springframework.web.bind.annotation.*;
 import ru.joinmore.postupicheck.api.dto.StudentDto;
-import ru.joinmore.postupicheck.api.entities.Student;
 import ru.joinmore.postupicheck.api.facades.StudentFacade;
-import ru.joinmore.postupicheck.api.services.StudentService;
 
 import java.util.List;
 
