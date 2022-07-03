@@ -5,8 +5,6 @@ import ru.joinmore.postupicheck.api.converters.CourseConverter;
 import ru.joinmore.postupicheck.api.converters.CourseReverseConverter;
 import ru.joinmore.postupicheck.api.dto.CourseDto;
 import ru.joinmore.postupicheck.api.entities.Course;
-import ru.joinmore.postupicheck.api.entities.Subject;
-import ru.joinmore.postupicheck.api.entities.University;
 import ru.joinmore.postupicheck.api.services.CourseService;
 import ru.joinmore.postupicheck.api.services.SubjectService;
 import ru.joinmore.postupicheck.api.services.UniversityService;

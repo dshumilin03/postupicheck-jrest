@@ -1,6 +1,5 @@
 package ru.joinmore.postupicheck.api.facades;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.joinmore.postupicheck.api.converters.StudentConverter;
 import ru.joinmore.postupicheck.api.converters.StudentReverseConverter;
