@@ -1,5 +1,5 @@
 package ru.joinmore.postupicheck.api.exceptions;
-//
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
