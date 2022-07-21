@@ -7,5 +7,5 @@ import ru.joinmore.postupicheck.api.entities.Student;
 
 @Repository
 public interface StudentRepository extends JpaRepository<Student, Long> {
-
+    Boolean existsStudentBySnils(String snils);
 }

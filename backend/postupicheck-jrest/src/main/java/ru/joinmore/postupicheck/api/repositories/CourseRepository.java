@@ -6,4 +6,5 @@ import ru.joinmore.postupicheck.api.entities.Course;
 
 @Repository
 public interface CourseRepository extends JpaRepository<Course, Long> {
+    Boolean existsByCode(String code);
 }

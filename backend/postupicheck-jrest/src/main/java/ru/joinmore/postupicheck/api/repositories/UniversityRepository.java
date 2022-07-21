@@ -6,4 +6,5 @@ import ru.joinmore.postupicheck.api.entities.University;
 
 @Repository
 public interface UniversityRepository extends JpaRepository<University, Long> {
+    Boolean existsByName(String name);
 }

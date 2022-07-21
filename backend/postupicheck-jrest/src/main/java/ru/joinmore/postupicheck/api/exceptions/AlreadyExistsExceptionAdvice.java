@@ -7,14 +7,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ControllerAdvice
-public class ResourceNotFoundExceptionAdvice {
+public class AlreadyExistsExceptionAdvice {
 
     @ResponseBody
-    @ExceptionHandler(ResourceNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    String resourceNotFoundHandler(ResourceNotFoundException ex) {
+    @ExceptionHandler(AlreadyExistsException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    String resourceNotFoundHandler(AlreadyExistsException ex) {
         return ex.getMessage();
     }
-
 }
-

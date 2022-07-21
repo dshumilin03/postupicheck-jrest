@@ -6,4 +6,5 @@ import ru.joinmore.postupicheck.api.entities.Subject;
 
 @Repository
 public interface SubjectRepository extends JpaRepository<Subject, Long> {
+    Boolean existsByName(String name);
 }

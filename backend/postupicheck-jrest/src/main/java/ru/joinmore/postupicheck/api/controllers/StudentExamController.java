@@ -16,6 +16,11 @@ public class StudentExamController {
         this.studentExamResultsFacade = studentExamResultsFacade;
     }
 
+    @GetMapping("/avg")
+    Integer getAvgScores() {
+        return studentExamResultsFacade.getAvgScores();
+    }
+
     @GetMapping
     List<StudentExamResultsDto> getAllResults() {
         return studentExamResultsFacade.getAll();
