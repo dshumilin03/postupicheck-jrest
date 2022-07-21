@@ -11,6 +11,7 @@ import ru.joinmore.postupicheck.api.services.SubjectService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Component
 public class StudentExamResultsFacade {
@@ -76,4 +77,13 @@ public class StudentExamResultsFacade {
         studentExamResultsService.delete(id);
     }
 
+    // Убрать, сделать полем студента
+    public int getAvgScores() {
+        List<StudentExamResults> allResults = studentExamResultsService.getAll();
+        AtomicInteger sumScores = new AtomicInteger();
+        allResults.forEach(results -> {
+            sumScores.addAndGet(results.getResult());
+        });
+        return sumScores.get() / allResults.size();
+    }
 }
