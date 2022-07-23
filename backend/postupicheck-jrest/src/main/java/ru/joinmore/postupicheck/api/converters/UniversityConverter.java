@@ -12,10 +12,6 @@ public class UniversityConverter implements Converter<University, UniversityDto>
         long universityId = university.getId();
         String universityName = university.getName();
 
-        UniversityDto universityDto = new UniversityDto();
-        universityDto.setId(universityId);
-        universityDto.setName(universityName);
-
-        return universityDto;
+        return new UniversityDto(universityId, universityName);
     }
 }

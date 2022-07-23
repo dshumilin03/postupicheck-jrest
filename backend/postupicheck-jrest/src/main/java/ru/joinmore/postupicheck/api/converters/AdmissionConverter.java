@@ -15,12 +15,6 @@ public class AdmissionConverter implements Converter<Admission, AdmissionDto> {
         long universityId = admission.getUniversity().getId();
         long courseId = admission.getCourse().getId();
 
-        AdmissionDto admissionDto = new AdmissionDto();
-        admissionDto.setId(admissionId);
-        admissionDto.setStudentId(studentId);
-        admissionDto.setUniversityId(universityId);
-        admissionDto.setCourseId(courseId);
-
-        return admissionDto;
+        return new AdmissionDto(admissionId, studentId, universityId, courseId);
     }
 }

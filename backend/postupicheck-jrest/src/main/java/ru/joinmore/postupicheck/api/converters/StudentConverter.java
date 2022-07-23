@@ -10,12 +10,11 @@ public class StudentConverter implements Converter<Student, StudentDto> {
     @Override
     public StudentDto convert(Student student) {
 
-        StudentDto studentDto = new StudentDto();
-        studentDto.setId(student.getId());
-        studentDto.setName(student.getName());
-        studentDto.setSnils(student.getSnils());
+        Long id = student.getId();
+        String studentName = student.getName();
+        String snils = student.getSnils();
 
-        return studentDto;
+        return new StudentDto(id, studentName, snils);
 
     }
 }

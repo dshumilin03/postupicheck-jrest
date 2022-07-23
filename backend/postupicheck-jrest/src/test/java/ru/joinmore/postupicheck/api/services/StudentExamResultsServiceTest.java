@@ -8,11 +8,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.EmptyResultDataAccessException;
 import ru.joinmore.postupicheck.api.entities.Student;
-import ru.joinmore.postupicheck.api.entities.StudentExamResults;
+import ru.joinmore.postupicheck.api.entities.StudentExamResult;
 import ru.joinmore.postupicheck.api.entities.Subject;
 import ru.joinmore.postupicheck.api.exceptions.AlreadyExistsException;
 import ru.joinmore.postupicheck.api.exceptions.ResourceNotExistsException;
-import ru.joinmore.postupicheck.api.repositories.StudentExamResultsRepository;
+import ru.joinmore.postupicheck.api.repositories.StudentExamResultRepository;
 
 import java.util.Optional;
 
@@ -24,15 +24,15 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class StudentExamResultsResultsServiceTest {
+class StudentExamResultsResultServiceTest {
 
     @Mock
-    private StudentExamResultsRepository studentExamResultsRepository;
-    private StudentExamResultsService underTest;
+    private StudentExamResultRepository studentExamResultRepository;
+    private StudentExamResultService underTest;
 
     @BeforeEach
     void setUp() {
-        underTest = new StudentExamResultsService(studentExamResultsRepository);
+        underTest = new StudentExamResultService(studentExamResultRepository);
     }
 
     @Test
@@ -40,7 +40,7 @@ class StudentExamResultsResultsServiceTest {
         //when
         underTest.getAll();
         //then
-        verify(studentExamResultsRepository).findAll();
+        verify(studentExamResultRepository).findAll();
 
     }
 
@@ -52,16 +52,16 @@ class StudentExamResultsResultsServiceTest {
         Student student = new Student("testStudent", "123456");
         Subject subject = new Subject("testSubject");
 
-        StudentExamResults studentExamResults = new StudentExamResults(result, student, subject);
-        studentExamResults.setId(id);
+        StudentExamResult studentExamResult = new StudentExamResult(result, student, subject);
+        studentExamResult.setId(id);
 
-        given(studentExamResultsRepository.findById(id)).willReturn(Optional.of(studentExamResults));
+        given(studentExamResultRepository.findById(id)).willReturn(Optional.of(studentExamResult));
         //when
         underTest.get(id);
         //then
         ArgumentCaptor<Long> longArgumentCaptor = ArgumentCaptor.forClass(Long.class);
 
-        verify(studentExamResultsRepository).findById(longArgumentCaptor.capture());
+        verify(studentExamResultRepository).findById(longArgumentCaptor.capture());
 
         Long capturedLong = longArgumentCaptor.getValue();
 
@@ -74,34 +74,34 @@ class StudentExamResultsResultsServiceTest {
         int result = 100;
         Student student = new Student("testStudent", "123456");
         Subject subject = new Subject("testSubject");
-        StudentExamResults studentExamResults = new StudentExamResults(result, student, subject);
+        StudentExamResult studentExamResult = new StudentExamResult(result, student, subject);
         //when
-        underTest.create(studentExamResults);
+        underTest.create(studentExamResult);
         //then
-        ArgumentCaptor<StudentExamResults> studentExamResultsArgumentCaptor = ArgumentCaptor.forClass(StudentExamResults.class);
+        ArgumentCaptor<StudentExamResult> studentExamResultArgumentCaptor = ArgumentCaptor.forClass(StudentExamResult.class);
 
-        verify(studentExamResultsRepository).save(studentExamResultsArgumentCaptor.capture());
+        verify(studentExamResultRepository).save(studentExamResultArgumentCaptor.capture());
 
-        StudentExamResults capturedStudentExamResults = studentExamResultsArgumentCaptor.getValue();
+        StudentExamResult capturedStudentExamResult = studentExamResultArgumentCaptor.getValue();
 
-        assertThat(capturedStudentExamResults).isEqualTo(studentExamResults);
+        assertThat(capturedStudentExamResult).isEqualTo(studentExamResult);
     }
 
     @Test
-    void createExistingStudentExamResults() {
+    void createExistingStudentExamResult() {
         //given
         int result = 100;
         Student student = new Student("testStudent", "123456");
         Subject subject = new Subject("testSubject");
-        StudentExamResults studentExamResults = new StudentExamResults(result, student, subject);
+        StudentExamResult studentExamResult = new StudentExamResult(result, student, subject);
         //when
-        given(studentExamResultsRepository.existsBySubject(subject)).willReturn(true);
+        given(studentExamResultRepository.existsBySubject(subject)).willReturn(true);
         //then
-        assertThatThrownBy(() -> underTest.create(studentExamResults))
+        assertThatThrownBy(() -> underTest.create(studentExamResult))
                 .isInstanceOf(AlreadyExistsException.class)
-                .hasMessageContaining(studentExamResults.getSubject().getName());
+                .hasMessageContaining(studentExamResult.getSubject().getName());
 
-        verify(studentExamResultsRepository, never()).save(any());
+        verify(studentExamResultRepository, never()).save(any());
     }
 
     @Test
@@ -116,24 +116,24 @@ class StudentExamResultsResultsServiceTest {
         Subject oldSubject = new Subject("testSubject");
         Subject newSubject = new Subject("testSubject2");
 
-        StudentExamResults oldStudentExamResults = new StudentExamResults(oldResult, oldStudent, oldSubject);
-        StudentExamResults newStudentExamResults = new StudentExamResults(newResult, newStudent, newSubject);
+        StudentExamResult oldStudentExamResult = new StudentExamResult(oldResult, oldStudent, oldSubject);
+        StudentExamResult newStudentExamResult = new StudentExamResult(newResult, newStudent, newSubject);
         long id = anyLong();
 
-        given(studentExamResultsRepository.findById(id)).willReturn(Optional.of(oldStudentExamResults));
+        given(studentExamResultRepository.findById(id)).willReturn(Optional.of(oldStudentExamResult));
         //when
-        underTest.replace(newStudentExamResults, id);
+        underTest.replace(newStudentExamResult, id);
         //then
-        verify(studentExamResultsRepository).findById(id);
+        verify(studentExamResultRepository).findById(id);
 
-        ArgumentCaptor<StudentExamResults> studentExamResultsArgumentCaptor = ArgumentCaptor.forClass(StudentExamResults.class);
+        ArgumentCaptor<StudentExamResult> studentExamResultArgumentCaptor = ArgumentCaptor.forClass(StudentExamResult.class);
 
-        verify(studentExamResultsRepository).save(studentExamResultsArgumentCaptor.capture());
-        StudentExamResults capturedStudentExamResults = studentExamResultsArgumentCaptor.getValue();
+        verify(studentExamResultRepository).save(studentExamResultArgumentCaptor.capture());
+        StudentExamResult capturedStudentExamResult = studentExamResultArgumentCaptor.getValue();
 
-        assertThat(capturedStudentExamResults.getResult()).isEqualTo(newStudentExamResults.getResult());
-        assertThat(capturedStudentExamResults.getStudent()).isEqualTo(newStudentExamResults.getStudent());
-        assertThat(capturedStudentExamResults.getSubject()).isEqualTo(newStudentExamResults.getSubject());
+        assertThat(capturedStudentExamResult.getPoints()).isEqualTo(newStudentExamResult.getPoints());
+        assertThat(capturedStudentExamResult.getStudent()).isEqualTo(newStudentExamResult.getStudent());
+        assertThat(capturedStudentExamResult.getSubject()).isEqualTo(newStudentExamResult.getSubject());
 
 
     }
@@ -147,7 +147,7 @@ class StudentExamResultsResultsServiceTest {
         //then
         ArgumentCaptor<Long> longArgumentCaptor = ArgumentCaptor.forClass(Long.class);
 
-        verify(studentExamResultsRepository).deleteById(longArgumentCaptor.capture());
+        verify(studentExamResultRepository).deleteById(longArgumentCaptor.capture());
 
         Long capturedLong = longArgumentCaptor.getValue();
 
@@ -159,7 +159,7 @@ class StudentExamResultsResultsServiceTest {
         long id = -1L;
         //given
         //when
-        doThrow(new EmptyResultDataAccessException(-1)).when(studentExamResultsRepository).deleteById(id);
+        doThrow(new EmptyResultDataAccessException(-1)).when(studentExamResultRepository).deleteById(id);
         //then
         assertThatThrownBy(() -> underTest.delete(id))
                 .isInstanceOf(ResourceNotExistsException.class)

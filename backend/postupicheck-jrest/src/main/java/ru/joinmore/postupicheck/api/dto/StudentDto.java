@@ -6,6 +6,12 @@ public class StudentDto {
     private String name;
     private String snils;
 
+    public StudentDto(long id, String name, String snils) {
+        this.id = id;
+        this.name = name;
+        this.snils = snils;
+    }
+
     public long getId() {
         return id;
     }

@@ -30,6 +30,13 @@ public class Admission {
         this.course = course;
     }
 
+    public Admission(Long id, Student student, University university, Course course) {
+        this.id = id;
+        this.student = student;
+        this.university = university;
+        this.course = course;
+    }
+
     public Long getId() {
         return id;
     }

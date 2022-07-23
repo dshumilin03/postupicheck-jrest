@@ -34,7 +34,29 @@ public class Course {
     public Course() {
     }
 
-    public Course(String name, String code, University university, Subject firstSubject, Subject secondSubject, Subject thirdSubject) {
+    public Course(
+            String name,
+            String code,
+            University university,
+            Subject firstSubject,
+            Subject secondSubject,
+            Subject thirdSubject) {
+        this.name = name;
+        this.code = code;
+        this.university = university;
+        this.firstSubject = firstSubject;
+        this.secondSubject = secondSubject;
+        this.thirdSubject = thirdSubject;
+    }
+
+    public Course(Long id,
+                  String name,
+                  String code,
+                  University university,
+                  Subject firstSubject,
+                  Subject secondSubject,
+                  Subject thirdSubject) {
+        this.id = id;
         this.name = name;
         this.code = code;
         this.university = university;

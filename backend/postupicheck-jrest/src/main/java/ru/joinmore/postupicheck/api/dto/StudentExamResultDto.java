@@ -1,11 +1,18 @@
 package ru.joinmore.postupicheck.api.dto;
 
-public class StudentExamResultsDto {
+public class StudentExamResultDto {
 
     private long id;
     private long studentId;
     private long subjectId;
-    private int result;
+    private int points;
+
+    public StudentExamResultDto(long id, long studentId, long subjectId, int points) {
+        this.id = id;
+        this.studentId = studentId;
+        this.subjectId = subjectId;
+        this.points = points;
+    }
 
     public long getStudentId() {
         return studentId;
@@ -23,12 +30,12 @@ public class StudentExamResultsDto {
         this.subjectId = subjectId;
     }
 
-    public int getResult() {
-        return result;
+    public int getPoints() {
+        return points;
     }
 
-    public void setResult(int result) {
-        this.result = result;
+    public void setPoints(int points) {
+        this.points = points;
     }
 
     public long getId() {

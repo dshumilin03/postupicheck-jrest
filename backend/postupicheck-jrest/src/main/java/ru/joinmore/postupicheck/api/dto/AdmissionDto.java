@@ -7,6 +7,13 @@ public class AdmissionDto {
     private long courseId;
     private long universityId;
 
+    public AdmissionDto(long id, long studentId, long courseId, long universityId) {
+        this.id = id;
+        this.studentId = studentId;
+        this.courseId = courseId;
+        this.universityId = universityId;
+    }
+
     public long getId() {
         return id;
     }

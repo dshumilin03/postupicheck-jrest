@@ -13,11 +13,7 @@ public class SubjectConverter implements Converter<Subject, SubjectDto> {
         long subjectId = subject.getId();
         String subjectName = subject.getName();
 
-        SubjectDto subjectDto = new SubjectDto();
-        subjectDto.setId(subjectId);
-        subjectDto.setName(subjectName);
-
-        return subjectDto;
+        return new SubjectDto(subjectId, subjectName);
 
     }
 }

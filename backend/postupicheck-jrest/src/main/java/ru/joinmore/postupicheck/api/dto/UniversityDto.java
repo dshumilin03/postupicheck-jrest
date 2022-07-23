@@ -5,6 +5,11 @@ public class UniversityDto {
     private long id;
     private String name;
 
+    public UniversityDto(long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public long getId() {
         return id;
     }

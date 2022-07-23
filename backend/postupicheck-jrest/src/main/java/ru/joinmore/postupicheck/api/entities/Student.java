@@ -14,7 +14,7 @@ public class Student {
     private String snils;
 
     @OneToMany(mappedBy = "student")
-    private List<StudentExamResults> studentExamResults;
+    private List<StudentExamResult> studentExamResult;
 
     @OneToMany(mappedBy = "student")
     private List<Admission> admission;
@@ -22,6 +22,12 @@ public class Student {
     public Student() {}
 
     public Student(String name, String snils) {
+        this.name = name;
+        this.snils = snils;
+    }
+
+    public Student(Long id, String name, String snils) {
+        this.id = id;
         this.name = name;
         this.snils = snils;
     }
@@ -50,12 +56,12 @@ public class Student {
         this.id = id;
     }
 
-    public List<StudentExamResults> getStudentExamResults() {
-        return studentExamResults;
+    public List<StudentExamResult> getStudentExamResult() {
+        return studentExamResult;
     }
 
-    public void setStudentExamResults(List<StudentExamResults> studentExamResults) {
-        this.studentExamResults = studentExamResults;
+    public void setStudentExamResult(List<StudentExamResult> studentExamResult) {
+        this.studentExamResult = studentExamResult;
     }
 
     public List<Admission> getAdmission() {
