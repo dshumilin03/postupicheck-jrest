@@ -5,6 +5,11 @@ public class SubjectDto {
     private long id;
     private String name;
 
+    public SubjectDto(long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public long getId() {
         return id;
     }

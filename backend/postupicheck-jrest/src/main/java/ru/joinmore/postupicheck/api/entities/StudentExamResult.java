@@ -4,12 +4,12 @@ import javax.persistence.*;
 
 @Entity
 @Table
-public class StudentExamResults {
+public class StudentExamResult {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
-    private int result;
+    private int points;
 
     @ManyToOne
     @JoinColumn(name = "student_id", referencedColumnName = "id")
@@ -19,11 +19,18 @@ public class StudentExamResults {
     @JoinColumn(name = "subject_id", referencedColumnName = "id")
     private Subject subject;
 
-    public StudentExamResults() {
+    public StudentExamResult() {
     }
 
-    public StudentExamResults(int result, Student student, Subject subject) {
-        this.result = result;
+    public StudentExamResult(int points, Student student, Subject subject) {
+        this.points = points;
+        this.student = student;
+        this.subject = subject;
+    }
+
+    public StudentExamResult(long id, int points, Student student, Subject subject) {
+        this.id = id;
+        this.points = points;
         this.student = student;
         this.subject = subject;
     }
@@ -36,12 +43,12 @@ public class StudentExamResults {
         this.id = id;
     }
 
-    public int getResult() {
-        return result;
+    public int getPoints() {
+        return points;
     }
 
-    public void setResult(int result) {
-        this.result = result;
+    public void setPoints(int result) {
+        this.points = result;
     }
 
     public Student getStudent() {
@@ -62,9 +69,9 @@ public class StudentExamResults {
 
     @Override
     public String toString() {
-        return "StudentExamResults{" +
+        return "StudentExamResult{" +
                 "id=" + id +
-                ", result=" + result +
+                ", result=" + points +
                 ", student=" + student +
                 ", subject=" + subject +
                 '}';

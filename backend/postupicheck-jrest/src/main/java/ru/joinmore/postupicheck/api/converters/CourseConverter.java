@@ -18,15 +18,13 @@ public class CourseConverter implements Converter<Course, CourseDto> {
         String name = course.getName();
         String code = course.getCode();
 
-        CourseDto courseDto = new CourseDto();
-        courseDto.setId(id);
-        courseDto.setName(name);
-        courseDto.setCode(code);
-        courseDto.setUniversityId(universityId);
-        courseDto.setFirstSubjectId(firstSubjectId);
-        courseDto.setSecondSubjectId(secondSubjectId);
-        courseDto.setThirdSubjectId(thirdSubjectId);
-
-        return courseDto;
+        return new CourseDto(
+                id,
+                name,
+                code,
+                universityId,
+                firstSubjectId,
+                secondSubjectId,
+                thirdSubjectId);
     }
 }

@@ -14,7 +14,7 @@ public class Subject {
     private String name;
 
     @OneToMany(mappedBy = "subject")
-    private List<StudentExamResults> studentExamResults;
+    private List<StudentExamResult> studentExamResult;
 
     @OneToMany(mappedBy = "university")
     private List<Course> courseUniversity;
@@ -32,6 +32,11 @@ public class Subject {
     }
 
     public Subject(String name) {
+        this.name = name;
+    }
+
+    public Subject(long id, String name) {
+        this.id = id;
         this.name = name;
     }
 
@@ -83,12 +88,12 @@ public class Subject {
         this.courseThirdSubject = courseThirdSubject;
     }
 
-    public List<StudentExamResults> getStudentExamResults() {
-        return studentExamResults;
+    public List<StudentExamResult> getStudentExamResult() {
+        return studentExamResult;
     }
 
-    public void setStudentExamResults(List<StudentExamResults> studentExamResults) {
-        this.studentExamResults = studentExamResults;
+    public void setStudentExamResult(List<StudentExamResult> studentExamResult) {
+        this.studentExamResult = studentExamResult;
     }
 
     @Override
@@ -96,7 +101,7 @@ public class Subject {
         return "Subject{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", studentExamResults=" + studentExamResults +
+                ", studentExamResult=" + studentExamResult +
                 '}';
     }
 }

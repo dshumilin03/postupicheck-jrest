@@ -11,7 +11,8 @@ public class UniversityReverseConverter implements Converter<UniversityDto, Univ
     public University convert(UniversityDto universityDto) {
 
         String universityName = universityDto.getName();
+        long universityId = universityDto.getId();
 
-        return new University(universityName);
+        return new University(universityId, universityName);
     }
 }

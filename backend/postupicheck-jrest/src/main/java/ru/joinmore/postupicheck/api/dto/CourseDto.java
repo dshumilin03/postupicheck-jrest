@@ -11,6 +11,24 @@ public class CourseDto {
     private long secondSubjectId;
     private long thirdSubjectId;
 
+    public CourseDto(
+            long id,
+            String name,
+            String code,
+            long universityId,
+            long firstSubjectId,
+            long secondSubjectId,
+            long thirdSubjectId) {
+
+        this.id = id;
+        this.name = name;
+        this.code = code;
+        this.universityId = universityId;
+        this.firstSubjectId = firstSubjectId;
+        this.secondSubjectId = secondSubjectId;
+        this.thirdSubjectId = thirdSubjectId;
+    }
+
     public long getId() {
         return id;
     }

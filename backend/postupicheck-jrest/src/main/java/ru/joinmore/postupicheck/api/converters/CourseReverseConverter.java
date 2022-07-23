@@ -29,6 +29,7 @@ public class CourseReverseConverter implements Converter<CourseDto, Course> {
         long firstSubjectId = courseDto.getFirstSubjectId();
         long secondSubjectId = courseDto.getSecondSubjectId();
         long thirdSubjectId = courseDto.getThirdSubjectId();
+        long courseId = courseDto.getId();
 
         University university = universityService.get(universityId);
         Subject firstSubject = subjectService.get(firstSubjectId);
@@ -36,7 +37,7 @@ public class CourseReverseConverter implements Converter<CourseDto, Course> {
         Subject thirdSubject = subjectService.get(thirdSubjectId);
 
 
-        return new Course(courseName, courseCode, university, firstSubject, secondSubject, thirdSubject);
+        return new Course(courseId, courseName, courseCode, university, firstSubject, secondSubject, thirdSubject);
 
     }
 }

@@ -11,6 +11,8 @@ public class SubjectReverseConverter implements Converter<SubjectDto, Subject> {
     public Subject convert(SubjectDto subjectDto) {
 
         String subjectName = subjectDto.getName();
-        return new Subject(subjectName);
+        long subjectId = subjectDto.getId();
+
+        return new Subject(subjectId, subjectName);
     }
 }
