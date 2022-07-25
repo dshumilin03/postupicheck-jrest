@@ -5,6 +5,7 @@ import ru.joinmore.postupicheck.api.converters.AdmissionConverter;
 import ru.joinmore.postupicheck.api.converters.AdmissionReverseConverter;
 import ru.joinmore.postupicheck.api.dto.AdmissionDto;
 import ru.joinmore.postupicheck.api.entities.Admission;
+import ru.joinmore.postupicheck.api.entities.Student;
 import ru.joinmore.postupicheck.api.services.AdmissionService;
 import ru.joinmore.postupicheck.api.services.CourseService;
 import ru.joinmore.postupicheck.api.services.StudentService;
@@ -12,6 +13,7 @@ import ru.joinmore.postupicheck.api.services.UniversityService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class AdmissionFacade {
@@ -48,18 +50,27 @@ public class AdmissionFacade {
         return converter.convert(admission);
     }
 
+    public List<AdmissionDto> getStudentAdmissions(long id) {
+
+        Student student = studentService.get(id);
+        List<Admission> studentAdmissionList = admissionService.findAdmissionsByStudent(student);
+
+        return converter.convertList(studentAdmissionList);
+    }
+
+    public AdmissionDto getStudentApprovalAdmission(long id) {
+
+        Student student = studentService.get(id);
+        List<Admission> studentAdmissionList = admissionService.findAdmissionsByStudent(student);
+        Admission admission = studentAdmissionList.stream().filter(Admission::isApproval).toList().get(0);
+        return converter.convert(admission);
+    }
+
     public List<AdmissionDto> getAll() {
 
         List<Admission> admissionList = admissionService.getAll();
-        List<AdmissionDto> admissionDtoList = new ArrayList<>();
 
-        admissionList.
-                forEach(admission -> {
-                    AdmissionDto admissionDto = converter.convert(admission);
-                    admissionDtoList.add(admissionDto);
-                });
-
-        return admissionDtoList;
+        return converter.convertList(admissionList);
     }
 
     public AdmissionDto create(AdmissionDto newAdmissionDto) {

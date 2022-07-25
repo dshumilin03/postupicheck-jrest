@@ -6,7 +6,11 @@ import ru.joinmore.postupicheck.api.entities.Admission;
 import ru.joinmore.postupicheck.api.entities.Course;
 import ru.joinmore.postupicheck.api.entities.Student;
 
+import java.util.List;
+
 @Repository
 public interface AdmissionRepository extends JpaRepository<Admission, Long> {
     Boolean existsByCourseAndStudent(Course course, Student student);
+
+    List<Admission> findAdmissionsByStudent(Student student);
 }

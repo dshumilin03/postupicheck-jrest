@@ -1,40 +1,57 @@
 package ru.joinmore.postupicheck.api.entities;
 
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class Admission {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @SequenceGenerator(name = "admission_sequence", sequenceName = "admission_sequence", allocationSize = 1)
+    @GeneratedValue( strategy = GenerationType.SEQUENCE, generator = "admission_sequence")
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "student_id", referencedColumnName = "id")
     private Student student;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "university_id", referencedColumnName = "id")
-    private University university;
-
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "course_id", referencedColumnName = "id")
     private Course course;
+
+    private Boolean approval;
 
     public Admission() {
     }
 
-    public Admission(Student student, University university, Course course) {
+    public Admission(Student student, Course course) {
         this.student = student;
-        this.university = university;
         this.course = course;
     }
 
-    public Admission(Long id, Student student, University university, Course course) {
+    public Admission(Long id, Student student, Course course) {
         this.id = id;
         this.student = student;
-        this.university = university;
         this.course = course;
+        this.approval = false;
+    }
+
+
+    public Admission(Long id, Student student, Course course, Boolean approval) {
+        this.id = id;
+        this.student = student;
+        this.course = course;
+        this.approval = approval;
+    }
+
+    public Boolean isApproval() {
+        return approval;
+    }
+
+    public void setApproval(Boolean approval) {
+        this.approval = approval;
     }
 
     public Long getId() {
@@ -53,14 +70,6 @@ public class Admission {
         this.student = student;
     }
 
-    public University getUniversity() {
-        return university;
-    }
-
-    public void setUniversity(University university) {
-        this.university = university;
-    }
-
     public Course getCourse() {
         return course;
     }
@@ -74,7 +83,6 @@ public class Admission {
         return "Admission{" +
                 "id=" + id +
                 ", student=" + student +
-                ", university=" + university +
                 ", course=" + course +
                 '}';
     }

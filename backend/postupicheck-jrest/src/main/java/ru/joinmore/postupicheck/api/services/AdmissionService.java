@@ -49,6 +49,10 @@ public class AdmissionService {
         return replaceAdmission(admission, updatedAdmission);
     }
 
+    public List<Admission> findAdmissionsByStudent(Student student) {
+        return repository.findAdmissionsByStudent(student);
+    }
+
     public void delete(long id) {
 
         try {
@@ -60,8 +64,8 @@ public class AdmissionService {
 
     private Admission replaceAdmission(Admission admission, Admission updatedAdmission) {
         admission.setStudent(updatedAdmission.getStudent());
-        admission.setUniversity(updatedAdmission.getUniversity());
         admission.setCourse(updatedAdmission.getCourse());
+        admission.setApproval(updatedAdmission.isApproval());
         return repository.save(admission);
     }
 }

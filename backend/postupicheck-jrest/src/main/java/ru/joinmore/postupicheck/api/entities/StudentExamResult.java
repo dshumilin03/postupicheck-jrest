@@ -1,13 +1,15 @@
 package ru.joinmore.postupicheck.api.entities;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 
 @Entity
 @Table
 public class StudentExamResult {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @SequenceGenerator(name = "studentExamResult_sequence", sequenceName = "studentExamResult_sequence", allocationSize = 1)
+    @GeneratedValue( strategy = GenerationType.SEQUENCE, generator = "studentExamResult_sequence")
     private long id;
     private int points;
 

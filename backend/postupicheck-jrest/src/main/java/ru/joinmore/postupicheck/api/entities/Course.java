@@ -1,5 +1,7 @@
 package ru.joinmore.postupicheck.api.entities;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -7,7 +9,8 @@ import java.util.List;
 public class Course {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @SequenceGenerator(name = "course_sequence", sequenceName = "course_sequence", allocationSize = 1)
+    @GeneratedValue( strategy = GenerationType.SEQUENCE, generator = "course_sequence")
     private Long id;
     private String name;
     private String code;
@@ -28,8 +31,6 @@ public class Course {
     @JoinColumn(name = "third_subject_id", referencedColumnName = "id")
     private Subject thirdSubject;
 
-    @OneToMany(mappedBy = "course")
-    private List<Admission> admission;
 
     public Course() {
     }
@@ -119,14 +120,6 @@ public class Course {
 
     public void setThirdSubject(Subject thirdSubject) {
         this.thirdSubject = thirdSubject;
-    }
-
-    public List<Admission> getAdmission() {
-        return admission;
-    }
-
-    public void setAdmission(List<Admission> admission) {
-        this.admission = admission;
     }
 
     @Override

@@ -1,18 +1,17 @@
 package ru.joinmore.postupicheck.api.entities;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 import java.util.List;
 
 @Entity(name = "universities")
 public class University {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @SequenceGenerator(name = "university_sequence", sequenceName = "university_sequence", allocationSize = 1)
+    @GeneratedValue( strategy = GenerationType.SEQUENCE, generator = "university_sequence")
     private Long id;
     private String name;
-
-    @OneToMany(mappedBy = "university")
-    private List<Admission> admission;
 
     public University() {
     }
@@ -38,13 +37,6 @@ public class University {
         return name;
     }
 
-    public List<Admission> getAdmission() {
-        return admission;
-    }
-
-    public void setAdmission(List<Admission> admission) {
-        this.admission = admission;
-    }
 
     public void setName(String name) {
         this.name = name;

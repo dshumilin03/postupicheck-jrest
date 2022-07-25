@@ -10,6 +10,8 @@ import ru.joinmore.postupicheck.api.services.CourseService;
 import ru.joinmore.postupicheck.api.services.StudentService;
 import ru.joinmore.postupicheck.api.services.UniversityService;
 
+import java.util.Optional;
+
 @Component
 public class AdmissionReverseConverter implements Converter<AdmissionDto, Admission> {
 
@@ -27,14 +29,13 @@ public class AdmissionReverseConverter implements Converter<AdmissionDto, Admiss
     public Admission convert(AdmissionDto newAdmissionDto) {
 
         long newStudentId = newAdmissionDto.getStudentId();
-        long newUniversityId = newAdmissionDto.getUniversityId();
         long newCourseId = newAdmissionDto.getCourseId();
         long admissionId = newAdmissionDto.getId();
+        boolean approval = newAdmissionDto.isApproval();
 
         Student newStudent = studentService.get(newStudentId);
-        University newUniversity = universityService.get(newUniversityId);
         Course newCourse = courseService.get(newCourseId);
 
-        return new Admission(admissionId, newStudent, newUniversity, newCourse);
+        return new Admission(admissionId, newStudent, newCourse, approval);
     }
 }
