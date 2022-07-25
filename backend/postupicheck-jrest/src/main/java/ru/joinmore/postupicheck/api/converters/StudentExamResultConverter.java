@@ -11,8 +11,8 @@ public class StudentExamResultConverter implements Converter<StudentExamResult, 
     public StudentExamResultDto convert(StudentExamResult result) {
 
         int points = result.getPoints();
-        long studentId = result.getSubject().getId();
-        long subjectId = result.getStudent().getId();
+        long studentId = result.getStudent().getId();
+        long subjectId = result.getSubject().getId();
         long resultId = result.getId();
 
         return new StudentExamResultDto(resultId, studentId, subjectId, points);

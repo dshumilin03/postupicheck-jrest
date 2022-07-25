@@ -31,8 +31,17 @@ public class AdmissionController {
         return admissionFacade.get(id);
     }
 
+    @GetMapping("/student")
+    List<AdmissionDto> getStudentAdmissions(@RequestParam Long id) {
+        return admissionFacade.getStudentAdmissions(id);
+    }
+    @GetMapping("/student-approval")
+    AdmissionDto getStudentApprovalAdmission(@RequestParam Long id) {
+        return admissionFacade.getStudentApprovalAdmission(id);
+    }
+
     @PutMapping("/{id}")
-    AdmissionDto replaceAdmission(@RequestBody AdmissionDto updatedAdmission, Long id) {
+    AdmissionDto replaceAdmission(@RequestBody AdmissionDto updatedAdmission, @PathVariable Long id) {
         return admissionFacade.replace(updatedAdmission, id);
     }
 

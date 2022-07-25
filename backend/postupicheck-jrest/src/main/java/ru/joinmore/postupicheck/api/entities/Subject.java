@@ -1,32 +1,19 @@
 package ru.joinmore.postupicheck.api.entities;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
 @Table(name = "subjects")
 public class Subject {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @SequenceGenerator(name = "subject_sequence", sequenceName = "subject_sequence", allocationSize = 1)
+    @GeneratedValue( strategy = GenerationType.SEQUENCE, generator = "subject_sequence")
     private long id;
 
     private String name;
-
-    @OneToMany(mappedBy = "subject")
-    private List<StudentExamResult> studentExamResult;
-
-    @OneToMany(mappedBy = "university")
-    private List<Course> courseUniversity;
-
-    @OneToMany(mappedBy = "firstSubject")
-    private List<Course> courseFirstSubject;
-
-    @OneToMany(mappedBy = "secondSubject")
-    private List<Course> courseSecondSubject;
-
-    @OneToMany(mappedBy = "thirdSubject")
-    private List<Course> courseThirdSubject;
 
     public Subject() {
     }
@@ -56,52 +43,11 @@ public class Subject {
         this.name = name;
     }
 
-    public List<Course> getCourseUniversity() {
-        return courseUniversity;
-    }
-
-    public void setCourseUniversity(List<Course> courseUniversity) {
-        this.courseUniversity = courseUniversity;
-    }
-
-    public List<Course> getCourseFirstSubject() {
-        return courseFirstSubject;
-    }
-
-    public void setCourseFirstSubject(List<Course> courseFirstSubject) {
-        this.courseFirstSubject = courseFirstSubject;
-    }
-
-    public List<Course> getCourseSecondSubject() {
-        return courseSecondSubject;
-    }
-
-    public void setCourseSecondSubject(List<Course> courseSecondSubject) {
-        this.courseSecondSubject = courseSecondSubject;
-    }
-
-    public List<Course> getCourseThirdSubject() {
-        return courseThirdSubject;
-    }
-
-    public void setCourseThirdSubject(List<Course> courseThirdSubject) {
-        this.courseThirdSubject = courseThirdSubject;
-    }
-
-    public List<StudentExamResult> getStudentExamResult() {
-        return studentExamResult;
-    }
-
-    public void setStudentExamResult(List<StudentExamResult> studentExamResult) {
-        this.studentExamResult = studentExamResult;
-    }
-
     @Override
     public String toString() {
         return "Subject{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", studentExamResult=" + studentExamResult +
                 '}';
     }
 }

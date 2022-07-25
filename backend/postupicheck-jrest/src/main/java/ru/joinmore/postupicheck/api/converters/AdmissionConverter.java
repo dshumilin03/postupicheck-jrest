@@ -4,6 +4,9 @@ import org.springframework.stereotype.Component;
 import ru.joinmore.postupicheck.api.dto.AdmissionDto;
 import ru.joinmore.postupicheck.api.entities.Admission;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Component
 public class AdmissionConverter implements Converter<Admission, AdmissionDto> {
 
@@ -12,9 +15,19 @@ public class AdmissionConverter implements Converter<Admission, AdmissionDto> {
 
         long admissionId = admission.getId();
         long studentId = admission.getStudent().getId();
-        long universityId = admission.getUniversity().getId();
         long courseId = admission.getCourse().getId();
+        boolean approval = admission.isApproval();
 
-        return new AdmissionDto(admissionId, studentId, universityId, courseId);
+        return new AdmissionDto(admissionId, studentId, courseId, approval);
+    }
+
+    public List<AdmissionDto> convertList(List<Admission> admissions) {
+        List<AdmissionDto> admissionDtoList = new ArrayList<>();
+        admissions.
+                forEach(admission -> {
+                    AdmissionDto admissionDto = convert(admission);
+                    admissionDtoList.add(admissionDto);
+                });
+        return admissionDtoList;
     }
 }

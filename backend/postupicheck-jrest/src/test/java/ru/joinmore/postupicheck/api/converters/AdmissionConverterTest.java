@@ -19,12 +19,10 @@ class AdmissionConverterTest {
     void convert() {
         //given
         Student student = new Student();
-        University university = new University();
         Course course = new Course();
-        Admission admission = new Admission(student, university, course);
+        Admission admission = new Admission(student, course);
         admission.setId(0L);
         student.setId(0L);
-        university.setId(0L);
         course.setId(0L);
 
         //when
@@ -33,7 +31,6 @@ class AdmissionConverterTest {
 
         assertThat(createdDto.getId()).isEqualTo(0L);
         assertThat(createdDto.getStudentId()).isEqualTo(0L);
-        assertThat(createdDto.getUniversityId()).isEqualTo(0L);
         assertThat(createdDto.getCourseId()).isEqualTo(0L);
 
     }
