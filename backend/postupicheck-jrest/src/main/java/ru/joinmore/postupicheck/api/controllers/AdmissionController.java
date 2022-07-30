@@ -1,5 +1,6 @@
 package ru.joinmore.postupicheck.api.controllers;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.joinmore.postupicheck.api.dto.AdmissionDto;
 import ru.joinmore.postupicheck.api.facades.AdmissionFacade;
@@ -17,36 +18,39 @@ public class AdmissionController {
     }
 
     @GetMapping
+    @ResponseStatus(code = HttpStatus.OK)
     List<AdmissionDto> getAllAdmissions() {
         return admissionFacade.getAll();
     }
 
     @PostMapping
+    @ResponseStatus(code = HttpStatus.CREATED)
     AdmissionDto createAdmission(@RequestBody AdmissionDto admission) {
         return admissionFacade.create(admission);
     }
 
     @GetMapping("/{id}")
+    @ResponseStatus(code = HttpStatus.OK)
     AdmissionDto getAdmission(@PathVariable Long id) {
         return admissionFacade.get(id);
     }
 
-    @GetMapping("/student")
-    List<AdmissionDto> getStudentAdmissions(@RequestParam Long id) {
-        return admissionFacade.getStudentAdmissions(id);
-    }
-    @GetMapping("/student-approval")
-    AdmissionDto getStudentApprovalAdmission(@RequestParam Long id) {
-        return admissionFacade.getStudentApprovalAdmission(id);
-    }
-
     @PutMapping("/{id}")
+    @ResponseStatus(code = HttpStatus.OK)
     AdmissionDto replaceAdmission(@RequestBody AdmissionDto updatedAdmission, @PathVariable Long id) {
         return admissionFacade.replace(updatedAdmission, id);
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(code = HttpStatus.NO_CONTENT)
     void deleteAdmission(@PathVariable Long id) {
         admissionFacade.delete(id);
     }
+
+    @DeleteMapping
+    @ResponseStatus(code = HttpStatus.NO_CONTENT)
+    void deleteAll() {
+        admissionFacade.deleteAll();
+    }
+
 }

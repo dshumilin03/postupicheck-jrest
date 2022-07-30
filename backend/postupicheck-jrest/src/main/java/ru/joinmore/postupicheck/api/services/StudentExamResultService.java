@@ -2,6 +2,8 @@ package ru.joinmore.postupicheck.api.services;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import ru.joinmore.postupicheck.api.entities.Student;
+import ru.joinmore.postupicheck.api.entities.Subject;
 import ru.joinmore.postupicheck.api.exceptions.AlreadyExistsException;
 import ru.joinmore.postupicheck.api.exceptions.ResourceNotExistsException;
 import ru.joinmore.postupicheck.api.entities.StudentExamResult;
@@ -28,10 +30,12 @@ public class StudentExamResultService {
     }
 
     public StudentExamResult create(StudentExamResult studentExamResult) {
-        Boolean exists = repository.existsBySubject(studentExamResult.getSubject());
+        Subject subject = studentExamResult.getSubject();
+        Student student = studentExamResult.getStudent();
+        Boolean exists = repository.existsBySubjectAndStudent(subject, student);
 
         if (exists) {
-            throw new AlreadyExistsException(studentExamResult.getSubject().getName() + " result");
+            throw new AlreadyExistsException(subject.getName() + " result for " + student.getName());
         }
         return repository.save(studentExamResult);
     }
@@ -57,6 +61,14 @@ public class StudentExamResultService {
         studentExamResult.setStudent(updatedStudentExamResult.getStudent());
         studentExamResult.setSubject(updatedStudentExamResult.getSubject());
         return repository.save(studentExamResult);
+    }
+
+    public List<StudentExamResult> findStudentExamResultsByStudent(Student student) {
+        return repository.findStudentExamResultsByStudent(student);
+    }
+
+    public int getPointsByStudentAndSubject(Student student, Subject subject) {
+        return repository.getPointsByStudentAndSubject(student, subject);
     }
 }
 

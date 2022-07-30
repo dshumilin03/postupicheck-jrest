@@ -11,6 +11,8 @@ public class CourseDto {
     private long secondSubjectId;
     private long thirdSubjectId;
 
+    private int curPassingPoints;
+
     public CourseDto(
             long id,
             String name,
@@ -18,7 +20,8 @@ public class CourseDto {
             long universityId,
             long firstSubjectId,
             long secondSubjectId,
-            long thirdSubjectId) {
+            long thirdSubjectId,
+            int curPassingPoints) {
 
         this.id = id;
         this.name = name;
@@ -27,6 +30,7 @@ public class CourseDto {
         this.firstSubjectId = firstSubjectId;
         this.secondSubjectId = secondSubjectId;
         this.thirdSubjectId = thirdSubjectId;
+        this.curPassingPoints = curPassingPoints;
     }
 
     public long getId() {
@@ -43,6 +47,14 @@ public class CourseDto {
 
     public void setUniversityId(long universityId) {
         this.universityId = universityId;
+    }
+
+    public int getCurPassingPoints() {
+        return curPassingPoints;
+    }
+
+    public void setCurPassingPoints(int curPassingPoints) {
+        this.curPassingPoints = curPassingPoints;
     }
 
     public String getName() {

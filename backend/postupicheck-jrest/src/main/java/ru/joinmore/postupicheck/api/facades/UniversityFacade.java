@@ -7,7 +7,6 @@ import ru.joinmore.postupicheck.api.dto.UniversityDto;
 import ru.joinmore.postupicheck.api.entities.University;
 import ru.joinmore.postupicheck.api.services.UniversityService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -34,16 +33,9 @@ public class UniversityFacade {
 
     public List<UniversityDto> getAll() {
 
-        List<University> universityList = universityService.getAll();
-        List<UniversityDto> universityDtoList = new ArrayList<>();
+        List<University> allUniversities = universityService.getAll();
 
-        universityList.
-                forEach(university -> {
-                    UniversityDto universityDto = converter.convert(university);
-                    universityDtoList.add(universityDto);
-                });
-
-        return universityDtoList;
+        return converter.convert(allUniversities);
     }
 
     public UniversityDto create(UniversityDto newUniversityDto) {

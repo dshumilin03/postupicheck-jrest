@@ -1,7 +1,5 @@
 package ru.joinmore.postupicheck.api.entities;
 
-import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
 import java.util.List;
 
@@ -14,6 +12,8 @@ public class Course {
     private Long id;
     private String name;
     private String code;
+
+    private Integer curPassingPoints;
 
     @ManyToOne
     @JoinColumn(name = "university_id", referencedColumnName = "id")
@@ -31,6 +31,9 @@ public class Course {
     @JoinColumn(name = "third_subject_id", referencedColumnName = "id")
     private Subject thirdSubject;
 
+    @OneToMany(mappedBy="course", cascade = CascadeType.ALL)
+    private List<Admission> courses;
+
 
     public Course() {
     }
@@ -41,13 +44,15 @@ public class Course {
             University university,
             Subject firstSubject,
             Subject secondSubject,
-            Subject thirdSubject) {
+            Subject thirdSubject,
+            Integer curPassingPoints) {
         this.name = name;
         this.code = code;
         this.university = university;
         this.firstSubject = firstSubject;
         this.secondSubject = secondSubject;
         this.thirdSubject = thirdSubject;
+        this.curPassingPoints = curPassingPoints;
     }
 
     public Course(Long id,
@@ -56,7 +61,8 @@ public class Course {
                   University university,
                   Subject firstSubject,
                   Subject secondSubject,
-                  Subject thirdSubject) {
+                  Subject thirdSubject,
+                  Integer curPassingPoints) {
         this.id = id;
         this.name = name;
         this.code = code;
@@ -64,6 +70,7 @@ public class Course {
         this.firstSubject = firstSubject;
         this.secondSubject = secondSubject;
         this.thirdSubject = thirdSubject;
+        this.curPassingPoints = curPassingPoints;
     }
 
     public Long getId() {
@@ -88,6 +95,14 @@ public class Course {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public Integer getCurPassingPoints() {
+        return curPassingPoints;
+    }
+
+    public void setCurPassingPoints(Integer curPassingPoints) {
+        this.curPassingPoints = curPassingPoints;
     }
 
     public University getUniversity() {

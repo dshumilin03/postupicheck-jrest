@@ -4,8 +4,11 @@ import org.springframework.stereotype.Component;
 import ru.joinmore.postupicheck.api.dto.StudentDto;
 import ru.joinmore.postupicheck.api.entities.Student;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Component
-public class StudentConverter implements Converter<Student, StudentDto> {
+public class StudentConverter implements Converter<Student, StudentDto>, ListConverter<Student, StudentDto> {
 
     @Override
     public StudentDto convert(Student student) {
@@ -16,5 +19,16 @@ public class StudentConverter implements Converter<Student, StudentDto> {
 
         return new StudentDto(id, studentName, snils);
 
+    }
+
+    @Override
+    public List<StudentDto> convert(List<Student> students) {
+        List<StudentDto> studentDtoList = new ArrayList<>();
+        students.
+                forEach(student -> {
+                    StudentDto studentDto = convert(student);
+                    studentDtoList.add(studentDto);
+                });
+        return studentDtoList;
     }
 }

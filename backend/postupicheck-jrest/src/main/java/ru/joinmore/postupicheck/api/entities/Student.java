@@ -1,7 +1,5 @@
 package ru.joinmore.postupicheck.api.entities;
 
-import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
 import java.util.List;
 
@@ -14,6 +12,12 @@ public class Student {
     private Long id;
     private String name;
     private String snils;
+
+    @OneToMany(mappedBy="student", cascade = CascadeType.ALL)
+    private List<Admission> admissions;
+
+    @OneToMany(mappedBy="student", cascade = CascadeType.ALL)
+    private List<StudentExamResult> studentExamResults;
 
     public Student() {}
 

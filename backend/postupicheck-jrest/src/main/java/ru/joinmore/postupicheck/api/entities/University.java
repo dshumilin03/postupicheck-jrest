@@ -13,6 +13,9 @@ public class University {
     private Long id;
     private String name;
 
+    @OneToMany(mappedBy="university", cascade = CascadeType.ALL)
+    private List<Course> courses;
+
     public University() {
     }
 

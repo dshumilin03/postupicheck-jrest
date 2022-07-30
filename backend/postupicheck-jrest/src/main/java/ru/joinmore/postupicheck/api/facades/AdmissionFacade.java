@@ -4,40 +4,25 @@ import org.springframework.stereotype.Component;
 import ru.joinmore.postupicheck.api.converters.AdmissionConverter;
 import ru.joinmore.postupicheck.api.converters.AdmissionReverseConverter;
 import ru.joinmore.postupicheck.api.dto.AdmissionDto;
-import ru.joinmore.postupicheck.api.entities.Admission;
-import ru.joinmore.postupicheck.api.entities.Student;
-import ru.joinmore.postupicheck.api.services.AdmissionService;
-import ru.joinmore.postupicheck.api.services.CourseService;
-import ru.joinmore.postupicheck.api.services.StudentService;
-import ru.joinmore.postupicheck.api.services.UniversityService;
+import ru.joinmore.postupicheck.api.entities.*;
+import ru.joinmore.postupicheck.api.services.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class AdmissionFacade {
 
     private final AdmissionService admissionService;
-    private final StudentService studentService;
-    private final UniversityService universityService;
-    private final CourseService courseService;
-
     private final AdmissionConverter converter;
+
 
     private final AdmissionReverseConverter reverseConverter;
 
     public AdmissionFacade(AdmissionService admissionService,
-                           StudentService studentService,
-                           UniversityService universityService,
-                           CourseService courseService,
                            AdmissionConverter converter,
                            AdmissionReverseConverter reverseConverter) {
 
         this.admissionService = admissionService;
-        this.studentService = studentService;
-        this.universityService = universityService;
-        this.courseService = courseService;
         this.converter = converter;
         this.reverseConverter = reverseConverter;
 
@@ -50,27 +35,11 @@ public class AdmissionFacade {
         return converter.convert(admission);
     }
 
-    public List<AdmissionDto> getStudentAdmissions(long id) {
-
-        Student student = studentService.get(id);
-        List<Admission> studentAdmissionList = admissionService.findAdmissionsByStudent(student);
-
-        return converter.convertList(studentAdmissionList);
-    }
-
-    public AdmissionDto getStudentApprovalAdmission(long id) {
-
-        Student student = studentService.get(id);
-        List<Admission> studentAdmissionList = admissionService.findAdmissionsByStudent(student);
-        Admission admission = studentAdmissionList.stream().filter(Admission::isApproval).toList().get(0);
-        return converter.convert(admission);
-    }
-
     public List<AdmissionDto> getAll() {
 
         List<Admission> admissionList = admissionService.getAll();
 
-        return converter.convertList(admissionList);
+        return converter.convert(admissionList);
     }
 
     public AdmissionDto create(AdmissionDto newAdmissionDto) {
@@ -91,6 +60,10 @@ public class AdmissionFacade {
 
     public void delete(long id) {
         admissionService.delete(id);
+    }
+
+    public void deleteAll() {
+        admissionService.deleteAll();
     }
 
 }

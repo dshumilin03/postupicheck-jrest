@@ -1,10 +1,6 @@
 package ru.joinmore.postupicheck.api.entities;
 
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 public class Admission {
@@ -21,7 +17,7 @@ public class Admission {
     @JoinColumn(name = "course_id", referencedColumnName = "id")
     private Course course;
 
-    private Boolean approval;
+    private Boolean consent;
 
     public Admission() {
     }
@@ -29,29 +25,30 @@ public class Admission {
     public Admission(Student student, Course course) {
         this.student = student;
         this.course = course;
+        this.consent = false;
     }
 
     public Admission(Long id, Student student, Course course) {
         this.id = id;
         this.student = student;
         this.course = course;
-        this.approval = false;
+        this.consent = false;
     }
 
 
-    public Admission(Long id, Student student, Course course, Boolean approval) {
+    public Admission(Long id, Student student, Course course, Boolean consent) {
         this.id = id;
         this.student = student;
         this.course = course;
-        this.approval = approval;
+        this.consent = consent;
     }
 
-    public Boolean isApproval() {
-        return approval;
+    public Boolean isConsent() {
+        return consent;
     }
 
-    public void setApproval(Boolean approval) {
-        this.approval = approval;
+    public void setConsent(Boolean consent) {
+        this.consent = consent;
     }
 
     public Long getId() {

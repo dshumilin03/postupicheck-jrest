@@ -1,27 +1,25 @@
 package ru.joinmore.postupicheck.api.dto;
 
-import org.springframework.beans.factory.annotation.Value;
-
 public class AdmissionDto {
 
     private long id;
     private long studentId;
     private long courseId;
-    private boolean approval;
+    private boolean consent;
 
-    public AdmissionDto(long id, long studentId, long courseId, boolean approval) {
+    public AdmissionDto(long id, long studentId, long courseId, boolean consent) {
         this.id = id;
         this.studentId = studentId;
         this.courseId = courseId;
-        this.approval = approval;
+        this.consent = consent;
     }
 
-    public boolean isApproval() {
-        return approval;
+    public boolean isConsent() {
+        return consent;
     }
 
-    public void setApproval(boolean approval) {
-        this.approval = approval;
+    public void setConsent(boolean consent) {
+        this.consent = consent;
     }
 
     public long getId() {

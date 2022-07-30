@@ -2,6 +2,7 @@ package ru.joinmore.postupicheck.api.services;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import ru.joinmore.postupicheck.api.dto.AdmissionDto;
 import ru.joinmore.postupicheck.api.exceptions.AlreadyExistsException;
 import ru.joinmore.postupicheck.api.exceptions.ResourceNotExistsException;
 import ru.joinmore.postupicheck.api.entities.Student;
@@ -55,4 +56,5 @@ public class StudentService {
             student.setSnils(updatedStudent.getSnils());
             return repository.save(student);
     }
+
 }

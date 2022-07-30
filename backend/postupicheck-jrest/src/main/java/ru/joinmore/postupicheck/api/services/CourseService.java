@@ -3,10 +3,13 @@ package ru.joinmore.postupicheck.api.services;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import ru.joinmore.postupicheck.api.entities.Course;
+import ru.joinmore.postupicheck.api.entities.Subject;
+import ru.joinmore.postupicheck.api.entities.University;
 import ru.joinmore.postupicheck.api.exceptions.AlreadyExistsException;
 import ru.joinmore.postupicheck.api.exceptions.ResourceNotExistsException;
 import ru.joinmore.postupicheck.api.repositories.CourseRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -29,11 +32,13 @@ public class CourseService {
 
     public Course create(Course course) {
 
-        String code = course.getCode();
-        Boolean exists = repository.existsByCode(code);
+        String name = course.getName();
+        Boolean exists = repository.existsByName(name);
 
         if (exists) {
-            throw new AlreadyExistsException("Course with code " + code);
+            University university = course.getUniversity();
+            String message = String.format("Course with name %s in university + %d ", name, university.getId());
+            throw new AlreadyExistsException(message);
         }
 
         return repository.save(course);
@@ -62,5 +67,26 @@ public class CourseService {
         course.setSecondSubject(updatedCourse.getSecondSubject());
         course.setThirdSubject(updatedCourse.getThirdSubject());
         return repository.save(course);
+    }
+
+    public void deleteAll() {
+        repository.deleteAll();
+    }
+
+    public List<Course> findCoursesByUniversity(University university) {
+        return repository.findCoursesByUniversity(university);
+    }
+
+    public List<Course> findCoursesByUniversityAndThirdSubject(University university, Subject subject) {
+        return repository.findCoursesByUniversityAndThirdSubject(university, subject);
+    }
+
+    public List<Subject> getRequiredSubjects(Course course) {
+        List<Subject> requiredSubjects = new ArrayList<>();
+        requiredSubjects.add(course.getFirstSubject());
+        requiredSubjects.add(course.getSecondSubject());
+        requiredSubjects.add(course.getThirdSubject());
+
+        return requiredSubjects;
     }
 }
