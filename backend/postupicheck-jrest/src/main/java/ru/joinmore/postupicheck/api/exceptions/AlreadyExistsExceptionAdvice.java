@@ -12,7 +12,7 @@ public class AlreadyExistsExceptionAdvice {
     @ResponseBody
     @ExceptionHandler(AlreadyExistsException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    String resourceNotFoundHandler(AlreadyExistsException ex) {
+    String alreadyExistsHandler(AlreadyExistsException ex) {
         return ex.getMessage();
     }
 }

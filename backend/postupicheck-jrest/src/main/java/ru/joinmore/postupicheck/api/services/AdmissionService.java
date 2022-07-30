@@ -2,9 +2,7 @@ package ru.joinmore.postupicheck.api.services;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
-import ru.joinmore.postupicheck.api.entities.Admission;
-import ru.joinmore.postupicheck.api.entities.Course;
-import ru.joinmore.postupicheck.api.entities.Student;
+import ru.joinmore.postupicheck.api.entities.*;
 import ru.joinmore.postupicheck.api.exceptions.AlreadyExistsException;
 import ru.joinmore.postupicheck.api.exceptions.ResourceNotExistsException;
 import ru.joinmore.postupicheck.api.repositories.AdmissionRepository;
@@ -31,13 +29,13 @@ public class AdmissionService {
 
     public Admission create(Admission admission) {
         Student student = admission.getStudent();
-        Course course = admission.getCourse();
-        Boolean exists = repository.existsByCourseAndStudent(course, student);
+        String courseName = admission.getCourse().getName();
+        Boolean exists = repository.existsByCourse_NameAndStudent(courseName, student);
 
         if (exists) {
-            String message = String.format("Admission with student %s and code %s",
+            String message = String.format("Admission with student %s and courseName %s",
                     student.getName(),
-                    course.getCode());
+                    courseName);
             throw new AlreadyExistsException(message);
         }
         return repository.save(admission);
@@ -53,6 +51,10 @@ public class AdmissionService {
         return repository.findAdmissionsByStudent(student);
     }
 
+    public List<Admission> findAdmissionsByStudentAndCourse_University(Student student, University university) {
+        return repository.findAdmissionsByStudentAndCourse_University(student, university);
+    }
+
     public void delete(long id) {
 
         try {
@@ -62,10 +64,14 @@ public class AdmissionService {
         }
     }
 
+    public void deleteAll() {
+        repository.deleteAll();
+    }
+
     private Admission replaceAdmission(Admission admission, Admission updatedAdmission) {
         admission.setStudent(updatedAdmission.getStudent());
         admission.setCourse(updatedAdmission.getCourse());
-        admission.setApproval(updatedAdmission.isApproval());
+        admission.setConsent(updatedAdmission.isConsent());
         return repository.save(admission);
     }
 }

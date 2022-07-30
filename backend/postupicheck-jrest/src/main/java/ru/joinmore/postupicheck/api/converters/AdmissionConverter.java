@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class AdmissionConverter implements Converter<Admission, AdmissionDto> {
+public class AdmissionConverter implements Converter<Admission, AdmissionDto>, ListConverter<Admission, AdmissionDto> {
 
     @Override
     public AdmissionDto convert(Admission admission) {
@@ -16,12 +16,13 @@ public class AdmissionConverter implements Converter<Admission, AdmissionDto> {
         long admissionId = admission.getId();
         long studentId = admission.getStudent().getId();
         long courseId = admission.getCourse().getId();
-        boolean approval = admission.isApproval();
+        boolean consent = admission.isConsent();
 
-        return new AdmissionDto(admissionId, studentId, courseId, approval);
+        return new AdmissionDto(admissionId, studentId, courseId, consent);
     }
 
-    public List<AdmissionDto> convertList(List<Admission> admissions) {
+    @Override
+    public List<AdmissionDto> convert(List<Admission> admissions) {
         List<AdmissionDto> admissionDtoList = new ArrayList<>();
         admissions.
                 forEach(admission -> {
@@ -30,4 +31,5 @@ public class AdmissionConverter implements Converter<Admission, AdmissionDto> {
                 });
         return admissionDtoList;
     }
+
 }

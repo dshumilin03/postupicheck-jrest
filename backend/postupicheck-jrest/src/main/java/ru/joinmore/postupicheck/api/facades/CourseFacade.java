@@ -6,29 +6,20 @@ import ru.joinmore.postupicheck.api.converters.CourseReverseConverter;
 import ru.joinmore.postupicheck.api.dto.CourseDto;
 import ru.joinmore.postupicheck.api.entities.Course;
 import ru.joinmore.postupicheck.api.services.CourseService;
-import ru.joinmore.postupicheck.api.services.SubjectService;
-import ru.joinmore.postupicheck.api.services.UniversityService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
 public class CourseFacade {
 
     private final CourseService courseService;
-    private final SubjectService subjectService;
-    private final UniversityService universityService;
     private final CourseConverter converter;
     private final CourseReverseConverter reverseConverter;
 
     public CourseFacade(CourseService courseService,
-                        SubjectService subjectService,
-                        UniversityService universityService,
                         CourseConverter converter,
                         CourseReverseConverter reverseConverter) {
         this.courseService = courseService;
-        this.subjectService = subjectService;
-        this.universityService = universityService;
         this.converter = converter;
         this.reverseConverter = reverseConverter;
     }
@@ -43,15 +34,8 @@ public class CourseFacade {
     public List<CourseDto> getAll() {
 
         List<Course> courseList = courseService.getAll();
-        List<CourseDto> courseDtoList = new ArrayList<>();
 
-        courseList.
-                forEach(course -> {
-                    CourseDto courseDto = converter.convert(course);
-                    courseDtoList.add(courseDto);
-                });
-
-        return courseDtoList;
+        return converter.convert(courseList);
     }
 
     public CourseDto create(CourseDto newCourseDto) {
@@ -74,4 +58,7 @@ public class CourseFacade {
         courseService.delete(id);
     }
 
+    public void deleteAll() {
+        courseService.deleteAll();
+    }
 }

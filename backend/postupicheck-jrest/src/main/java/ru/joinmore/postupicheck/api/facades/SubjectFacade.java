@@ -7,7 +7,6 @@ import ru.joinmore.postupicheck.api.dto.SubjectDto;
 import ru.joinmore.postupicheck.api.entities.Subject;
 import ru.joinmore.postupicheck.api.services.SubjectService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -32,16 +31,9 @@ public class SubjectFacade {
 
     public List<SubjectDto> getAll() {
 
-        List<Subject> subjectList = subjectService.getAll();
-        List<SubjectDto> subjectDtoList = new ArrayList<>();
+        List<Subject> allSubjects = subjectService.getAll();
 
-        subjectList.
-                forEach(subject -> {
-                    SubjectDto subjectDto = converter.convert(subject);
-                    subjectDtoList.add(subjectDto);
-                });
-
-        return subjectDtoList;
+        return converter.convert(allSubjects);
     }
 
     public SubjectDto create(SubjectDto newSubjectDto) {

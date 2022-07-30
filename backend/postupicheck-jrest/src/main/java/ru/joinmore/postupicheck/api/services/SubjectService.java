@@ -50,6 +50,10 @@ public class SubjectService {
         }
     }
 
+    public Subject findByName(String name) {
+        return repository.findByName(name);
+    }
+
     private Subject replaceSubject(Subject subject, Subject updatedSubject) {
         subject.setName(updatedSubject.getName());
         return repository.save(subject);

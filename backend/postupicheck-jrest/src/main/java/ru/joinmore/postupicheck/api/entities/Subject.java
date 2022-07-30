@@ -12,8 +12,16 @@ public class Subject {
     @SequenceGenerator(name = "subject_sequence", sequenceName = "subject_sequence", allocationSize = 1)
     @GeneratedValue( strategy = GenerationType.SEQUENCE, generator = "subject_sequence")
     private long id;
-
     private String name;
+
+    @OneToMany(mappedBy="firstSubject", cascade = CascadeType.ALL)
+    private List<Course> coursesWithFirstSubject;
+
+    @OneToMany(mappedBy="secondSubject", cascade = CascadeType.ALL)
+    private List<Course> coursesWithSecondSubject;
+
+    @OneToMany(mappedBy="thirdSubject", cascade = CascadeType.ALL)
+    private List<Course> coursesWithThirdSubject;
 
     public Subject() {
     }

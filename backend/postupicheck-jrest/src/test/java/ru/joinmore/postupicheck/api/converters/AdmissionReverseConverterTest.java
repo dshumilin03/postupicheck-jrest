@@ -31,7 +31,7 @@ class AdmissionReverseConverterTest {
 
     @BeforeEach
     void setUp() {
-        underTest = new AdmissionReverseConverter(studentService, universityService, courseService);
+        underTest = new AdmissionReverseConverter(studentService, courseService);
     }
 
     @Test
