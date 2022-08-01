@@ -209,7 +209,7 @@ class StudentExamResultsResultServiceTest {
         underTest.getAllStudentResultsByStudentId(id);
         //then
         ArgumentCaptor<Long> longArgumentCaptor = ArgumentCaptor.forClass(Long.class);
-        verify(studentExamResultRepository).findStudentExamResultsByStudent_Id(longArgumentCaptor.capture());
+        verify(studentExamResultRepository).findStudentExamResultsByStudentId(longArgumentCaptor.capture());
         long capturedLong = longArgumentCaptor.getValue();
         assertThat(capturedLong).isEqualTo(id);
 

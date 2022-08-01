@@ -38,12 +38,10 @@ class AdmissionReverseConverterTest {
     void convert() {
         //given
         AdmissionDto admissionDto = new AdmissionDto(1, 1, 1,  false);
-        University university = new University(1L, "testSubject");
         Student student = new Student(1L, "testName", "1234");
         Course course = new Course();
         course.setId(1L);
 
-        given(universityService.get(1L)).willReturn(university);
         given(studentService.get(1L)).willReturn(student);
         given(courseService.get(1L)).willReturn(course);
         //when

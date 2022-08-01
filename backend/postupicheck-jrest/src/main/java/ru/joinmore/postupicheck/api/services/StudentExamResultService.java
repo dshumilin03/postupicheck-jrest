@@ -72,7 +72,7 @@ public class StudentExamResultService {
     }
 
     public List<StudentExamResult> getAllStudentResultsByStudentId(Long id) {
-        return repository.findStudentExamResultsByStudent_Id(id);
+        return repository.findStudentExamResultsByStudentId(id);
     }
 }
 
