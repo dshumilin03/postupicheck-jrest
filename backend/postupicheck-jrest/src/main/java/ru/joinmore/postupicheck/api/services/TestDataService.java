@@ -187,7 +187,7 @@ public class TestDataService {
 
         List<Subject> passedSubjects = new ArrayList<>();
         List<StudentExamResult> studentExamResults = studentExamResultService.
-                findStudentExamResultsByStudent(student);
+                getAllStudentResults(student);
 
         String mathName = math.getName();
         String ruName = ru.getName();
@@ -227,7 +227,7 @@ public class TestDataService {
         //Берем рандомный уник
         int id = random.nextInt(100) + 1;
         University randomUniversity = universityService.get(id);
-        List<Admission> admissions = admissionService.findAdmissionsByStudentAndCourse_University(student, randomUniversity);
+        List<Admission> admissions = admissionService.findAdmissionsByStudentAndCourseUniversity(student, randomUniversity);
         //проверяем что он уже туда не подавал
         if (admissions.size() == 0) {
             chooseCoursesThenCreateAdmissions(random, randomUniversity, student);

@@ -15,6 +15,8 @@ import ru.joinmore.postupicheck.api.exceptions.AlreadyExistsException;
 import ru.joinmore.postupicheck.api.exceptions.ResourceNotExistsException;
 import ru.joinmore.postupicheck.api.repositories.CourseRepository;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -57,7 +59,8 @@ class CourseServiceTest {
         Subject secondSubject = new Subject("testSubject2");
         Subject thirdSubject = new Subject("testSubject3");
 
-        Course course = new Course(name, code, university, firstSubject, secondSubject, thirdSubject);
+        int curPassingPoints = 231;
+        Course course = new Course(name, code, university, firstSubject, secondSubject, thirdSubject, curPassingPoints);
         course.setId(id);
 
         given(courseRepository.findById(id)).willReturn(Optional.of(course));
@@ -83,7 +86,8 @@ class CourseServiceTest {
         Subject secondSubject = new Subject("testSubject2");
         Subject thirdSubject = new Subject("testSubject3");
 
-        Course course = new Course(name, code, university, firstSubject, secondSubject, thirdSubject);
+        int curPassingPoints = 231;
+        Course course = new Course(name, code, university, firstSubject, secondSubject, thirdSubject, curPassingPoints);
         //when
         underTest.create(course);
         //then
@@ -106,13 +110,14 @@ class CourseServiceTest {
         Subject secondSubject = new Subject("testSubject2");
         Subject thirdSubject = new Subject("testSubject3");
 
-        Course course = new Course(name, code, university, firstSubject, secondSubject, thirdSubject);
+        int curPassingPoints = 231;
+        Course course = new Course(name, code, university, firstSubject, secondSubject, thirdSubject, curPassingPoints);
         //when
-        given(courseRepository.existsByCode(code)).willReturn(true);
+        given(courseRepository.existsByName(name)).willReturn(true);
         //then
         assertThatThrownBy(() -> underTest.create(course))
                 .isInstanceOf(AlreadyExistsException.class)
-                .hasMessageContaining(course.getCode());
+                .hasMessageContaining(course.getName());
 
         verify(courseRepository, never()).save(any());
     }
@@ -138,19 +143,23 @@ class CourseServiceTest {
         Subject oldThirdSubject = new Subject("testSubject3");
         Subject newThirdSubject = new Subject("testSubject333");
 
+        int oldPassingPoints = 231;
+        int newPassingPoints = 234;
         Course oldCourse = new Course(
                 oldName,
                 oldCode, oldUniversity,
                 oldFirstSubject,
                 oldSecondSubject,
-                oldThirdSubject);
+                oldThirdSubject,
+                oldPassingPoints);
         Course newCourse = new Course(
                 newName,
                 newCode,
                 newUniversity,
                 newFirstSubject,
                 newSecondSubject,
-                newThirdSubject);
+                newThirdSubject,
+                newPassingPoints);
 
         long id = anyLong();
 
@@ -171,6 +180,7 @@ class CourseServiceTest {
         assertThat(capturedCourse.getFirstSubject()).isEqualTo(newCourse.getFirstSubject());
         assertThat(capturedCourse.getSecondSubject()).isEqualTo(newCourse.getSecondSubject());
         assertThat(capturedCourse.getThirdSubject()).isEqualTo(newCourse.getThirdSubject());
+        assertThat(capturedCourse.getCurPassingPoints()).isEqualTo(newCourse.getCurPassingPoints());
     }
 
     @Test
@@ -200,5 +210,80 @@ class CourseServiceTest {
                 .isInstanceOf(ResourceNotExistsException.class)
                 .hasMessageContaining("is not exists");
 
+    }
+
+    @Test
+    void deleteAll() {
+        //when
+        underTest.deleteAll();
+        //then
+        verify(courseRepository).deleteAll();
+    }
+
+    @Test
+    void findCoursesByUniversity() {
+        //given
+        University university = new University("name");
+        //when
+        underTest.findCoursesByUniversity(university);
+        //then
+        ArgumentCaptor<University> universityArgumentCaptor = ArgumentCaptor.forClass(University.class);
+        verify(courseRepository).findCoursesByUniversity(universityArgumentCaptor.capture());
+        University capturedUniversity = universityArgumentCaptor.getValue();
+        assertThat(capturedUniversity).isEqualTo(university);
+
+    }
+
+    @Test
+    void findCoursesByUniversityAndThirdSubject() {
+        //given
+        Subject subject = new Subject("subjectName");
+        University university = new University("universityName");
+        //when
+        underTest.findCoursesByUniversityAndThirdSubject(university, subject);
+        //then
+        ArgumentCaptor<University> universityArgumentCaptor = ArgumentCaptor.forClass(University.class);
+        ArgumentCaptor<Subject> subjectArgumentCaptor = ArgumentCaptor.forClass(Subject.class);
+        verify(courseRepository).
+                findCoursesByUniversityAndThirdSubject(
+                        universityArgumentCaptor.capture(),
+                        subjectArgumentCaptor.capture());
+        University capturedUniversity = universityArgumentCaptor.getValue();
+        Subject capturedSubject = subjectArgumentCaptor.getValue();
+
+        assertThat(capturedUniversity).isEqualTo(university);
+        assertThat(capturedSubject).isEqualTo(subject);
+    }
+
+    @Test
+    void getRequiredSubjects() {
+        //given
+        String name = "name";
+        String code = "123";
+        List<Subject> subjects = new ArrayList<>();
+        University university = new University("universityName");
+        Subject firstSubject = new Subject("firstSubject");
+        Subject secondSubject = new Subject("secondSubject");
+        Subject thirdSubject = new Subject("thirdSubject");
+        subjects.add(firstSubject);
+        subjects.add(secondSubject);
+        subjects.add(thirdSubject);
+        Integer curPassingPoints = 231;
+        Course course = new Course(
+                name,
+                code,
+                university,
+                firstSubject,
+                secondSubject,
+                thirdSubject,
+                curPassingPoints);
+        //when
+        List<Subject> receivedSubjects = underTest.getRequiredSubjects(course);
+        //then
+        for (int i = 0; i <= 2; i++) {
+            Subject subject = subjects.get(i);
+            Subject receivedSubject = receivedSubjects.get(i);
+            assertThat(subject.getName()).isEqualTo(receivedSubject.getName());
+        }
     }
 }

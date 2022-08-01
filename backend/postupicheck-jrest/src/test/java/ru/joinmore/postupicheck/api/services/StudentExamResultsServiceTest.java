@@ -95,7 +95,7 @@ class StudentExamResultsResultServiceTest {
         Subject subject = new Subject("testSubject");
         StudentExamResult studentExamResult = new StudentExamResult(result, student, subject);
         //when
-        given(studentExamResultRepository.existsBySubject(subject)).willReturn(true);
+        given(studentExamResultRepository.existsBySubjectAndStudent(subject, student)).willReturn(true);
         //then
         assertThatThrownBy(() -> underTest.create(studentExamResult))
                 .isInstanceOf(AlreadyExistsException.class)
@@ -164,6 +164,54 @@ class StudentExamResultsResultServiceTest {
         assertThatThrownBy(() -> underTest.delete(id))
                 .isInstanceOf(ResourceNotExistsException.class)
                 .hasMessageContaining("is not exists");
+
+    }
+
+    @Test
+    void getAllStudentResults() {
+        //given
+        Student student = new Student("name", "123");
+        //when
+        underTest.getAllStudentResults(student);
+        //then
+        ArgumentCaptor<Student> studentExamResultArgumentCaptor = ArgumentCaptor.forClass(Student.class);
+        verify(studentExamResultRepository).findStudentExamResultsByStudent(studentExamResultArgumentCaptor.capture());
+        Student capturedStudent = studentExamResultArgumentCaptor.getValue();
+        assertThat(capturedStudent).isEqualTo(student);
+    }
+
+    @Test
+    void getPointsByStudentAndSubject() {
+        //given
+        Student student = new Student("name", "123");
+        Subject subject = new Subject("subjectName");
+        //when
+        underTest.getPointsByStudentAndSubject(student, subject);
+        //then
+        ArgumentCaptor<Student> studentArgumentCaptor = ArgumentCaptor.forClass(Student.class);
+        ArgumentCaptor<Subject> subjectArgumentCaptor = ArgumentCaptor.forClass(Subject.class);
+        verify(studentExamResultRepository).
+                getPointsByStudentAndSubject(
+                        studentArgumentCaptor.capture(),
+                        subjectArgumentCaptor.capture()
+                );
+        Student capturedStudent = studentArgumentCaptor.getValue();
+        Subject capturedSubject = subjectArgumentCaptor.getValue();
+        assertThat(capturedSubject).isEqualTo(subject);
+        assertThat(capturedStudent).isEqualTo(student);
+    }
+
+    @Test
+    void getAllStudentResultsByStudentId() {
+        //given
+        long id = 5;
+        //when
+        underTest.getAllStudentResultsByStudentId(id);
+        //then
+        ArgumentCaptor<Long> longArgumentCaptor = ArgumentCaptor.forClass(Long.class);
+        verify(studentExamResultRepository).findStudentExamResultsByStudent_Id(longArgumentCaptor.capture());
+        long capturedLong = longArgumentCaptor.getValue();
+        assertThat(capturedLong).isEqualTo(id);
 
     }
 }

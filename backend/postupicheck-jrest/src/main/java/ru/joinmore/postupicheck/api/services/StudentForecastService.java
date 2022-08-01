@@ -29,7 +29,7 @@ public class StudentForecastService {
 
     public StudentForecast create(StudentForecast studentForecast) {
         Boolean exists = repository.
-                existsStudentForecastByAdmission_Student(studentForecast.getAdmission().getStudent());
+                existsStudentForecastByAdmissionStudent(studentForecast.getAdmission().getStudent());
         if (exists) {
             String studentName = studentForecast.getAdmission().getStudent().getName();
             String message = String.format("StudentForecast for student %s ", studentName);
@@ -58,7 +58,7 @@ public class StudentForecastService {
     }
 
     public StudentForecast getStudentForecast(Long id) {
-        StudentForecast forecast = repository.getStudentForecastByAdmission_Student_Id(id);
+        StudentForecast forecast = repository.findStudentForecastByAdmissionStudentId(id);
         if (forecast == null) {
             throw new ResourceNotExistsException("Forecast for student with id " + id);
         }

@@ -28,6 +28,12 @@ public class Admission {
         this.consent = false;
     }
 
+    public Admission(Student student, Course course, Boolean consent) {
+        this.student = student;
+        this.course = course;
+        this.consent = consent;
+    }
+
     public Admission(Long id, Student student, Course course) {
         this.id = id;
         this.student = student;

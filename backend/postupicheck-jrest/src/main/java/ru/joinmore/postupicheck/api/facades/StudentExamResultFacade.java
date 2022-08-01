@@ -68,9 +68,7 @@ public class StudentExamResultFacade {
 
     public List<StudentExamResultDto> getAllStudentResults(Long id) {
 
-        Student student = studentService.get(id);
-        List<StudentExamResult> studentExamResultList = studentExamResultService.findStudentExamResultsByStudent(student);
-
-        return converter.convert(studentExamResultList);
+        List<StudentExamResult> allStudentResultsByStudentId = studentExamResultService.getAllStudentResultsByStudentId(id);
+        return converter.convert(allStudentResultsByStudentId);
     }
 }

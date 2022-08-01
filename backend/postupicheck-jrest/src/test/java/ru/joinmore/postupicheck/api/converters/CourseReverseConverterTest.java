@@ -40,7 +40,8 @@ class CourseReverseConverterTest {
                 1,
                 1,
                 2,
-                3);
+                3,
+                231);
         Subject subject = new Subject(1L, "testSubject1");
         Subject subject2 = new Subject(2L, "testSubject2");
         Subject subject3 = new Subject(3L, "testSubject3");

@@ -29,14 +29,12 @@ public class StudentAdmissionService {
     }
 
     public List<Admission> getStudentAdmissions(Long id) {
-        Student student = studentService.get(id);
 
-        return admissionService.findAdmissionsByStudent(student);
+        return admissionService.findAdmissionsByStudentId(id);
     }
 
     public Admission getStudentConsentAdmission(Long id) {
-        Student student = studentService.get(id);
-        List<Admission> studentAdmissionList = admissionService.findAdmissionsByStudent(student);
+        List<Admission> studentAdmissionList = admissionService.findAdmissionsByStudentId(id);
 
         return studentAdmissionList.stream().filter(Admission::isConsent).toList().get(0);
     }
@@ -44,7 +42,7 @@ public class StudentAdmissionService {
     public List<Admission> getStudentAvailableAdmissions(Long id) {
         Student student = studentService.get(id);
 
-        List<Admission> allStudentAdmissions = admissionService.findAdmissionsByStudent(student);
+        List<Admission> allStudentAdmissions = admissionService.findAdmissionsByStudentId(id);
 
         return allStudentAdmissions.stream().
                 filter(admission ->

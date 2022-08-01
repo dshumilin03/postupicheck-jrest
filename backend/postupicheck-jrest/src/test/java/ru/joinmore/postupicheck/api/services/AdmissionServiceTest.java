@@ -1,6 +1,5 @@
 package ru.joinmore.postupicheck.api.services;
 
-import org.checkerframework.checker.units.qual.C;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,7 +16,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
@@ -55,9 +53,10 @@ class AdmissionServiceTest {
         Subject firstSubject = new Subject("testSubject1");
         Subject secondSubject = new Subject("testSubject2");
         Subject thirdSubject = new Subject("testSubject3");
-        Course course = new Course(name, code, university, firstSubject, secondSubject, thirdSubject);
+        int curPassingScores = 231;
+        Course course = new Course(name, code, university, firstSubject, secondSubject, thirdSubject, curPassingScores);
 
-        Admission admission = new Admission(student, university, course);
+        Admission admission = new Admission(student, course);
         admission.setId(id);
 
         given(admissionRepository.findById(id)).willReturn(Optional.of(admission));
@@ -83,9 +82,10 @@ class AdmissionServiceTest {
         Subject firstSubject = new Subject("testSubject1");
         Subject secondSubject = new Subject("testSubject2");
         Subject thirdSubject = new Subject("testSubject3");
-        Course course = new Course(name, code, university, firstSubject, secondSubject, thirdSubject);
+        int curPassingPoints = 231;
+        Course course = new Course(name, code, university, firstSubject, secondSubject, thirdSubject, curPassingPoints);
 
-        Admission admission = new Admission(student, university, course);
+        Admission admission = new Admission(student, course);
         //when
         underTest.create(admission);
         //then
@@ -108,16 +108,17 @@ class AdmissionServiceTest {
         Subject firstSubject = new Subject("testSubject1");
         Subject secondSubject = new Subject("testSubject2");
         Subject thirdSubject = new Subject("testSubject3");
-        Course course = new Course(name, code, university, firstSubject, secondSubject, thirdSubject);
+        int curPassingPoints = 231;
+        Course course = new Course(name, code, university, firstSubject, secondSubject, thirdSubject, curPassingPoints);
 
-        Admission admission = new Admission(student, university, course);
+        Admission admission = new Admission(student, course);
         //when
-        given(admissionRepository.existsByCourseAndStudent(course, student)).willReturn(true);
+        given(admissionRepository.existsByCourse_NameAndStudent(name, student)).willReturn(true);
         //then
         assertThatThrownBy(() -> underTest.create(admission))
                 .isInstanceOf(AlreadyExistsException.class)
                 .hasMessageContaining(admission.getStudent().getName())
-                .hasMessageContaining(admission.getCourse().getCode());
+                .hasMessageContaining(admission.getCourse().getName());
 
         verify(admissionRepository, never()).save(any());
     }
@@ -144,23 +145,27 @@ class AdmissionServiceTest {
         Subject newThirdSubject = new Subject("testSubject33");
 
 
+        int oldPassingPoints = 231;
+        int newPassingPoints = 234;
         Course oldCourse = new Course(
                 oldName,
                 oldCode,
                 oldUniversity,
                 oldFirstSubject,
                 oldSecondSubject,
-                oldThirdSubject);
+                oldThirdSubject,
+                oldPassingPoints);
         Course newCourse = new Course(
                 newName,
                 newCode,
                 newUniversity,
                 newFirstSubject,
                 newSecondSubject,
-                newThirdSubject);
+                newThirdSubject,
+                newPassingPoints);
 
-        Admission oldAdmission = new Admission(oldStudent, oldUniversity, oldCourse);
-        Admission newAdmission = new Admission(newStudent, newUniversity, newCourse);
+        Admission oldAdmission = new Admission(oldStudent, oldCourse);
+        Admission newAdmission = new Admission(newStudent, newCourse);
         long id = anyLong();
 
         given(admissionRepository.findById(id)).willReturn(Optional.of(oldAdmission));
@@ -176,7 +181,6 @@ class AdmissionServiceTest {
 
         assertThat(capturedAdmission.getStudent()).isEqualTo(newAdmission.getStudent());
         assertThat(capturedAdmission.getCourse()).isEqualTo(newAdmission.getCourse());
-        assertThat(capturedAdmission.getUniversity()).isEqualTo(newAdmission.getUniversity());
 
     }
 
@@ -207,5 +211,63 @@ class AdmissionServiceTest {
                 .isInstanceOf(ResourceNotExistsException.class)
                 .hasMessageContaining("is not exists");
 
+    }
+
+    @Test
+    void findAdmissionsByStudent() {
+        //given
+        Student student = new Student("Name", "123");
+        //when
+        underTest.findAdmissionsByStudent(student);
+        //then
+        ArgumentCaptor<Student> studentArgumentCaptor = ArgumentCaptor.forClass(Student.class);
+        verify(admissionRepository).findAdmissionsByStudent(studentArgumentCaptor.capture());
+
+        Student capturedStudent = studentArgumentCaptor.getValue();
+
+        assertThat(capturedStudent).isEqualTo(student);
+    }
+
+    @Test
+    void findAdmissionsByStudentAndCourseUniversity() {
+        //given
+        Student student = new Student("name", "123");
+        University university = new University("universityName");
+        //when
+        underTest.findAdmissionsByStudentAndCourseUniversity(student, university);
+        //then
+        ArgumentCaptor<Student> studentArgumentCaptor = ArgumentCaptor.forClass(Student.class);
+        ArgumentCaptor<University> universityArgumentCaptor = ArgumentCaptor.forClass(University.class);
+        verify(admissionRepository).
+                findAdmissionsByStudentAndCourseUniversity(studentArgumentCaptor.capture(),
+                universityArgumentCaptor.capture());
+        Student capturedStudent = studentArgumentCaptor.getValue();
+        University capturedUniversity = universityArgumentCaptor.getValue();
+
+        assertThat(capturedStudent).isEqualTo(student);
+        assertThat(capturedUniversity).isEqualTo(university);
+    }
+
+    @Test
+    void deleteAll() {
+        //when
+        underTest.deleteAll();
+        //then
+        verify(admissionRepository).deleteAll();
+    }
+
+    @Test
+    void findAdmissionsByStudentId() {
+        //given
+        long id = 5;
+        //when
+        underTest.findAdmissionsByStudentId(id);
+        //then
+        ArgumentCaptor<Long> longArgumentCaptor = ArgumentCaptor.forClass(Long.class);
+        verify(admissionRepository).findAdmissionsByStudentId(longArgumentCaptor.capture());
+
+        long capturedLong = longArgumentCaptor.getValue();
+
+        assertThat(capturedLong).isEqualTo(id);
     }
 }

@@ -51,8 +51,8 @@ public class AdmissionService {
         return repository.findAdmissionsByStudent(student);
     }
 
-    public List<Admission> findAdmissionsByStudentAndCourse_University(Student student, University university) {
-        return repository.findAdmissionsByStudentAndCourse_University(student, university);
+    public List<Admission> findAdmissionsByStudentAndCourseUniversity(Student student, University university) {
+        return repository.findAdmissionsByStudentAndCourseUniversity(student, university);
     }
 
     public void delete(long id) {
@@ -73,5 +73,9 @@ public class AdmissionService {
         admission.setCourse(updatedAdmission.getCourse());
         admission.setConsent(updatedAdmission.isConsent());
         return repository.save(admission);
+    }
+
+    public List<Admission> findAdmissionsByStudentId(Long id) {
+        return repository.findAdmissionsByStudentId(id);
     }
 }

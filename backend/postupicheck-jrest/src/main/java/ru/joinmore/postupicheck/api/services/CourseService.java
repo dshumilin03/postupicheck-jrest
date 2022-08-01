@@ -66,6 +66,7 @@ public class CourseService {
         course.setFirstSubject(updatedCourse.getFirstSubject());
         course.setSecondSubject(updatedCourse.getSecondSubject());
         course.setThirdSubject(updatedCourse.getThirdSubject());
+        course.setCurPassingPoints(updatedCourse.getCurPassingPoints());
         return repository.save(course);
     }
 

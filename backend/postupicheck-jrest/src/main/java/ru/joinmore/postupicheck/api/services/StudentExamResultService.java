@@ -63,12 +63,16 @@ public class StudentExamResultService {
         return repository.save(studentExamResult);
     }
 
-    public List<StudentExamResult> findStudentExamResultsByStudent(Student student) {
+    public int getPointsByStudentAndSubject(Student student, Subject subject) {
+        return repository.getPointsByStudentAndSubject(student, subject);
+    }
+
+    public List<StudentExamResult> getAllStudentResults(Student student) {
         return repository.findStudentExamResultsByStudent(student);
     }
 
-    public int getPointsByStudentAndSubject(Student student, Subject subject) {
-        return repository.getPointsByStudentAndSubject(student, subject);
+    public List<StudentExamResult> getAllStudentResultsByStudentId(Long id) {
+        return repository.findStudentExamResultsByStudent_Id(id);
     }
 }
 

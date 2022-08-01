@@ -12,6 +12,7 @@ import java.util.List;
 public interface StudentExamResultRepository extends JpaRepository<StudentExamResult, Long> {
     Boolean existsBySubjectAndStudent(Subject subject, Student student);
 
+    List<StudentExamResult> findStudentExamResultsByStudent_Id(long id);
     List<StudentExamResult> findStudentExamResultsByStudent(Student student);
     int getPointsByStudentAndSubject(Student student, Subject subject);
 }

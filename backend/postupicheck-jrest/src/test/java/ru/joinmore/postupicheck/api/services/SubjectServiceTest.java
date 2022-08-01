@@ -129,7 +129,7 @@ class SubjectServiceTest {
     }
 
     @Test
-    void deleteNotExistingStudent() {
+    void deleteNotExistingSubject() {
         long id = -1L;
         //given
         //when
@@ -141,4 +141,16 @@ class SubjectServiceTest {
 
     }
 
+    @Test
+    void findByName() {
+        //given
+        String name = "name";
+        //when
+        underTest.findByName(name);
+        //then
+        ArgumentCaptor<String> stringArgumentCaptor = ArgumentCaptor.forClass(String.class);
+        verify(subjectRepository).findByName(stringArgumentCaptor.capture());
+        String capturedString = stringArgumentCaptor.getValue();
+        assertThat(capturedString).isEqualTo(name);
+    }
 }

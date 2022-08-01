@@ -1,5 +1,6 @@
 package ru.joinmore.postupicheck.api.converters;
 
+import org.checkerframework.checker.units.qual.C;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.joinmore.postupicheck.api.dto.CourseDto;
@@ -30,6 +31,7 @@ class CourseConverterTest {
         secondSubject.setId(1L);
         Subject thirdSubject = new Subject();
         thirdSubject.setId(2L);
+        int curPassingPoints = 231;
 
         Course course = new Course(
                 "testName",
@@ -37,7 +39,8 @@ class CourseConverterTest {
                 university,
                 firstSubject,
                 secondSubject,
-                thirdSubject);
+                thirdSubject,
+                curPassingPoints);
         course.setId(0L);
         //when
         CourseDto createdDto = underTest.convert(course);
@@ -50,6 +53,7 @@ class CourseConverterTest {
         assertThat(createdDto.getSecondSubjectId()).isEqualTo(1L);
         assertThat(createdDto.getThirdSubjectId()).isEqualTo(2L);
         assertThat(createdDto.getUniversityId()).isEqualTo(0L);
+        assertThat((createdDto.getCurPassingPoints())).isEqualTo(231);
 
     }
 }
