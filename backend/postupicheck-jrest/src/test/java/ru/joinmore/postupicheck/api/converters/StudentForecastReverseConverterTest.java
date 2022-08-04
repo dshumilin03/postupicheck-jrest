@@ -19,14 +19,14 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 class StudentForecastReverseConverterTest {
 
-    private StudentForecastReverseConverter underTest;
+    private StudentForecastReverseConverter testInstance;
 
     @Mock
     private AdmissionService admissionService;
 
     @BeforeEach
     void setUp() {
-        underTest = new StudentForecastReverseConverter(admissionService);
+        testInstance = new StudentForecastReverseConverter(admissionService);
     }
 
     @Test
@@ -39,7 +39,7 @@ class StudentForecastReverseConverterTest {
         StudentForecastDto studentForecastDto = new StudentForecastDto(id, admissionId);
         given(admissionService.get(admissionId)).willReturn(admission);
         //when
-        StudentForecast studentForecast = underTest.convert(studentForecastDto);
+        StudentForecast studentForecast = testInstance.convert(studentForecastDto);
         //then
         ArgumentCaptor<Long> longArgumentCaptor = ArgumentCaptor.forClass(Long.class);
         verify(admissionService).get(longArgumentCaptor.capture());

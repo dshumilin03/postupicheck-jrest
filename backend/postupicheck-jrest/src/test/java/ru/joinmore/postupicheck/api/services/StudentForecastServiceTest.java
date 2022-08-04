@@ -4,16 +4,20 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.EmptyResultDataAccessException;
 import ru.joinmore.postupicheck.api.entities.Admission;
 import ru.joinmore.postupicheck.api.entities.Student;
+import ru.joinmore.postupicheck.api.entities.StudentExamResult;
 import ru.joinmore.postupicheck.api.entities.StudentForecast;
 import ru.joinmore.postupicheck.api.exceptions.AlreadyExistsException;
 import ru.joinmore.postupicheck.api.exceptions.ResourceNotExistsException;
 import ru.joinmore.postupicheck.api.repositories.StudentForecastRepository;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,149 +31,283 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class StudentForecastServiceTest {
 
-    private StudentForecastService underTest;
+    private StudentForecastService testInstance;
     @Mock
     StudentForecastRepository studentForecastRepository;
 
     @BeforeEach
     void setUp() {
-        underTest = new StudentForecastService(studentForecastRepository);
+        testInstance = new StudentForecastService(studentForecastRepository);
     }
 
     @Test
-    void getAll() {
-        //when
-        underTest.getAll();
-        //then
+    void shouldCallRepositoryGetAll() {
+        // when
+        testInstance.getAll();
+
+        // then
         verify(studentForecastRepository).findAll();
+
     }
 
     @Test
-    void get() {
-        //given
-        long id = 1;
-        StudentForecast studentForecast = new StudentForecast();
-        given(studentForecastRepository.findById(id)).willReturn(Optional.of(studentForecast));
-        //when
-        underTest.get(id);
-        //then
-        ArgumentCaptor<Long> longArgumentCaptor = ArgumentCaptor.forClass(Long.class);
-        verify(studentForecastRepository).findById(longArgumentCaptor.capture());
-        long capturedLong = longArgumentCaptor.getValue();
-        assertThat(capturedLong).isEqualTo(1);
+    void shouldReturnAllForecasts_WhenRepositoryGetAll() {
+        // given
+        List<StudentForecast> studentForecastList = new ArrayList<>();
+        StudentForecast studentForecast1 = mock(StudentForecast.class);
+        StudentForecast studentForecast2 = mock(StudentForecast.class);
+        StudentForecast studentForecast3 = mock(StudentForecast.class);
+        studentForecastList.add(studentForecast1);
+        studentForecastList.add(studentForecast2);
+        studentForecastList.add(studentForecast3);
+        when(studentForecastRepository.findAll()).thenReturn(studentForecastList);
+
+        // when
+        List<StudentForecast> result = testInstance.getAll();
+
+        // then
+        assertThat(result).isEqualTo(studentForecastList);
+
     }
 
     @Test
-    void create() {
-        //given
-        StudentForecast studentForecast = new StudentForecast();
+    void shouldCallRepositoryFindById() {
+        // given
+        long id = 1L;
+        StudentForecast studentForecast = mock(StudentForecast.class);
+        when(studentForecastRepository.findById(id)).thenReturn(Optional.of(studentForecast));
+
+        // when
+        testInstance.get(id);
+
+        // then
+        verify(studentForecastRepository).findById(id);
+    }
+
+    @Test
+    void shouldReturnForecast_WhenFindById() {
+        // given
+        long id = 1L;
+        StudentForecast studentForecast = mock(StudentForecast.class);
+        when(studentForecastRepository.findById(id)).thenReturn(Optional.of(studentForecast));
+
+        // when
+        StudentForecast result = testInstance.get(id);
+
+        // then
+        assertThat(result).isEqualTo(studentForecast);
+    }
+
+    @Test
+    void shouldThrowResourceNotExists_WhenFindById() {
+        // given
+        long id = 1L;
+
+        // when
+        when(studentForecastRepository.findById(id)).thenReturn(Optional.empty());
+
+        // then
+        assertThatThrownBy(() -> testInstance.get(id))
+                .isInstanceOf(ResourceNotExistsException.class)
+                .hasMessageContaining("Student forecast with id [1]");
+    }
+
+    @Test
+    void shouldSaveForecastIfNotExists() {
+        // given
         Admission admission = new Admission();
-        studentForecast.setAdmission(admission);
+        Student student = mock(Student.class);
+        admission.setStudent(student);
+        StudentForecast studentForecast = new StudentForecast(admission);
+        when(studentForecastRepository.existsStudentForecastByAdmissionStudent(student)).thenReturn(false);
+
+        // when
+        testInstance.create(studentForecast);
+
+        // then
+        verify(studentForecastRepository).save(studentForecast);
+
+    }
+
+    @Test
+    void shouldReturnSavedForecast() {
+        // given
+        Admission admission = new Admission();
+        Student student = mock(Student.class);
+        admission.setStudent(student);
+        StudentForecast studentForecast = new StudentForecast(admission);
+        when(studentForecastRepository.existsStudentForecastByAdmissionStudent(student)).thenReturn(false);
+        when(studentForecastRepository.save(studentForecast)).thenReturn(studentForecast);
+
+        // when
+        StudentForecast result = testInstance.create(studentForecast);
+
+        // then
+        assertThat(result).isEqualTo(studentForecast);
+
+    }
+
+    @Test
+    void shouldNotSaveForecastIfExists() {
+        // given
+        Admission admission = new Admission();
         Student student = new Student();
         admission.setStudent(student);
-        given(studentForecastRepository.existsStudentForecastByAdmissionStudent(student)).willReturn(false);
-        //when
-        underTest.create(studentForecast);
-        //then
-        ArgumentCaptor<StudentForecast> studentForecastArgumentCaptor = ArgumentCaptor.forClass(StudentForecast.class);
+        student.setName("testName");
+        StudentForecast studentForecast = new StudentForecast(admission);
 
-        verify(studentForecastRepository).save(studentForecastArgumentCaptor.capture());
+        // when
+        when(studentForecastRepository.existsStudentForecastByAdmissionStudent(student)).thenReturn(true);
 
-        StudentForecast capturedStudentForecast = studentForecastArgumentCaptor.getValue();
+        // then
+        assertThatThrownBy(() -> testInstance.create(studentForecast));
+        verify(studentForecastRepository, never()).save(studentForecast);
 
-        assertThat(capturedStudentForecast).isEqualTo(studentForecast);
     }
 
     @Test
-    void createExistedForecast() {
-        //given
-        StudentForecast studentForecast = new StudentForecast();
+    void shouldThrowAlreadyExistsExceptionIfForecastExists() {
+        // given
         Admission admission = new Admission();
-        studentForecast.setAdmission(admission);
         Student student = new Student();
         admission.setStudent(student);
-        //when
-        given(studentForecastRepository.existsStudentForecastByAdmissionStudent(student)).willReturn(true);
-        //then
-        assertThatThrownBy(() -> underTest.create(studentForecast))
+        student.setName("testName");
+        StudentForecast studentForecast = new StudentForecast(admission);
+
+        // when
+        when(studentForecastRepository.existsStudentForecastByAdmissionStudent(student)).thenReturn(true);
+
+        // then
+        assertThatThrownBy(() -> testInstance.create(studentForecast))
                 .isInstanceOf(AlreadyExistsException.class)
-                .hasMessageContaining("StudentForecast");
+                .hasMessageContaining("StudentForecast for student testName ");
 
-        verify(studentForecastRepository, never()).save(any());
     }
 
     @Test
-    void replace() {
+    void shouldReplaceOldForecastByNewForecast() {
 
-        //given
-        Admission oldAdmission = new Admission();
-        StudentForecast oldStudentForecast = new StudentForecast(oldAdmission);
-        Admission newAdmission = new Admission();
+        // given
+        StudentForecast oldStudentForecast = mock(StudentForecast.class);
+        Admission newAdmission = mock(Admission.class);
         StudentForecast newStudentForecast = new StudentForecast(newAdmission);
+        long id = 2L;
+        when(studentForecastRepository.findById(id)).thenReturn(Optional.of(oldStudentForecast));
+
+        // when
+        testInstance.replace(newStudentForecast, id);
+
+        // then
+        InOrder inOrder = inOrder(oldStudentForecast, studentForecastRepository);
+        inOrder.verify(oldStudentForecast).setAdmission(newAdmission);
+        inOrder.verify(studentForecastRepository).save(oldStudentForecast);
+
+    }
+
+    @Test
+    void shouldReturnReplacedForecast() {
+        // given
+        StudentForecast oldStudentForecast = mock(StudentForecast.class);
+        Admission newAdmission = mock(Admission.class);
+        StudentForecast newStudentForecast = new StudentForecast(newAdmission);
+        long id = 2L;
+        when(studentForecastRepository.findById(id)).thenReturn(Optional.of(oldStudentForecast));
+        when(studentForecastRepository.save(oldStudentForecast)).thenReturn(oldStudentForecast);
+
+        // when
+        StudentForecast result = testInstance.replace(newStudentForecast, id);
+
+        // then
+        assertThat(result).isEqualTo(oldStudentForecast);
+
+    }
+
+    @Test
+    void shouldNotReplaceForecastIfNotExists() {
+        // given
+        StudentForecast oldStudentForecast = mock(StudentForecast.class);
         long id = 2;
-        given(studentForecastRepository.findById(id)).willReturn(Optional.of(oldStudentForecast));
-        //when
-        underTest.replace(newStudentForecast, id);
-        //then
-        ArgumentCaptor<Long> longArgumentCaptor = ArgumentCaptor.forClass(Long.class);
-        verify(studentForecastRepository).findById(longArgumentCaptor.capture());
-        long capturedLong = longArgumentCaptor.getValue();
-        assertThat(capturedLong).isEqualTo(2);
-        ArgumentCaptor<StudentForecast> studentForecastArgumentCaptor = ArgumentCaptor.forClass(StudentForecast.class);
-        verify(studentForecastRepository).save(studentForecastArgumentCaptor.capture());
-        StudentForecast capturedStudentForecast = studentForecastArgumentCaptor.getValue();
+        when(studentForecastRepository.findById(id)).thenReturn(Optional.empty());
 
-        assertThat(capturedStudentForecast.getAdmission()).isEqualTo(newAdmission);
+        // when
+        assertThatThrownBy(() -> testInstance.replace(new StudentForecast(), id));
+
+        // then
+        verify(studentForecastRepository, never()).save(oldStudentForecast);
+
     }
 
     @Test
-    void delete() {
-        //given
-        long id = 4;
-        //when
-        underTest.delete(id);
-        //then
-        ArgumentCaptor<Long> longArgumentCaptor = ArgumentCaptor.forClass(Long.class);
-        verify(studentForecastRepository).deleteById(longArgumentCaptor.capture());
-        long capturedLong = longArgumentCaptor.getValue();
-        assertThat(capturedLong).isEqualTo(4);
-    }
+    void shouldThrowResourceIsNotExistsException_WhenReplace() {
+        // given
+        long id = 2L;
 
-    @Test
-    void deleteNotExistingForecast() {
-        long id = -1L;
-        //given
-        //when
-        doThrow(new EmptyResultDataAccessException(-1)).when(studentForecastRepository).deleteById(id);
-        //then
-        assertThatThrownBy(() -> underTest.delete(id))
+        // when
+        when(studentForecastRepository.findById(id)).thenReturn(Optional.empty());
+
+        // when
+        assertThatThrownBy(() -> testInstance.replace(new StudentForecast(), id))
                 .isInstanceOf(ResourceNotExistsException.class)
-                .hasMessageContaining("is not exists");
+                .hasMessageContaining("Student forecast with id [2]");
+
+    }
+
+
+    @Test
+    void shouldCallRepositoryDeleteById() {
+        // given
+        long id = 4L;
+
+        // when
+        testInstance.delete(id);
+
+        // then
+        verify(studentForecastRepository).deleteById(id);
+
     }
 
     @Test
-    void getStudentForecast() {
-        //given
-        StudentForecast forecast = new StudentForecast();
-        long id = 1;
-        given(studentForecastRepository.findStudentForecastByAdmissionStudentId(id)).willReturn(forecast);
-        //when
-        underTest.getStudentForecast(id);
-        //then
-        ArgumentCaptor<Long> longArgumentCaptor = ArgumentCaptor.forClass(Long.class);
-        verify(studentForecastRepository).findStudentForecastByAdmissionStudentId(longArgumentCaptor.capture());
-        long capturedLong = longArgumentCaptor.getValue();
-        assertThat(capturedLong).isEqualTo(1);
-    }
+    void shouldThrowResourceNotExitsException_WhenDelete() {
+        // given
+        long id = 13L;
 
-    @Test
-    void getNotExistingStudentForecast() {
-        //given
-        long id = 1;
-        given(studentForecastRepository.findStudentForecastByAdmissionStudentId(id)).willReturn(null);
-        //then
-        assertThatThrownBy(() -> underTest.getStudentForecast(id))
+        // when
+        doThrow(new EmptyResultDataAccessException(1)).when(studentForecastRepository).deleteById(id);
+
+        // then
+        assertThatThrownBy(() -> testInstance.delete(id))
                 .isInstanceOf(ResourceNotExistsException.class)
-                .hasMessageContaining("is not exists");
+                .hasMessageContaining("Student forecast with id [13]");
     }
+
+    @Test
+    void shouldReturnStudentForecast_WhenFindStudentForecastByAdmissionStudentId() {
+        // given
+        long id = 1;
+        StudentForecast studentForecast = mock(StudentForecast.class);
+        when(studentForecastRepository.findStudentForecastByAdmissionStudentId(id)).thenReturn(studentForecast);
+
+        // when
+        StudentForecast result = testInstance.getStudentForecast(id);
+
+        // then
+        assertThat(result).isEqualTo(studentForecast);
+
+    }
+
+    @Test
+    void shouldThrowResourceNotExistsException_WhenGetStudentForecastByAdmissionStudentId() {
+        // given
+        long id = 134L;
+
+        // when
+        when(studentForecastRepository.findStudentForecastByAdmissionStudentId(id)).thenReturn(null);
+
+        // then
+        assertThatThrownBy(() -> testInstance.getStudentForecast(id))
+                .isInstanceOf(ResourceNotExistsException.class)
+                .hasMessageContaining("Student forecast with id [134]");
+
+    }
+
 }

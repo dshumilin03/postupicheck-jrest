@@ -4,14 +4,18 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.EmptyResultDataAccessException;
+import ru.joinmore.postupicheck.api.entities.Admission;
 import ru.joinmore.postupicheck.api.entities.Student;
 import ru.joinmore.postupicheck.api.exceptions.AlreadyExistsException;
 import ru.joinmore.postupicheck.api.exceptions.ResourceNotExistsException;
 import ru.joinmore.postupicheck.api.repositories.StudentRepository;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,117 +29,244 @@ class StudentServiceTest {
 
     @Mock
     private StudentRepository studentRepository;
-    private StudentService underTest;
+    private StudentService testInstance;
 
     @BeforeEach
     void setUp() {
-        underTest = new StudentService(studentRepository);
+        testInstance = new StudentService(studentRepository);
     }
 
     @Test
-    void getAll() {
-        //when
-        underTest.getAll();
-        //then
+    void shouldCallRepositoryFindAll() {
+        // when
+        testInstance.getAll();
+
+        // then
         verify(studentRepository).findAll();
 
     }
 
     @Test
-    void get() {
+    void shouldReturnAllStudents_WhenGetAll() {
         //given
-        long id = anyLong();
-        Student student = new Student("testStudent", "123456");
-        student.setId(id);
-        given(studentRepository.findById(id)).willReturn(Optional.of(student));
-        //when
-        underTest.get(id);
-        //then
-        ArgumentCaptor<Long> longArgumentCaptor = ArgumentCaptor.forClass(Long.class);
+        List<Student> students = new ArrayList<>();
+        Student student1 = mock(Student.class);
+        Student student2 = mock(Student.class);
+        Student student3 = mock(Student.class);
+        students.add(student1);
+        students.add(student2);
+        students.add(student3);
+        when(studentRepository.findAll()).thenReturn(students);
 
-        verify(studentRepository).findById(longArgumentCaptor.capture());
+        // when
+        List<Student> result = testInstance.getAll();
 
-        Long capturedLong = longArgumentCaptor.getValue();
+        // then
+        assertThat(result).isEqualTo(students);
 
-        assertThat(capturedLong).isEqualTo(id);
     }
 
     @Test
-    void create() {
-        //given
-        Student student = new Student("testStudent", "12356");
-        //when
-            underTest.create(student);
-        //then
-        ArgumentCaptor<Student> studentArgumentCaptor = ArgumentCaptor.forClass(Student.class);
+    void shouldCallRepositoryFindById() {
+        // given
+        long id = 1L;
+        Student student = mock(Student.class);
+        when(studentRepository.findById(id)).thenReturn(Optional.of(student));
 
-        verify(studentRepository).save(studentArgumentCaptor.capture());
+        // when
+        testInstance.get(id);
 
-        Student capturedStudent = studentArgumentCaptor.getValue();
-
-        assertThat(capturedStudent).isEqualTo(student);
-    }
-
-    @Test
-    void createExistedSnils() {
-        //given
-        Student student = new Student("testStudent", "12356");
-        //when
-        given(studentRepository.existsStudentBySnils(student.getSnils())).willReturn(true);
-        //then
-        assertThatThrownBy(() -> underTest.create(student))
-                .isInstanceOf(AlreadyExistsException.class)
-                .hasMessageContaining("Snils");
-
-        verify(studentRepository, never()).save(any());
-    }
-
-    @Test
-    void replace() {
-        //given
-        Student oldStudent = new Student("oldStudent", "234567");
-        Student newStudent = new Student("newStudent", "12346");
-        long id = anyLong();
-        given(studentRepository.findById(id)).willReturn(Optional.of(oldStudent));
-        //when
-        underTest.replace(newStudent, id);
-        //then
+        // then
         verify(studentRepository).findById(id);
-
-        ArgumentCaptor<Student> studentArgumentCaptor = ArgumentCaptor.forClass(Student.class);
-        verify(studentRepository).save(studentArgumentCaptor.capture());
-        Student capturedStudent = studentArgumentCaptor.getValue();
-
-        assertThat(capturedStudent.getName()).isEqualTo(newStudent.getName());
-        assertThat(capturedStudent.getSnils()).isEqualTo(newStudent.getSnils());
-
-
     }
 
     @Test
-    void delete() {
-        //given
-        long id = anyLong();
-        //when
-        underTest.delete(id);
-        //then
-        ArgumentCaptor<Long> longArgumentCaptor = ArgumentCaptor.forClass(Long.class);
-        verify(studentRepository).deleteById(longArgumentCaptor.capture());
-        Long capturedLong = longArgumentCaptor.getValue();
+    void shouldReturnStudent_WhenFindById() {
+        // given
+        long id = 1L;
+        Student student = mock(Student.class);
+        when(studentRepository.findById(id)).thenReturn(Optional.of(student));
 
-        assertThat(capturedLong).isEqualTo(id);
+        // when
+        Student result = testInstance.get(id);
+
+        // then
+        assertThat(result).isEqualTo(student);
     }
 
     @Test
-    void deleteNotExistingStudent() {
-        long id = -1L;
-        //given
-        //when
-        doThrow(new EmptyResultDataAccessException(-1)).when(studentRepository).deleteById(id);
-        //then
-        assertThatThrownBy(() -> underTest.delete(id))
+    void shouldThrowResourceNotExists_WhenFindById() {
+        // given
+        long id = 1L;
+
+        // when
+        when(studentRepository.findById(id)).thenReturn(Optional.empty());
+
+        // then
+        assertThatThrownBy(() -> testInstance.get(id))
                 .isInstanceOf(ResourceNotExistsException.class)
-                .hasMessageContaining("is not exists");
+                .hasMessageContaining("Student with id [1]");
+    }
+
+    @Test
+    void shouldSaveStudentIfNotExists() {
+        // given
+        String snils = "132";
+        Student student = new Student();
+        student.setSnils(snils);
+        when(studentRepository.existsStudentBySnils(snils)).thenReturn(false);
+
+        // when
+        testInstance.create(student);
+
+        // then
+        verify(studentRepository).save(student);
 
     }
+
+    @Test
+    void shouldReturnSavedStudent() {
+        // given
+        String snils = "14425";
+        Student student = new Student();
+        student.setSnils(snils);
+        when(studentRepository.existsStudentBySnils(snils)).thenReturn(false);
+        when(studentRepository.save(student)).thenReturn(student);
+
+        // when
+        Student result = testInstance.create(student);
+
+        // then
+        assertThat(result).isEqualTo(student);
+
+    }
+
+    @Test
+    void shouldNotSaveStudentIfExists() {
+        // given
+        String snils = "4332";
+        Student student = mock(Student.class);
+
+        // when
+        when(studentRepository.existsStudentBySnils(snils)).thenReturn(true);
+
+        // then
+        assertThatThrownBy(() -> testInstance.create(student));
+        verify(studentRepository, never()).save(student);
+
+    }
+
+    @Test
+    void shouldThrowAlreadyExistsExceptionIfStudentExists() {
+        // given
+        String snils = "234234";
+        Student student = new Student();
+        student.setSnils(snils);
+
+        // when
+        when(studentRepository.existsStudentBySnils(snils)).thenReturn(true);
+
+        // then
+        assertThatThrownBy(() -> testInstance.create(student))
+                .isInstanceOf(AlreadyExistsException.class)
+                .hasMessageContaining("Snils 234234");
+
+    }
+
+    @Test
+    void shouldReplaceOldStudentByNewStudent() {
+
+        // given
+        Student oldStudent = mock(Student.class);
+        String newSnils = "324";
+        String newName = "newName";
+        Student newStudent = new Student(newName, newSnils);
+        long id = 2L;
+        when(studentRepository.findById(id)).thenReturn(Optional.of(oldStudent));
+
+        // when
+        testInstance.replace(newStudent, id);
+
+        // then
+        InOrder inOrder = inOrder(oldStudent, studentRepository);
+        inOrder.verify(oldStudent).setName(newName);
+        inOrder.verify(oldStudent).setSnils(newSnils);
+        inOrder.verify(studentRepository).save(oldStudent);
+
+    }
+
+    @Test
+    void shouldReturnReplacedStudent() {
+        // given
+        Student oldStudent = mock(Student.class);
+        long id = 2L;
+        when(studentRepository.findById(id)).thenReturn(Optional.of(oldStudent));
+        when(studentRepository.save(oldStudent)).thenReturn(oldStudent);
+
+        // when
+        Student result = testInstance.replace(new Student(), id);
+
+        // then
+        assertThat(result).isEqualTo(oldStudent);
+
+    }
+
+    @Test
+    void shouldNotReplaceStudentIfNotExists() {
+        // given
+        Student oldStudent = mock(Student.class);
+        long id = 2;
+        when(studentRepository.findById(id)).thenReturn(Optional.empty());
+
+        // when
+        assertThatThrownBy(() -> testInstance.replace(new Student(), id));
+
+        // then
+        verify(studentRepository, never()).save(oldStudent);
+
+    }
+
+    @Test
+    void shouldThrowResourceIsNotExistsException_WhenReplace() {
+        // given
+        long id = 2L;
+
+        // when
+        when(studentRepository.findById(id)).thenReturn(Optional.empty());
+
+        // when
+        assertThatThrownBy(() -> testInstance.replace(new Student(), id))
+                .isInstanceOf(ResourceNotExistsException.class)
+                .hasMessageContaining("Student with id [2]");
+
+    }
+
+
+    @Test
+    void shouldCallRepositoryDeleteById() {
+        // given
+        long id = 4L;
+
+        // when
+        testInstance.delete(id);
+
+        // then
+        verify(studentRepository).deleteById(id);
+
+    }
+
+    @Test
+    void shouldThrowResourceNotExitsException_WhenDelete() {
+        // given
+        long id = 13L;
+
+        // when
+        doThrow(new EmptyResultDataAccessException(1)).when(studentRepository).deleteById(id);
+
+        // then
+        assertThatThrownBy(() -> testInstance.delete(id))
+                .isInstanceOf(ResourceNotExistsException.class)
+                .hasMessageContaining("Student with id [13]");
+    }
+
 }

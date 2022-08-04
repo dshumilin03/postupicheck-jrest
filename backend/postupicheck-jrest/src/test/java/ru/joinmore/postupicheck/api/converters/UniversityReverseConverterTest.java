@@ -10,11 +10,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class UniversityReverseConverterTest {
 
-    private UniversityReverseConverter underTest;
+    private UniversityReverseConverter testInstance;
 
     @BeforeEach
     void setUp() {
-        underTest = new UniversityReverseConverter();
+        testInstance = new UniversityReverseConverter();
     }
 
     @Test
@@ -22,7 +22,7 @@ class UniversityReverseConverterTest {
         //given
         UniversityDto universityDto = new UniversityDto(1, "testName");
         //when
-        University createdDao = underTest.convert(universityDto);
+        University createdDao = testInstance.convert(universityDto);
         //then
         assertThat(createdDao.getId()).isEqualTo(1L);
         assertThat(createdDao.getName()).isEqualTo("testName");

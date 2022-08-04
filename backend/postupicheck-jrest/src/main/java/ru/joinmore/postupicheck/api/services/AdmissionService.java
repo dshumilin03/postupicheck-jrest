@@ -22,15 +22,15 @@ public class AdmissionService {
         return repository.findAll();
     }
 
-    public Admission get(long id) {
+     public Admission get(long id) {
         return repository.findById(id) //
-                .orElseThrow(() -> new ResourceNotExistsException("Admission with id" + id));
+                .orElseThrow(() -> new ResourceNotExistsException("Admission with id [" + id + "]"));
     }
 
     public Admission create(Admission admission) {
         Student student = admission.getStudent();
         String courseName = admission.getCourse().getName();
-        Boolean exists = repository.existsByCourse_NameAndStudent(courseName, student);
+        Boolean exists = repository.existsByCourseNameAndStudent(courseName, student);
 
         if (exists) {
             String message = String.format("Admission with student %s and courseName %s",
@@ -43,10 +43,11 @@ public class AdmissionService {
 
     public Admission replace(Admission updatedAdmission, long id) {
         Admission admission = repository.findById(id) //
-                .orElseThrow(() -> new ResourceNotExistsException("Admission with id" + id));
+                .orElseThrow(() -> new ResourceNotExistsException("Admission with id [" + id + "]"));
         return replaceAdmission(admission, updatedAdmission);
     }
 
+    // not used
     public List<Admission> findAdmissionsByStudent(Student student) {
         return repository.findAdmissionsByStudent(student);
     }
@@ -60,7 +61,7 @@ public class AdmissionService {
         try {
             repository.deleteById(id);
         } catch (EmptyResultDataAccessException e) {
-            throw new ResourceNotExistsException("Course with id " + id);
+            throw new ResourceNotExistsException("Admission with id [" + id + "]");
         }
     }
 

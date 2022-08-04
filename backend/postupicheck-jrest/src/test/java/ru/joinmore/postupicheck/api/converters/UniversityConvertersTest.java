@@ -12,11 +12,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class UniversityConvertersTest {
 
-    private UniversityConverter underTest;
+    private UniversityConverter testInstance;
 
     @BeforeEach
     void setUp() {
-        underTest = new UniversityConverter();
+        testInstance = new UniversityConverter();
 
     }
     @Test
@@ -25,7 +25,7 @@ class UniversityConvertersTest {
         University university = new University("testName");
         university.setId(1L);
         //when
-        UniversityDto createdDto = underTest.convert(university);
+        UniversityDto createdDto = testInstance.convert(university);
         //then
         assertThat(createdDto.getId()).isEqualTo(1L);
         assertThat(createdDto.getName()).isEqualTo("testName");
@@ -43,7 +43,7 @@ class UniversityConvertersTest {
         university2.setId(2L);
         university1.setId(1L);
         //when
-        List<UniversityDto> createdDtoList = underTest.convert(universities);
+        List<UniversityDto> createdDtoList = testInstance.convert(universities);
         //then
         assertThat(createdDtoList.get(0).getId()).isEqualTo(1L);
         assertThat(createdDtoList.get(0).getName()).isEqualTo("testName1");

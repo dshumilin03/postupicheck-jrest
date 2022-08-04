@@ -26,7 +26,7 @@ public class StudentExamResultService {
 
     public StudentExamResult get(long id) {
         return repository.findById(id) //
-                .orElseThrow(() -> new ResourceNotExistsException("Result with id " + id));
+                .orElseThrow(() -> new ResourceNotExistsException("Student exam result with id [" + id + "]"));
     }
 
     public StudentExamResult create(StudentExamResult studentExamResult) {
@@ -42,7 +42,7 @@ public class StudentExamResultService {
 
     public StudentExamResult replace(StudentExamResult updatedStudentExamResult, long id) {
         StudentExamResult studentExamResult = repository.findById(id) //
-                .orElseThrow(() -> new ResourceNotExistsException("Result with id " + id));
+                .orElseThrow(() -> new ResourceNotExistsException("Student exam result with id [" + id + "]"));
         return replaceStudent(studentExamResult, updatedStudentExamResult);
     }
 
@@ -50,16 +50,16 @@ public class StudentExamResultService {
         try {
             repository.deleteById(id);
         } catch (EmptyResultDataAccessException e) {
-            throw new ResourceNotExistsException("Exam result with id " + id);
+            throw new ResourceNotExistsException("Student exam result with id [" + id + "]");
         }
     }
 
     private StudentExamResult replaceStudent(
             StudentExamResult studentExamResult,
             StudentExamResult updatedStudentExamResult) {
-        studentExamResult.setPoints(updatedStudentExamResult.getPoints());
         studentExamResult.setStudent(updatedStudentExamResult.getStudent());
         studentExamResult.setSubject(updatedStudentExamResult.getSubject());
+        studentExamResult.setPoints(updatedStudentExamResult.getPoints());
         return repository.save(studentExamResult);
     }
 

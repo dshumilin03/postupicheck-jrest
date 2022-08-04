@@ -27,11 +27,11 @@ class AdmissionReverseConverterTest {
     @Mock
     CourseService courseService;
     @Mock
-    private AdmissionReverseConverter underTest;
+    private AdmissionReverseConverter testInstance;
 
     @BeforeEach
     void setUp() {
-        underTest = new AdmissionReverseConverter(studentService, courseService);
+        testInstance = new AdmissionReverseConverter(studentService, courseService);
     }
 
     @Test
@@ -45,7 +45,7 @@ class AdmissionReverseConverterTest {
         given(studentService.get(1L)).willReturn(student);
         given(courseService.get(1L)).willReturn(course);
         //when
-        Admission createdDao = underTest.convert(admissionDto);
+        Admission createdDao = testInstance.convert(admissionDto);
         //then
         assertThat(createdDao.getId()).isEqualTo(1L);
         assertThat(createdDao.getStudent().getId()).isEqualTo(1);

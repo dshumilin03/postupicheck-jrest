@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.joinmore.postupicheck.api.converters.UniversityConverter;
@@ -30,11 +31,14 @@ class UniversityFacadeTest {
     @Mock
     UniversityReverseConverter reverseConverter;
 
-    private UniversityFacade underTest;
+    @Captor
+    ArgumentCaptor<ArrayList<University>> universityListArgumentCaptor;
+
+    private UniversityFacade testInstance;
 
     @BeforeEach
     void setUp() {
-        underTest = new UniversityFacade(universityService, converter, reverseConverter);
+        testInstance = new UniversityFacade(universityService, converter, reverseConverter);
     }
 
     @Test
@@ -43,7 +47,7 @@ class UniversityFacadeTest {
         University university = new University();
         given(universityService.get(1L)).willReturn(university);
         //when
-        underTest.get(1L);
+        testInstance.get(1L);
         //then
         ArgumentCaptor<Long> longArgumentCaptor = ArgumentCaptor.forClass(Long.class);
         ArgumentCaptor<University> universityArgumentCaptor = ArgumentCaptor.forClass(University.class);
@@ -63,21 +67,21 @@ class UniversityFacadeTest {
         //given
         List<University> universityList = new ArrayList<>();
         University university = new University();
+        university.setId(1L);
         universityList.add(university);
         given(universityService.getAll()).willReturn(universityList);
+
         //when
-        underTest.getAll();
+        testInstance.getAll();
+
         //then
-        ArgumentCaptor<University> universityArgumentCaptor = ArgumentCaptor.forClass(University.class);
-
         verify(universityService).getAll();
-        verify(converter, times(universityList.size())).convert(universityArgumentCaptor.capture());
+        verify(converter, times(universityList.size())).convert(universityListArgumentCaptor.capture());
 
-        List<University> capturedUniversities = universityArgumentCaptor.getAllValues();
+        List<University> capturedUniversities = universityListArgumentCaptor.getValue();
 
-        for (int i = 0; i < capturedUniversities.size(); i++) {
-            assertThat(universityList.get(i)).isEqualTo(capturedUniversities.get(i));
-        }
+        for (int i = 0; i < capturedUniversities.size(); i++)
+            assertThat(capturedUniversities.get(i).getId()).isEqualTo(universityList.get(i).getId());
     }
 
     @Test
@@ -89,7 +93,7 @@ class UniversityFacadeTest {
         given(reverseConverter.convert(newUniversityDto)).willReturn(newUniversity);
         given(universityService.create(newUniversity)).willReturn(createdUniversity);
         //when
-        underTest.create(newUniversityDto);
+        testInstance.create(newUniversityDto);
         //then
         verify(reverseConverter).convert(newUniversityDto);
         verify(universityService).create(newUniversity);
@@ -106,7 +110,7 @@ class UniversityFacadeTest {
         given(reverseConverter.convert(updatedUniversityDto)).willReturn(updatedUniversity);
         given(universityService.replace(updatedUniversity, id)).willReturn(newUniversity);
         //when
-        underTest.replace(updatedUniversityDto, id);
+        testInstance.replace(updatedUniversityDto, id);
         //then
         verify(reverseConverter).convert(updatedUniversityDto);
         verify(universityService).replace(updatedUniversity, id);
@@ -118,7 +122,7 @@ class UniversityFacadeTest {
         //given
         long id = 5;
         //when
-        underTest.delete(id);
+        testInstance.delete(id);
         //then
         verify(universityService).delete(id);
     }

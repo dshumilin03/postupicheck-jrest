@@ -22,11 +22,11 @@ class StudentExamResultReverseConverterTest {
     StudentService studentService;
     @Mock
     SubjectService subjectService;
-    private StudentExamResultReverseConverter underTest;
+    private StudentExamResultReverseConverter testInstance;
 
     @BeforeEach
     void setUp() {
-        underTest = new StudentExamResultReverseConverter(subjectService, studentService);
+        testInstance = new StudentExamResultReverseConverter(subjectService, studentService);
     }
 
     @Test
@@ -39,7 +39,7 @@ class StudentExamResultReverseConverterTest {
         given(studentService.get(1L)).willReturn(student);
         given(subjectService.get(1L)).willReturn(subject);
         //when
-        StudentExamResult createdDao = underTest.convert(studentExamResultDto);
+        StudentExamResult createdDao = testInstance.convert(studentExamResultDto);
         //then
         assertThat(createdDao.getId()).isEqualTo(1L);
         assertThat(createdDao.getStudent().getId()).isEqualTo(1);

@@ -15,11 +15,11 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class StudentExamResultConverterTest {
-    private StudentExamResultConverter underTest;
+    private StudentExamResultConverter testInstance;
 
     @BeforeEach
     void setUp() {
-        underTest = new StudentExamResultConverter();
+        testInstance = new StudentExamResultConverter();
 
     }
     @Test
@@ -32,7 +32,7 @@ class StudentExamResultConverterTest {
         StudentExamResult studentExamResult = new StudentExamResult(80, student, subject);
         studentExamResult.setId(1L);
         //when
-        StudentExamResultDto createdDto = underTest.convert(studentExamResult);
+        StudentExamResultDto createdDto = testInstance.convert(studentExamResult);
         //then
 
         assertThat(createdDto.getId()).isEqualTo(1L);
@@ -61,7 +61,7 @@ class StudentExamResultConverterTest {
         studentExamResults.add(studentExamResult1);
         studentExamResults.add(studentExamResult2);
         //when
-        List<StudentExamResultDto> createdDtoList = underTest.convert(studentExamResults);
+        List<StudentExamResultDto> createdDtoList = testInstance.convert(studentExamResults);
         //then
         StudentExamResultDto createdDto1 = createdDtoList.get(0);
         StudentExamResultDto createdDto2 = createdDtoList.get(1);

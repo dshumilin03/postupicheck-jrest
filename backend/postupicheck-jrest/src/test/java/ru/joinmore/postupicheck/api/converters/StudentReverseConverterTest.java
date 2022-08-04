@@ -8,11 +8,11 @@ import ru.joinmore.postupicheck.api.entities.Student;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class StudentReverseConverterTest {
-    private StudentReverseConverter underTest;
+    private StudentReverseConverter testInstance;
 
     @BeforeEach
     void setUp() {
-        underTest = new StudentReverseConverter();
+        testInstance = new StudentReverseConverter();
     }
 
     @Test
@@ -20,7 +20,7 @@ class StudentReverseConverterTest {
         //given
         StudentDto studentDto = new StudentDto(1, "testName", "12345");
         //when
-        Student createdDao = underTest.convert(studentDto);
+        Student createdDao = testInstance.convert(studentDto);
         //then
         assertThat(createdDao.getId()).isEqualTo(1L);
         assertThat(createdDao.getName()).isEqualTo("testName");

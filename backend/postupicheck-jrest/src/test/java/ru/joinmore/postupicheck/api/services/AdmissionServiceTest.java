@@ -1,9 +1,12 @@
 package ru.joinmore.postupicheck.api.services;
 
+import org.checkerframework.checker.units.qual.C;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -12,6 +15,8 @@ import ru.joinmore.postupicheck.api.exceptions.AlreadyExistsException;
 import ru.joinmore.postupicheck.api.exceptions.ResourceNotExistsException;
 import ru.joinmore.postupicheck.api.repositories.AdmissionRepository;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,248 +31,369 @@ class AdmissionServiceTest {
 
     @Mock
     private AdmissionRepository admissionRepository;
-    private AdmissionService underTest;
+    private AdmissionService testInstance;
 
     @BeforeEach
     void setUp() {
-        underTest = new AdmissionService(admissionRepository);
+        testInstance = new AdmissionService(admissionRepository);
     }
 
     @Test
-    void getAll() {
-        //when
-        underTest.getAll();
-        //then
+    void shouldCallRepositoryFindAll() {
+        // when
+        testInstance.getAll();
+
+        // then
         verify(admissionRepository).findAll();
+    }
+
+    @Test
+    void shouldReturnAllAdmissions_WhenRepositoryFindAll() {
+        // given
+        List<Admission> allAdmissions = createAdmissionList();
+        Admission admission1 = allAdmissions.get(0);
+        Admission admission2 = allAdmissions.get(1);
+        Admission admission3 = allAdmissions.get(2);
+        when(admissionRepository.findAll()).thenReturn(allAdmissions);
+
+        // when
+        List<Admission> result = testInstance.getAll();
+
+        // then
+        assertThat(result).contains(admission1, admission2, admission3);
 
     }
 
     @Test
-    void get() {
-        //given
-        long id = anyLong();
-        String name = "testCourseName";
-        String code = "12334";
-        University university = new University("testUniversity");
-        Student student = new Student("testName", "testSnils");
-        Subject firstSubject = new Subject("testSubject1");
-        Subject secondSubject = new Subject("testSubject2");
-        Subject thirdSubject = new Subject("testSubject3");
-        int curPassingScores = 231;
-        Course course = new Course(name, code, university, firstSubject, secondSubject, thirdSubject, curPassingScores);
+    void shouldFindAdmissionById_WhenAdmissionExists() {
+        // given
+        long id = 123L;
+        var testAdmission = Optional.of(mock(Admission.class));
+        when(admissionRepository.findById(id)).thenReturn(testAdmission);
 
-        Admission admission = new Admission(student, course);
-        admission.setId(id);
+        // when
+        testInstance.get(id);
 
-        given(admissionRepository.findById(id)).willReturn(Optional.of(admission));
-        //when
-        underTest.get(id);
-        //then
-        ArgumentCaptor<Long> longArgumentCaptor = ArgumentCaptor.forClass(Long.class);
+        // then
+        verify(admissionRepository).findById(id);
 
-        verify(admissionRepository).findById(longArgumentCaptor.capture());
-
-        Long capturedLong = longArgumentCaptor.getValue();
-
-        assertThat(capturedLong).isEqualTo(id);
     }
 
     @Test
-    void create() {
-        //given
-        String name = "testCourseName";
-        String code = "12334";
-        University university = new University("testUniversity");
-        Student student = new Student("testName", "testSnils");
-        Subject firstSubject = new Subject("testSubject1");
-        Subject secondSubject = new Subject("testSubject2");
-        Subject thirdSubject = new Subject("testSubject3");
-        int curPassingPoints = 231;
-        Course course = new Course(name, code, university, firstSubject, secondSubject, thirdSubject, curPassingPoints);
+    void shouldThrowResourceNotExistException_WhenFindByIdDoesntExist() {
+        // given
+        long id = 123L;
 
-        Admission admission = new Admission(student, course);
-        //when
-        underTest.create(admission);
-        //then
-        ArgumentCaptor<Admission> AdmissionArgumentCaptor = ArgumentCaptor.forClass(Admission.class);
+        // when
+        when(admissionRepository.findById(id)).thenReturn(Optional.empty());
 
-        verify(admissionRepository).save(AdmissionArgumentCaptor.capture());
+        // then
+        assertThatThrownBy(() ->
+                testInstance.get(id)
+        )
+                .isInstanceOf(ResourceNotExistsException.class)
+                .hasMessageContaining("Admission with id [123]");
 
-        Admission capturedAdmission = AdmissionArgumentCaptor.getValue();
-
-        assertThat(capturedAdmission).isEqualTo(admission);
     }
 
     @Test
-    void createExistingAdmission() {
-        //given
-        String name = "testCourseName";
-        String code = "12334";
-        University university = new University("testUniversity");
-        Student student = new Student("testName", "testSnils");
-        Subject firstSubject = new Subject("testSubject1");
-        Subject secondSubject = new Subject("testSubject2");
-        Subject thirdSubject = new Subject("testSubject3");
-        int curPassingPoints = 231;
-        Course course = new Course(name, code, university, firstSubject, secondSubject, thirdSubject, curPassingPoints);
+    void shouldReturnExistingAdmission_WhenFindById() {
+        // given
+        long id = 123L;
+        Admission testAdmission = mock(Admission.class);
+        when(admissionRepository.findById(id)).thenReturn(Optional.of(testAdmission));
 
+        // when
+        Admission result = testInstance.get(id);
+
+        // then
+        assertThat(result).isEqualTo(testAdmission);
+    }
+
+
+    @Test
+    void shouldSaveAdmissionIfDoesntExist() {
+        // given
+        Student student = mock(Student.class);
+        Course course = mock(Course.class);
         Admission admission = new Admission(student, course);
-        //when
-        given(admissionRepository.existsByCourse_NameAndStudent(name, student)).willReturn(true);
-        //then
-        assertThatThrownBy(() -> underTest.create(admission))
+
+        // when
+        testInstance.create(admission);
+
+        // then
+        verify(admissionRepository).save(admission);
+
+    }
+
+    @Test
+    void shouldReturnSavedAdmission_WhenCreate() {
+        // given
+        Student student = mock(Student.class);
+        Course course = mock(Course.class);
+        Admission admission = new Admission(student, course);
+        when(admissionRepository.save(admission)).thenReturn(admission);
+
+        // when
+        Admission result = testInstance.create(admission);
+
+        // then
+        assertThat(result).isEqualTo(admission);
+
+    }
+
+    @Test
+    void ShouldNotSaveAdmission_WhenAdmissionExist() {
+        // given
+        String name = "testCourseName";
+        Student student = new Student("testName", "testSnils");
+        Course course = new Course();
+        course.setName(name);
+        Admission admission = new Admission(student, course);
+        
+        // when
+        when(admissionRepository.existsByCourseNameAndStudent(name, student)).thenReturn(true);
+        
+        // then
+        assertThatThrownBy(() -> testInstance.create(admission));
+        verify(admissionRepository, never()).save(admission);
+
+    }
+
+    @Test
+    void ShouldThrowAlreadyExistsException_WhenAdmissionExist_WhenCreate() {
+        // given
+        String name = "testCourseName";
+        Student student = new Student("testName", "testSnils");
+        Course course = new Course();
+        course.setName(name);
+        Admission admission = new Admission(student, course);
+
+        // when
+        when(admissionRepository.existsByCourseNameAndStudent(name, student)).thenReturn(true);
+
+        // then
+        assertThatThrownBy(() -> testInstance.create(admission))
                 .isInstanceOf(AlreadyExistsException.class)
                 .hasMessageContaining(admission.getStudent().getName())
                 .hasMessageContaining(admission.getCourse().getName());
 
-        verify(admissionRepository, never()).save(any());
     }
 
     @Test
-    void replace() {
-        //given
-        String oldName = "testCourseName";
-        String newName = "testCourseName2";
-        String oldCode = "12334";
-        String newCode = "23456";
+    void shouldReplaceOldAdmissionByNewAdmission_WhenOldAdmissionExists() {
+        // given
+        Student newStudent = mock(Student.class);
+        Course newCourse = mock(Course.class);
+        Admission oldAdmission = mock(Admission.class);
+        boolean newConsent = true;
+        Admission newAdmission = new Admission(newStudent, newCourse, newConsent);
+        long id = 45L;
+        when(admissionRepository.findById(id)).thenReturn(Optional.of(oldAdmission));
 
-        University oldUniversity = new University("testUniversity");
-        University newUniversity = new University("testUniversity2");
+        // when
+        testInstance.replace(newAdmission, id);
 
-        Student oldStudent = new Student("testName", "testSnils");
-        Student newStudent = new Student("testName2", "testSnils2");
+        // then
+        InOrder inOrder = inOrder(oldAdmission, admissionRepository);
+        inOrder.verify(oldAdmission).setStudent(newStudent);
+        inOrder.verify(oldAdmission).setCourse(newCourse);
+        inOrder.verify(oldAdmission).setConsent(newConsent);
+        inOrder.verify(admissionRepository).save(oldAdmission);
 
-        Subject oldFirstSubject = new Subject("testSubject1");
-        Subject newFirstSubject = new Subject("testSubject11");
-        Subject oldSecondSubject = new Subject("testSubject2");
-        Subject newSecondSubject = new Subject("testSubject22");
-        Subject oldThirdSubject = new Subject("testSubject3");
-        Subject newThirdSubject = new Subject("testSubject33");
+    }
 
-
-        int oldPassingPoints = 231;
-        int newPassingPoints = 234;
-        Course oldCourse = new Course(
-                oldName,
-                oldCode,
-                oldUniversity,
-                oldFirstSubject,
-                oldSecondSubject,
-                oldThirdSubject,
-                oldPassingPoints);
-        Course newCourse = new Course(
-                newName,
-                newCode,
-                newUniversity,
-                newFirstSubject,
-                newSecondSubject,
-                newThirdSubject,
-                newPassingPoints);
-
-        Admission oldAdmission = new Admission(oldStudent, oldCourse);
+    @Test
+    void shouldReturnReplacedAdmission_WhenReplace() {
+        // given
+        Student newStudent = mock(Student.class);
+        Course newCourse = mock(Course.class);
+        Admission oldAdmission = mock(Admission.class);
         Admission newAdmission = new Admission(newStudent, newCourse);
-        long id = anyLong();
+        long id = 45L;
+        when(admissionRepository.findById(id)).thenReturn(Optional.of(oldAdmission));
+        when(admissionRepository.save(oldAdmission)).thenReturn(oldAdmission);
 
-        given(admissionRepository.findById(id)).willReturn(Optional.of(oldAdmission));
-        //when
-        underTest.replace(newAdmission, id);
-        //then
-        verify(admissionRepository).findById(id);
+        // when
+        Admission result = testInstance.replace(newAdmission, id);
 
-        ArgumentCaptor<Admission> AdmissionArgumentCaptor = ArgumentCaptor.forClass(Admission.class);
-
-        verify(admissionRepository).save(AdmissionArgumentCaptor.capture());
-        Admission capturedAdmission = AdmissionArgumentCaptor.getValue();
-
-        assertThat(capturedAdmission.getStudent()).isEqualTo(newAdmission.getStudent());
-        assertThat(capturedAdmission.getCourse()).isEqualTo(newAdmission.getCourse());
+        // then
+        assertThat(result).isEqualTo(oldAdmission);
 
     }
 
     @Test
-    void delete() {
-        //given
-        long id = anyLong();
-        //when
-        underTest.delete(id);
-        //then
-        ArgumentCaptor<Long> longArgumentCaptor = ArgumentCaptor.forClass(Long.class);
+    void shouldNotReplaceAdmission_WhenDoesntExists() {
+        // given
+        long id = 123L;
+        var oldAdmission = mock(Admission.class);
+        when(admissionRepository.findById(id)).thenReturn(Optional.empty());
 
-        verify(admissionRepository).deleteById(longArgumentCaptor.capture());
+        // when
+        assertThatThrownBy(() ->
+                testInstance.replace(new Admission(), id)
+        );
 
-        Long capturedLong = longArgumentCaptor.getValue();
-
-        assertThat(capturedLong).isEqualTo(id);
+        // then
+        verify(admissionRepository, never()).save(oldAdmission);
     }
 
     @Test
-    void deleteNotExistingAdmission() {
-        long id = -1L;
-        //given
-        //when
-        doThrow(new EmptyResultDataAccessException(-1)).when(admissionRepository).deleteById(id);
-        //then
-        assertThatThrownBy(() -> underTest.delete(id))
+    void shouldThrowResourceNotExistsException_WhenDoesntExistsReplacement() {
+        // given
+        long id = 123L;
+
+        // when
+        when(admissionRepository.findById(id)).thenReturn(Optional.empty());
+
+        // then
+        assertThatThrownBy(() ->
+                testInstance.replace(new Admission(), id)
+        )
                 .isInstanceOf(ResourceNotExistsException.class)
-                .hasMessageContaining("is not exists");
+                .hasMessageContaining("Admission with id [123]");
+    }
+
+    @Test
+    void shouldCallRepositoryDeleteById() {
+        // given
+        long id = 234L;
+
+        // when
+        testInstance.delete(id);
+
+        //then
+        verify(admissionRepository).deleteById(id);
+    }
+
+    @Test
+    void shouldThrowResourceNotExistsException_WhenDoesntExistsDeletion() {
+        // given
+        long id = 234L;
+
+        // when
+        doThrow(new EmptyResultDataAccessException(1)).when(admissionRepository).deleteById(id);
+
+        //then
+        assertThatThrownBy(() -> testInstance.delete(id))
+                .isInstanceOf(ResourceNotExistsException.class)
+                .hasMessageContaining("Admission with id [" + id + "]");
 
     }
 
     @Test
-    void findAdmissionsByStudent() {
-        //given
-        Student student = new Student("Name", "123");
-        //when
-        underTest.findAdmissionsByStudent(student);
-        //then
-        ArgumentCaptor<Student> studentArgumentCaptor = ArgumentCaptor.forClass(Student.class);
-        verify(admissionRepository).findAdmissionsByStudent(studentArgumentCaptor.capture());
+    void shouldCallRepositoryFindAdmissionsByStudent() {
+        // given
+        Student student = mock(Student.class);
 
-        Student capturedStudent = studentArgumentCaptor.getValue();
+        // when
+        testInstance.findAdmissionsByStudent(student);
 
-        assertThat(capturedStudent).isEqualTo(student);
+        // then
+        verify(admissionRepository).findAdmissionsByStudent(student);
+
     }
 
     @Test
-    void findAdmissionsByStudentAndCourseUniversity() {
-        //given
-        Student student = new Student("name", "123");
-        University university = new University("universityName");
-        //when
-        underTest.findAdmissionsByStudentAndCourseUniversity(student, university);
-        //then
-        ArgumentCaptor<Student> studentArgumentCaptor = ArgumentCaptor.forClass(Student.class);
-        ArgumentCaptor<University> universityArgumentCaptor = ArgumentCaptor.forClass(University.class);
-        verify(admissionRepository).
-                findAdmissionsByStudentAndCourseUniversity(studentArgumentCaptor.capture(),
-                universityArgumentCaptor.capture());
-        Student capturedStudent = studentArgumentCaptor.getValue();
-        University capturedUniversity = universityArgumentCaptor.getValue();
+    void shouldReturnAdmissions_WhenFindAdmissionsByStudent() {
+        // given
+        Student student = mock(Student.class);
+        List<Admission> studentAdmissions = createAdmissionList();
+        Admission admission1 = studentAdmissions.get(0);
+        Admission admission2 = studentAdmissions.get(1);
+        Admission admission3 = studentAdmissions.get(2);
+        studentAdmissions.add(admission1);
+        studentAdmissions.add(admission2);
+        studentAdmissions.add(admission3);
+        when(admissionRepository.findAdmissionsByStudent(student)).thenReturn(studentAdmissions);
 
-        assertThat(capturedStudent).isEqualTo(student);
-        assertThat(capturedUniversity).isEqualTo(university);
+        // when
+        List<Admission> result = testInstance.findAdmissionsByStudent(student);
+
+        // then
+        assertThat(result).contains(admission1, admission2, admission3);
+
     }
 
     @Test
-    void deleteAll() {
-        //when
-        underTest.deleteAll();
-        //then
+    void shouldCallRepositoryFindAdmissionsByStudentAndCourseUniversity() {
+        // given
+        Student student = mock(Student.class);
+        University university = mock(University.class);
+
+        // when
+        testInstance.findAdmissionsByStudentAndCourseUniversity(student, university);
+
+        // then
+        verify(admissionRepository).findAdmissionsByStudentAndCourseUniversity(student, university);
+
+    }
+
+    @Test
+    void shouldReturnAdmissions_WhenFindAdmissionsByStudentAndCourseUniversity() {
+        // given
+        Student student = mock(Student.class);
+        University university = mock(University.class);
+        List<Admission> studentAdmissions = createAdmissionList();
+        Admission admission1 = studentAdmissions.get(0);
+        Admission admission2 = studentAdmissions.get(1);
+        Admission admission3 = studentAdmissions.get(2);
+        when(admissionRepository.findAdmissionsByStudentAndCourseUniversity(student, university)).thenReturn(studentAdmissions);
+
+        // when
+        List<Admission> result = testInstance.findAdmissionsByStudentAndCourseUniversity(student, university);
+
+        // then
+        assertThat(result).contains(admission1, admission2, admission3);
+
+    }
+
+    @Test
+    void shouldCallRepositoryDeleteAll() {
+        // when
+        testInstance.deleteAll();
+
+        // then
         verify(admissionRepository).deleteAll();
     }
 
     @Test
-    void findAdmissionsByStudentId() {
-        //given
+    void shouldCallRepositoryFindAdmissionsByStudentId() {
+        // given
         long id = 5;
-        //when
-        underTest.findAdmissionsByStudentId(id);
-        //then
-        ArgumentCaptor<Long> longArgumentCaptor = ArgumentCaptor.forClass(Long.class);
-        verify(admissionRepository).findAdmissionsByStudentId(longArgumentCaptor.capture());
 
-        long capturedLong = longArgumentCaptor.getValue();
+        // when
+        testInstance.findAdmissionsByStudentId(id);
 
-        assertThat(capturedLong).isEqualTo(id);
+        // then
+        verify(admissionRepository).findAdmissionsByStudentId(id);
+    }
+
+    @Test
+    void shouldReturnStudentAdmissions_WhenFindAdmissionsById() {
+        // given
+        long id = 5;
+        List<Admission> studentAdmissions = createAdmissionList();
+        Admission admission1 = studentAdmissions.get(0);
+        Admission admission2 = studentAdmissions.get(1);
+        Admission admission3 = studentAdmissions.get(2);
+        when(testInstance.findAdmissionsByStudentId(id)).thenReturn(studentAdmissions);
+
+        // when
+        List<Admission> result = testInstance.findAdmissionsByStudentId(id);
+
+        // then
+        assertThat(result).contains(admission1, admission2, admission3);
+    }
+
+    private List<Admission> createAdmissionList() {
+        List<Admission> admissions = new ArrayList<>();
+        Admission admission1 = mock(Admission.class);
+        Admission admission2 = mock(Admission.class);
+        Admission admission3 = mock(Admission.class);
+        admissions.add(admission1);
+        admissions.add(admission2);
+        admissions.add(admission3);
+        return admissions;
     }
 }

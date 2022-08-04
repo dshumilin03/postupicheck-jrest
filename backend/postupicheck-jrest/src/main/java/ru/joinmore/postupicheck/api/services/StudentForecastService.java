@@ -24,7 +24,7 @@ public class StudentForecastService {
 
     public StudentForecast get(long id) {
         return repository.findById(id) //
-                .orElseThrow(() -> new ResourceNotExistsException("StudentForecast with id" + id));
+                .orElseThrow(() -> new ResourceNotExistsException("Student forecast with id [" + id + "]"));
     }
 
     public StudentForecast create(StudentForecast studentForecast) {
@@ -40,7 +40,7 @@ public class StudentForecastService {
 
     public StudentForecast replace(StudentForecast updatedStudentForecast, long id) {
         StudentForecast studentForecast = repository.findById(id) //
-                .orElseThrow(() -> new ResourceNotExistsException("StudentForecast with id " + id));
+                .orElseThrow(() -> new ResourceNotExistsException("Student forecast with id [" + id + "]"));
         return replaceStudentForecast(studentForecast, updatedStudentForecast);
     }
 
@@ -48,7 +48,7 @@ public class StudentForecastService {
         try {
             repository.deleteById(id);
         } catch (EmptyResultDataAccessException e) {
-            throw new ResourceNotExistsException("StudentForecast with id " + id);
+            throw new ResourceNotExistsException("Student forecast with id [" + id + "]");
         }
     }
 
@@ -60,7 +60,7 @@ public class StudentForecastService {
     public StudentForecast getStudentForecast(Long id) {
         StudentForecast forecast = repository.findStudentForecastByAdmissionStudentId(id);
         if (forecast == null) {
-            throw new ResourceNotExistsException("Forecast for student with id " + id);
+            throw new ResourceNotExistsException("Student forecast with id [" + id + "]");
         }
         return forecast;
     }

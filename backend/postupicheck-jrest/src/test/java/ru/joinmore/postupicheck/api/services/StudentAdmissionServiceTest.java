@@ -19,12 +19,12 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class)
 class StudentAdmissionServiceTest {
-    private StudentAdmissionService underTest;
+    private StudentAdmissionService testInstance;
     @Mock
     private StudentService studentService;
     @Mock
@@ -36,7 +36,7 @@ class StudentAdmissionServiceTest {
 
     @BeforeEach
     void setUp() {
-        underTest = new StudentAdmissionService(
+        testInstance = new StudentAdmissionService(
                 studentService,
                 courseService,
                 studentExamResultService,
@@ -44,51 +44,68 @@ class StudentAdmissionServiceTest {
     }
 
     @Test
-    void getStudentAdmissions() {
-        //given
+    void shouldCallFindAdmissionsByStudentId() {
+        // given
         long id = 5;
-        //when
-        underTest.getStudentAdmissions(id);
-        //then
-        ArgumentCaptor<Long> longArgumentCaptor = ArgumentCaptor.forClass(Long.class);
-        verify(admissionService).findAdmissionsByStudentId(longArgumentCaptor.capture());
-        long capturedLong = longArgumentCaptor.getValue();
-        assertThat(capturedLong).isEqualTo(id);
 
+        // when
+        testInstance.getStudentAdmissions(id);
+
+        // then
+        verify(admissionService).findAdmissionsByStudentId(id);
 
     }
 
     @Test
-    void getStudentConsentAdmission() {
-        //given
-        Student student = new Student("name", "123");
-        Course course1 = new Course();
-        Course course2 = new Course();
-        Admission admission1 = new Admission(student, course1, true);
-        Admission admission2 = new Admission(student, course2, false);
+    void shouldReturnAdmissions_WhenFindAdmissionsByStudentId() {
+        // given
+        long id = 5;
+        List<Admission> admissions = createAdmissionList();
+        Admission admission1 = admissions.get(0);
+        Admission admission2 = admissions.get(1);
+        Admission admission3 = admissions.get(2);
+        when(admissionService.findAdmissionsByStudentId(id)).thenReturn(admissions);
+
+        // when
+        List<Admission> result = testInstance.getStudentAdmissions(id);
+
+        // then
+        assertThat(result).contains(admission1, admission2, admission3);
+
+    }
+
+    @Test
+    void shouldReturnStudentConsentAdmission() {
+        // given
         List<Admission> studentAdmissions = new ArrayList<>();
+        Admission admission1 = new Admission();
+        Admission admission2 = new Admission();
+        Admission admission3 = new Admission();
+        admission1.setConsent(true);
+        admission2.setConsent(false);
+        admission3.setConsent(false);
         studentAdmissions.add(admission1);
         studentAdmissions.add(admission2);
+        studentAdmissions.add(admission3);
         long id = 5;
-        given(admissionService.findAdmissionsByStudentId(id)).willReturn(studentAdmissions);
-        //when
-        Admission consent = underTest.getStudentConsentAdmission(id);
-        //then
-        ArgumentCaptor<Long> longArgumentCaptor = ArgumentCaptor.forClass(Long.class);
-        verify(admissionService).findAdmissionsByStudentId(longArgumentCaptor.capture());
-        long capturedLong = longArgumentCaptor.getValue();
-        assertThat(capturedLong).isEqualTo(id);
-        assertThat(consent.isConsent()).isEqualTo(true);
+        when(admissionService.findAdmissionsByStudentId(id)).thenReturn(studentAdmissions);
+
+        // when
+        Admission result = testInstance.getStudentConsentAdmission(id);
+
+        // then
+        assertThat(result.isConsent()).isEqualTo(true);
 
     }
 
     @Test
-    void getStudentAvailableAdmissions() {
-        //given
-        Student student = new Student("name", "123");
+    void shouldReturnStudentAvailableAdmissions() {
+        // given
+        long id = 5;
+        Student student = mock(Student.class);
         Course course1 = new Course();
-        course1.setCurPassingPoints(150);
         Course course2 = new Course();
+        course1.setCurPassingPoints(150);
         course2.setCurPassingPoints(300);
         Admission admission1 = new Admission(student, course1, true);
         Admission admission2 = new Admission(student, course2, false);
@@ -96,76 +113,91 @@ class StudentAdmissionServiceTest {
         studentAdmissions.add(admission1);
         studentAdmissions.add(admission2);
         List<Subject> requiredSubjects = new ArrayList<>();
-        Subject subject1 = new Subject("math");
-        Subject subject2 = new Subject("ru");
-        Subject subject3 = new Subject("inf");
+        Subject subject1 = mock(Subject.class);
+        Subject subject2 = mock(Subject.class);
+        Subject subject3 = mock(Subject.class);
         requiredSubjects.add(subject1);
         requiredSubjects.add(subject2);
         requiredSubjects.add(subject3);
-        long id = 5;
-        given(studentService.get(id)).willReturn(student);
-        given(admissionService.findAdmissionsByStudentId(id)).willReturn(studentAdmissions);
-        given(courseService.getRequiredSubjects(course1)).willReturn(requiredSubjects);
-        given(courseService.getRequiredSubjects(course2)).willReturn(requiredSubjects);
-        given(studentExamResultService.getPointsByStudentAndSubject(student, subject1)).willReturn(50);
-        given(studentExamResultService.getPointsByStudentAndSubject(student, subject2)).willReturn(55);
-        given(studentExamResultService.getPointsByStudentAndSubject(student, subject3)).willReturn(60);
+        when(studentService.get(id)).thenReturn(student);
+        when(admissionService.findAdmissionsByStudentId(id)).thenReturn(studentAdmissions);
+        when(courseService.getRequiredSubjects(course1)).thenReturn(requiredSubjects);
+        when(courseService.getRequiredSubjects(course2)).thenReturn(requiredSubjects);
+        when(studentExamResultService.getPointsByStudentAndSubject(student, subject1)).thenReturn(50);
+        when(studentExamResultService.getPointsByStudentAndSubject(student, subject2)).thenReturn(55);
+        when(studentExamResultService.getPointsByStudentAndSubject(student, subject3)).thenReturn(60);
+        when(courseService.getRequiredSubjects(course1)).thenReturn(requiredSubjects);
+        when(courseService.getRequiredSubjects(course2)).thenReturn(requiredSubjects);
 
-        //when
-        List<Admission> availableAdmissions = underTest.getStudentAvailableAdmissions(id);
-        int studentPoints = underTest.getStudentAdmissionPoints(student, admission1.getCourse());
-        //then
-        ArgumentCaptor<Long> longArgumentCaptor1 = ArgumentCaptor.forClass(Long.class);
-        ArgumentCaptor<Long> longArgumentCaptor2 = ArgumentCaptor.forClass(Long.class);
-        verify(studentService).get(longArgumentCaptor1.capture());
-        long capturedLong = longArgumentCaptor1.getValue();
-        assertThat(capturedLong).isEqualTo(id);
-        verify(admissionService).findAdmissionsByStudentId(longArgumentCaptor2.capture());
-        long capturedLong2 = longArgumentCaptor2.getValue();
-        assertThat(capturedLong2).isEqualTo(id);
-        assertThat(studentPoints).isEqualTo(165);
+//        StudentAdmissionService testSpy = spy(testInstance);
+//        doReturn(165).when(testSpy).getStudentAdmissionPoints(student, course1);
+//        doReturn(165).when(testSpy).getStudentAdmissionPoints(student, course2);
+//        when(testSpy.getStudentAdmissionPoints(student, course1)).thenReturn(165);
+//        when(testSpy.getStudentAdmissionPoints(student, course2)).thenReturn(165);
+
+        // when
+        List<Admission> availableAdmissions = testInstance.getStudentAvailableAdmissions(id);
+
+        // then
         availableAdmissions.forEach(admission -> {
             assertThat(admission.getCourse().getCurPassingPoints()).isLessThan(165);
         });
     }
 
     @Test
-    void getStudentAdmissionPoints() {
-        //given
-        Student student = new Student("name", "123");
-        Course course = new Course();
+    void shouldGetStudentAdmissionPoints() {
+
+//        StudentAdmissionService testSpy = spy(testInstance);
+//        when(testSpy.getStudentAdmissionPoints()).thenReturn(234);
+//
+//        Admission adm1 = new Admission();
+//        adm1.setCourse(new Course());
+//
+//        Admission adm2 = createAdmission();
+
+
+        // adm2
+        // adm3
+        // adm4
+        //
+
+        // testInstance.get...
+
+        // assertThat(result).contains(adm1, adm2);
+        // assertThat(result).hasSize(2)
+
+
+        // given
+        Student student = mock(Student.class);
+        Course course = mock(Course.class);
         List<Subject> requiredSubjects = new ArrayList<>();
-        Subject subject1 = new Subject("math");
-        Subject subject2 = new Subject("ru");
-        Subject subject3 = new Subject("inf");
+        Subject subject1 = mock(Subject.class);
+        Subject subject2 = mock(Subject.class);
+        Subject subject3 = mock(Subject.class);
         requiredSubjects.add(subject1);
         requiredSubjects.add(subject2);
         requiredSubjects.add(subject3);
-        given(studentExamResultService.getPointsByStudentAndSubject(student, subject1)).willReturn(50);
-        given(studentExamResultService.getPointsByStudentAndSubject(student, subject2)).willReturn(55);
-        given(studentExamResultService.getPointsByStudentAndSubject(student, subject3)).willReturn(60);
-        given(courseService.getRequiredSubjects(course)).willReturn(requiredSubjects);
-        //when
-        int result = underTest.getStudentAdmissionPoints(student, course);
-        //then
-        ArgumentCaptor<Course> courseArgumentCaptor = ArgumentCaptor.forClass(Course.class);
-        verify(courseService).getRequiredSubjects(courseArgumentCaptor.capture());
-        Course capturedCourse = courseArgumentCaptor.getValue();
-        assertThat(capturedCourse).isEqualTo(course);
-        ArgumentCaptor<Student> studentArgumentCaptor = ArgumentCaptor.forClass(Student.class);
-        ArgumentCaptor<Subject> subjectArgumentCaptor = ArgumentCaptor.forClass(Subject.class);
-        verify(studentExamResultService, times(3)).
-                getPointsByStudentAndSubject(
-                        studentArgumentCaptor.capture(),
-                        subjectArgumentCaptor.capture());
-        List<Student> capturedStudents = studentArgumentCaptor.getAllValues();
-        List<Subject> capturedSubjects = subjectArgumentCaptor.getAllValues();
-        capturedStudents.forEach(capturedStudent -> {
-            assertThat(capturedStudent).isEqualTo(student);
-        });
-        assertThat(capturedSubjects.get(0)).isEqualTo(subject1);
-        assertThat(capturedSubjects.get(1)).isEqualTo(subject2);
-        assertThat(capturedSubjects.get(2)).isEqualTo(subject3);
+        when(studentExamResultService.getPointsByStudentAndSubject(student, subject1)).thenReturn(50);
+        when(studentExamResultService.getPointsByStudentAndSubject(student, subject2)).thenReturn(55);
+        when(studentExamResultService.getPointsByStudentAndSubject(student, subject3)).thenReturn(60);
+        when(courseService.getRequiredSubjects(course)).thenReturn(requiredSubjects);
+
+        // when
+        int result = testInstance.getStudentAdmissionPoints(student, course);
+
+        // then
         assertThat(result).isEqualTo(165);
+
+    }
+
+    private List<Admission> createAdmissionList() {
+        List<Admission> admissions = new ArrayList<>();
+        Admission admission1 = mock(Admission.class);
+        Admission admission2 = mock(Admission.class);
+        Admission admission3 = mock(Admission.class);
+        admissions.add(admission1);
+        admissions.add(admission2);
+        admissions.add(admission3);
+        return admissions;
     }
 }

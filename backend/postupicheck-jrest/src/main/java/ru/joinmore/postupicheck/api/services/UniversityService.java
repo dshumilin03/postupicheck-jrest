@@ -25,7 +25,7 @@ public class UniversityService {
 
     public University get(long id) {
         return repository.findById(id) //
-                .orElseThrow(() -> new ResourceNotExistsException("University with id " + id));
+                .orElseThrow(() -> new ResourceNotExistsException("University with id [" + id + "]"));
     }
 
     public University create(University university) {
@@ -39,7 +39,7 @@ public class UniversityService {
 
     public University replace(University updatedUniversity, long id) {
         University university = repository.findById(id) //
-                .orElseThrow(() -> new ResourceNotExistsException("University with id " + id));
+                .orElseThrow(() -> new ResourceNotExistsException("University with id [" + id + "]"));
         return replaceUniversity(university, updatedUniversity);
     }
 
@@ -47,7 +47,7 @@ public class UniversityService {
         try {
             repository.deleteById(id);
         } catch (EmptyResultDataAccessException e) {
-            throw new ResourceNotExistsException("University with id " + id);
+            throw new ResourceNotExistsException("University with id [" + id + "]");
         }
     }
 

@@ -15,11 +15,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class CourseConverterTest {
 
-    private CourseConverter underTest;
+    private CourseConverter testInstance;
 
     @BeforeEach
     void setUp() {
-        underTest = new CourseConverter();
+        testInstance = new CourseConverter();
 
     }
     @Test
@@ -46,7 +46,7 @@ class CourseConverterTest {
                 curPassingPoints);
         course.setId(0L);
         //when
-        CourseDto createdDto = underTest.convert(course);
+        CourseDto createdDto = testInstance.convert(course);
         //then
 
         assertThat(createdDto.getId()).isEqualTo(0L);
@@ -100,7 +100,7 @@ class CourseConverterTest {
         courses.add(course1);
         courses.add(course2);
         //when
-        List<CourseDto> createdDtoList = underTest.convert(courses);
+        List<CourseDto> createdDtoList = testInstance.convert(courses);
         //then
         CourseDto createdDto1 = createdDtoList.get(0);
         CourseDto createdDto2 = createdDtoList.get(1);

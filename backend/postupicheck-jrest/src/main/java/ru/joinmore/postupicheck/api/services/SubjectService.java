@@ -24,7 +24,7 @@ public class SubjectService {
 
     public Subject get(long id) {
         return repository.findById(id) //
-                .orElseThrow(() -> new ResourceNotExistsException("Subject with id " + id));
+                .orElseThrow(() -> new ResourceNotExistsException("Subject with id [" + id + "]"));
     }
 
     public Subject create(Subject subject) {
@@ -38,7 +38,7 @@ public class SubjectService {
 
     public Subject replace(Subject updatedSubject, long id) {
         Subject subject = repository.findById(id) //
-                .orElseThrow(() -> new ResourceNotExistsException("Subject with id " + id));
+                .orElseThrow(() -> new ResourceNotExistsException("Subject with id [" + id + "]"));
         return replaceSubject(subject, updatedSubject);
     }
 
@@ -46,7 +46,7 @@ public class SubjectService {
         try {
             repository.deleteById(id);
         } catch (EmptyResultDataAccessException e) {
-            throw new ResourceNotExistsException("Subject with id " + id);
+            throw new ResourceNotExistsException("Subject with id [" + id + "]");
         }
     }
 

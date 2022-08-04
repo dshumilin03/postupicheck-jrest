@@ -11,11 +11,11 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class AdmissionConverterTest {
-    private AdmissionConverter underTest;
+    private AdmissionConverter testInstance;
 
     @BeforeEach
     void setUp() {
-        underTest = new AdmissionConverter();
+        testInstance = new AdmissionConverter();
 
     }
     @Test
@@ -29,7 +29,7 @@ class AdmissionConverterTest {
         course.setId(0L);
 
         //when
-        AdmissionDto createdDto = underTest.convert(admission);
+        AdmissionDto createdDto = testInstance.convert(admission);
         //then
 
         assertThat(createdDto.getId()).isEqualTo(0L);
@@ -59,7 +59,7 @@ class AdmissionConverterTest {
         admissions.add(admission2);
 
         //when
-        List<AdmissionDto> createdDtoList = underTest.convert(admissions);
+        List<AdmissionDto> createdDtoList = testInstance.convert(admissions);
         //then
         AdmissionDto createdDto1 = createdDtoList.get(0);
         AdmissionDto createdDto2 = createdDtoList.get(1);

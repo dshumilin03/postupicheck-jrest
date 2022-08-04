@@ -27,7 +27,7 @@ public class CourseService {
 
     public Course get(long id) {
         return repository.findById(id) //
-                .orElseThrow(() -> new ResourceNotExistsException("Course with id " + id));
+                .orElseThrow(() -> new ResourceNotExistsException("Course with id [" + id + "]"));
     }
 
     public Course create(Course course) {
@@ -46,7 +46,7 @@ public class CourseService {
 
     public Course replace(Course updatedCourse, long id) {
         Course course = repository.findById(id) //
-                .orElseThrow(() -> new ResourceNotExistsException("Course with id " + id));
+                .orElseThrow(() -> new ResourceNotExistsException("Course with id [" + id + "]"));
         return replaceCourse(course, updatedCourse);
     }
 
@@ -55,19 +55,8 @@ public class CourseService {
         try {
             repository.deleteById(id);
         } catch (EmptyResultDataAccessException e) {
-            throw new ResourceNotExistsException("Course with id " + id);
+            throw new ResourceNotExistsException("Course with id [" + id + "]");
         }
-    }
-
-    private Course replaceCourse(Course course, Course updatedCourse) {
-        course.setName(updatedCourse.getName());
-        course.setCode(updatedCourse.getCode());
-        course.setUniversity(updatedCourse.getUniversity());
-        course.setFirstSubject(updatedCourse.getFirstSubject());
-        course.setSecondSubject(updatedCourse.getSecondSubject());
-        course.setThirdSubject(updatedCourse.getThirdSubject());
-        course.setCurPassingPoints(updatedCourse.getCurPassingPoints());
-        return repository.save(course);
     }
 
     public void deleteAll() {
@@ -89,5 +78,16 @@ public class CourseService {
         requiredSubjects.add(course.getThirdSubject());
 
         return requiredSubjects;
+    }
+
+    private Course replaceCourse(Course course, Course updatedCourse) {
+        course.setName(updatedCourse.getName());
+        course.setCode(updatedCourse.getCode());
+        course.setUniversity(updatedCourse.getUniversity());
+        course.setFirstSubject(updatedCourse.getFirstSubject());
+        course.setSecondSubject(updatedCourse.getSecondSubject());
+        course.setThirdSubject(updatedCourse.getThirdSubject());
+        course.setCurPassingPoints(updatedCourse.getCurPassingPoints());
+        return repository.save(course);
     }
 }

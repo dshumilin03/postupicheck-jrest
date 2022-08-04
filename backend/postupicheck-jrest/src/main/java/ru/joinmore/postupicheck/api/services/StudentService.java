@@ -25,21 +25,21 @@ public class StudentService {
 
     public Student get(long id) {
         return repository.findById(id) //
-                .orElseThrow(() -> new ResourceNotExistsException("Student with id" + id));
+                .orElseThrow(() -> new ResourceNotExistsException("Student with id [" + id + "]"));
     }
 
     public Student create(Student student) {
         Boolean existsSnils = repository.
                 existsStudentBySnils(student.getSnils());
         if (existsSnils) {
-            throw new AlreadyExistsException("Snils");
+            throw new AlreadyExistsException("Snils " + student.getSnils());
         }
         return repository.save(student);
     }
 
     public Student replace(Student updatedStudent, long id) {
         Student student = repository.findById(id) //
-                .orElseThrow(() -> new ResourceNotExistsException("Student with id " + id));
+                .orElseThrow(() -> new ResourceNotExistsException("Student with id [" + id + "]"));
         return replaceStudent(student, updatedStudent);
     }
 
@@ -47,7 +47,7 @@ public class StudentService {
         try {
             repository.deleteById(id);
         } catch (EmptyResultDataAccessException e) {
-            throw new ResourceNotExistsException("Student with id " + id);
+            throw new ResourceNotExistsException("Student with id [" + id + "]");
         }
     }
 

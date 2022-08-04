@@ -14,11 +14,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class StudentForecastConverterTest {
 
-    private StudentForecastConverter underTest;
+    private StudentForecastConverter testInstance;
 
     @BeforeEach
     void setUp() {
-        underTest = new StudentForecastConverter();
+        testInstance = new StudentForecastConverter();
     }
 
     @Test
@@ -30,7 +30,7 @@ class StudentForecastConverterTest {
         studentForecast.setId(1L);
         studentForecast.setAdmission(admission);
         //when
-        StudentForecastDto forecastDto = underTest.convert(studentForecast);
+        StudentForecastDto forecastDto = testInstance.convert(studentForecast);
         //then
         assertThat(forecastDto.getId()).isEqualTo(1L);
         assertThat(forecastDto.getAdmissionId()).isEqualTo(12L);
@@ -54,7 +54,7 @@ class StudentForecastConverterTest {
         studentsForecasts.add(studentForecast);
         studentsForecasts.add(studentForecast2);
         //when
-        List<StudentForecastDto> forecastDtoList = underTest.convert(studentsForecasts);
+        List<StudentForecastDto> forecastDtoList = testInstance.convert(studentsForecasts);
         //then
         StudentForecastDto forecastDto1 = forecastDtoList.get(0);
         StudentForecastDto forecastDto2 = forecastDtoList.get(1);

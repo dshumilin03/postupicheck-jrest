@@ -23,11 +23,11 @@ class CourseReverseConverterTest {
     UniversityService universityService;
     @Mock
     SubjectService subjectService;
-    private CourseReverseConverter underTest;
+    private CourseReverseConverter testInstance;
 
     @BeforeEach
     void setUp() {
-        underTest = new CourseReverseConverter(universityService, subjectService);
+        testInstance = new CourseReverseConverter(universityService, subjectService);
     }
 
     @Test
@@ -52,7 +52,7 @@ class CourseReverseConverterTest {
         given(subjectService.get(2L)).willReturn(subject2);
         given(subjectService.get(3L)).willReturn(subject3);
         //when
-        Course createdDao = underTest.convert(courseDto);
+        Course createdDao = testInstance.convert(courseDto);
         //then
         assertThat(createdDao.getId()).isEqualTo(1L);
         assertThat(createdDao.getName()).isEqualTo("testName");

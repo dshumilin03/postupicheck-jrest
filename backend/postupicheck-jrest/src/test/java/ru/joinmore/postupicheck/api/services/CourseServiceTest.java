@@ -4,13 +4,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.EmptyResultDataAccessException;
-import ru.joinmore.postupicheck.api.entities.Student;
-import ru.joinmore.postupicheck.api.entities.Course;
-import ru.joinmore.postupicheck.api.entities.Subject;
-import ru.joinmore.postupicheck.api.entities.University;
+import ru.joinmore.postupicheck.api.entities.*;
 import ru.joinmore.postupicheck.api.exceptions.AlreadyExistsException;
 import ru.joinmore.postupicheck.api.exceptions.ResourceNotExistsException;
 import ru.joinmore.postupicheck.api.repositories.CourseRepository;
@@ -32,258 +30,365 @@ class CourseServiceTest {
 
     @Mock
     private CourseRepository courseRepository;
-    private CourseService underTest;
+    private CourseService testInstance;
 
     @BeforeEach
     void setUp() {
-        underTest = new CourseService(courseRepository);
+        testInstance = new CourseService(courseRepository);
     }
 
     @Test
-    void getAll() {
-        //when
-        underTest.getAll();
-        //then
+    void shouldCallRepositoryFindAll() {
+        // when
+        testInstance.getAll();
+
+        // then
         verify(courseRepository).findAll();
 
     }
 
     @Test
-    void get() {
-        //given
-        long id = anyLong();
-        String name = "testName";
-        String code = "12334";
-        University university = new University("testUniversity");
-        Subject firstSubject = new Subject("testSubject");
-        Subject secondSubject = new Subject("testSubject2");
-        Subject thirdSubject = new Subject("testSubject3");
+    void shouldReturnAllCourses_WhenRepositoryFindAll() {
+        // given
+        List<Course> allCourses = createCourseList();
+        Course course1 = allCourses.get(0);
+        Course course2 = allCourses.get(1);
+        Course course3 = allCourses.get(2);
+        when(courseRepository.findAll()).thenReturn(allCourses);
 
-        int curPassingPoints = 231;
-        Course course = new Course(name, code, university, firstSubject, secondSubject, thirdSubject, curPassingPoints);
-        course.setId(id);
+        // when
+        List<Course> result = testInstance.getAll();
 
-        given(courseRepository.findById(id)).willReturn(Optional.of(course));
-        //when
-        underTest.get(id);
-        //then
-        ArgumentCaptor<Long> longArgumentCaptor = ArgumentCaptor.forClass(Long.class);
+        // then
+        assertThat(result).contains(course1, course2, course3);
 
-        verify(courseRepository).findById(longArgumentCaptor.capture());
-
-        Long capturedLong = longArgumentCaptor.getValue();
-
-        assertThat(capturedLong).isEqualTo(id);
     }
 
     @Test
-    void create() {
-        //given
-        String name = "testName";
-        String code = "12334";
-        University university = new University("testUniversity");
-        Subject firstSubject = new Subject("testSubject");
-        Subject secondSubject = new Subject("testSubject2");
-        Subject thirdSubject = new Subject("testSubject3");
+    void shouldCallRepositoryFindCourseById() {
+        // given
+        long id = 34L;
+        var testCourse = Optional.of(mock(Course.class));
+        when(courseRepository.findById(id)).thenReturn(testCourse);
 
-        int curPassingPoints = 231;
-        Course course = new Course(name, code, university, firstSubject, secondSubject, thirdSubject, curPassingPoints);
-        //when
-        underTest.create(course);
-        //then
-        ArgumentCaptor<Course> CourseArgumentCaptor = ArgumentCaptor.forClass(Course.class);
+        // when
+        testInstance.get(id);
 
-        verify(courseRepository).save(CourseArgumentCaptor.capture());
-
-        Course capturedCourse = CourseArgumentCaptor.getValue();
-
-        assertThat(capturedCourse).isEqualTo(course);
-    }
-
-    @Test
-    void createExistingCourse() {
-        //given
-        String name = "testName";
-        String code = "12334";
-        University university = new University("testUniversity");
-        Subject firstSubject = new Subject("testSubject");
-        Subject secondSubject = new Subject("testSubject2");
-        Subject thirdSubject = new Subject("testSubject3");
-
-        int curPassingPoints = 231;
-        Course course = new Course(name, code, university, firstSubject, secondSubject, thirdSubject, curPassingPoints);
-        //when
-        given(courseRepository.existsByName(name)).willReturn(true);
-        //then
-        assertThatThrownBy(() -> underTest.create(course))
-                .isInstanceOf(AlreadyExistsException.class)
-                .hasMessageContaining(course.getName());
-
-        verify(courseRepository, never()).save(any());
-    }
-
-    @Test
-    void replace() {
-        //given
-        String oldName = "testName";
-        String newName = "testName2";
-
-        String oldCode = "12334";
-        String newCode = "23456";
-
-        University oldUniversity = new University("testUniversity");
-        University newUniversity = new University("testUniversity2");
-
-        Subject oldFirstSubject = new Subject("testSubject1");
-        Subject newFirstSubject = new Subject("testSubject11");
-
-        Subject oldSecondSubject = new Subject("testSubject2");
-        Subject newSecondSubject = new Subject("testSubject222");
-
-        Subject oldThirdSubject = new Subject("testSubject3");
-        Subject newThirdSubject = new Subject("testSubject333");
-
-        int oldPassingPoints = 231;
-        int newPassingPoints = 234;
-        Course oldCourse = new Course(
-                oldName,
-                oldCode, oldUniversity,
-                oldFirstSubject,
-                oldSecondSubject,
-                oldThirdSubject,
-                oldPassingPoints);
-        Course newCourse = new Course(
-                newName,
-                newCode,
-                newUniversity,
-                newFirstSubject,
-                newSecondSubject,
-                newThirdSubject,
-                newPassingPoints);
-
-        long id = anyLong();
-
-        given(courseRepository.findById(id)).willReturn(Optional.of(oldCourse));
-        //when
-        underTest.replace(newCourse, id);
-        //then
+        // then
         verify(courseRepository).findById(id);
 
-        ArgumentCaptor<Course> CourseArgumentCaptor = ArgumentCaptor.forClass(Course.class);
-
-        verify(courseRepository).save(CourseArgumentCaptor.capture());
-        Course capturedCourse = CourseArgumentCaptor.getValue();
-
-        assertThat(capturedCourse.getName()).isEqualTo(newCourse.getName());
-        assertThat(capturedCourse.getCode()).isEqualTo(newCourse.getCode());
-        assertThat(capturedCourse.getUniversity()).isEqualTo(newCourse.getUniversity());
-        assertThat(capturedCourse.getFirstSubject()).isEqualTo(newCourse.getFirstSubject());
-        assertThat(capturedCourse.getSecondSubject()).isEqualTo(newCourse.getSecondSubject());
-        assertThat(capturedCourse.getThirdSubject()).isEqualTo(newCourse.getThirdSubject());
-        assertThat(capturedCourse.getCurPassingPoints()).isEqualTo(newCourse.getCurPassingPoints());
     }
 
     @Test
-    void delete() {
-        //given
-        long id = anyLong();
-        //when
-        underTest.delete(id);
-        //then
-        ArgumentCaptor<Long> longArgumentCaptor = ArgumentCaptor.forClass(Long.class);
+    void shouldThrowResourceNotFoundException_WhenFindByByIdDoesntExists() {
+        // given
+        long id = 34L;
 
-        verify(courseRepository).deleteById(longArgumentCaptor.capture());
+        // when
+        when(courseRepository.findById(id)).thenReturn(Optional.empty());
 
-        Long capturedLong = longArgumentCaptor.getValue();
-
-        assertThat(capturedLong).isEqualTo(id);
-    }
-
-    @Test
-    void deleteNotExistingCourse() {
-        long id = -1L;
-        //given
-        //when
-        doThrow(new EmptyResultDataAccessException(-1)).when(courseRepository).deleteById(id);
-        //then
-        assertThatThrownBy(() -> underTest.delete(id))
+        // then
+        assertThatThrownBy(() ->
+                testInstance.get(id))
                 .isInstanceOf(ResourceNotExistsException.class)
-                .hasMessageContaining("is not exists");
+                .hasMessageContaining("Course with id [34]");
+    }
+
+    @Test
+    void shouldReturnCourse_WhenFindById() {
+        // given
+        long id = 34L;
+        Course course = mock(Course.class);
+        when(courseRepository.findById(id)).thenReturn(Optional.of(course));
+
+        // when
+        Course result = testInstance.get(id);
+
+        // then
+        assertThat(result).isEqualTo(course);
+    }
+
+    @Test
+    void shouldSaveCourseIfDoesntExists() {
+        // given
+        Course course = mock(Course.class);
+
+        // when
+        testInstance.create(course);
+
+        // then
+        verify(courseRepository).save(course);
 
     }
 
     @Test
-    void deleteAll() {
-        //when
-        underTest.deleteAll();
-        //then
+    void shouldReturnCreatedCourse() {
+        // given
+        Course course = mock(Course.class);
+        when(courseRepository.save(course)).thenReturn(course);
+
+        // when
+        Course result = testInstance.create(course);
+
+        // then
+        assertThat(result).isEqualTo(course);
+
+    }
+
+    @Test
+    void shouldNotSaveCourse_WhenExists() {
+        // given
+        Course course = mock(Course.class);
+        String name = ("testName");
+        course.setName(name);
+
+        // when
+        given(courseRepository.existsByName(name)).willReturn(true);
+
+        // then
+        assertThatThrownBy(() -> testInstance.create(course));
+        verify(courseRepository, never()).save(course);
+
+    }
+
+    @Test
+    void shouldThrowAlreadyExistsException_WhenExists() {
+        // given
+        Course course = new Course();
+        University university = new University();
+        university.setId(14L);
+        course.setUniversity(university);
+        String name = ("testName");
+        course.setName(name);
+
+        // when
+        given(courseRepository.existsByName(name)).willReturn(true);
+
+        // then
+        assertThatThrownBy(() -> testInstance.create(course))
+                .isInstanceOf(AlreadyExistsException.class)
+                .hasMessageContaining("Course with name %s in university + %d ", name, university.getId());
+
+    }
+
+    @Test
+    void shouldReplaceOldCourseByNewCourse() {
+        // given
+        Course oldCourse = mock(Course.class);
+        String newName = "newName";
+        String newCode = "newName";
+        University newUniversity = mock(University.class);
+        Subject subject1 = mock(Subject.class);
+        Subject subject2 = mock(Subject.class);
+        Subject subject3 = mock(Subject.class);
+        int curPassingPoints = 200;
+        Course newCourse = new Course(newName, newCode, newUniversity, subject1, subject2, subject3, curPassingPoints);
+        long id = 234L;
+        when(courseRepository.findById(id)).thenReturn(Optional.of(oldCourse));
+
+        // when
+        testInstance.replace(newCourse, id);
+
+        // then
+        InOrder inOrder = inOrder(oldCourse, courseRepository);
+        inOrder.verify(oldCourse).setName(newName);
+        inOrder.verify(oldCourse).setCode(newCode);
+        inOrder.verify(oldCourse).setUniversity(newUniversity);
+        inOrder.verify(oldCourse).setFirstSubject(subject1);
+        inOrder.verify(oldCourse).setSecondSubject(subject2);
+        inOrder.verify(oldCourse).setThirdSubject(subject3);
+        inOrder.verify(oldCourse).setCurPassingPoints(curPassingPoints);
+        inOrder.verify(courseRepository).save(oldCourse);
+
+    }
+
+    @Test
+    void shouldReturnReplacedCourse_WhenReplace() {
+        // given
+        Course oldCourse = mock(Course.class);
+        String newName = "newName";
+        String newCode = "newName";
+        University newUniversity = mock(University.class);
+        Subject subject1 = mock(Subject.class);
+        Subject subject2 = mock(Subject.class);
+        Subject subject3 = mock(Subject.class);
+        int curPassingPoints = 200;
+        Course newCourse = new Course(newName, newCode, newUniversity, subject1, subject2, subject3, curPassingPoints);
+        long id = 234L;
+        when(courseRepository.findById(id)).thenReturn(Optional.of(oldCourse));
+        when(courseRepository.save(oldCourse)).thenReturn(oldCourse);
+
+        // when
+        Course result = testInstance.replace(newCourse, id);
+
+        // then
+        assertThat(result).isEqualTo(oldCourse);
+
+    }
+
+    @Test
+    void shouldNotReplaceCourse_WhenDoesntExists() {
+        // given
+        Course oldCourse = mock(Course.class);
+        long id = 234L;
+        when(courseRepository.findById(id)).thenReturn(Optional.empty());
+
+        // when
+        assertThatThrownBy(() -> testInstance.replace(new Course(), id));
+
+        // then
+        verify(courseRepository, never()).save(oldCourse);
+
+    }
+
+    @Test
+    void shouldThrowResourceNotExistsException_WhenDoesntExistsReplacement() {
+        // given
+        Course oldCourse = mock(Course.class);
+        long id = 234L;
+
+        // when
+        when(courseRepository.findById(id)).thenReturn(Optional.empty());
+
+        // then
+        assertThatThrownBy(() -> testInstance.replace(new Course(), id))
+                .isInstanceOf(ResourceNotExistsException.class)
+                .hasMessageContaining("Course with id [234]");
+
+    }
+
+    @Test
+    void shouldCallRepositoryDeleteById() {
+        // given
+        long id = 23L;
+
+        // when
+        testInstance.delete(id);
+
+        // then
+        verify(courseRepository).deleteById(id);
+
+    }
+
+    @Test
+    void shouldThrowResourceNotExistsException_WhenDoesntExistsDeletion() {
+        // given
+        long id = 23L;
+
+        // when
+        doThrow(new EmptyResultDataAccessException(1)).when(courseRepository).deleteById(id);
+
+        // then
+        assertThatThrownBy(() ->
+                testInstance.delete(id))
+                .isInstanceOf(ResourceNotExistsException.class)
+                .hasMessageContaining("Course with id [23]");
+
+    }
+
+
+    @Test
+    void shouldCallRepositoryDeleteAll() {
+        // when
+        testInstance.deleteAll();
+
+        // then
         verify(courseRepository).deleteAll();
     }
 
     @Test
-    void findCoursesByUniversity() {
-        //given
-        University university = new University("name");
-        //when
-        underTest.findCoursesByUniversity(university);
-        //then
-        ArgumentCaptor<University> universityArgumentCaptor = ArgumentCaptor.forClass(University.class);
-        verify(courseRepository).findCoursesByUniversity(universityArgumentCaptor.capture());
-        University capturedUniversity = universityArgumentCaptor.getValue();
-        assertThat(capturedUniversity).isEqualTo(university);
+    void shouldCallRepositoryFindCoursesByUniversity() {
+        // given
+        University university = mock(University.class);
+
+        // when
+        testInstance.findCoursesByUniversity(university);
+
+        // then
+        verify(courseRepository).findCoursesByUniversity(university);
 
     }
 
     @Test
-    void findCoursesByUniversityAndThirdSubject() {
-        //given
-        Subject subject = new Subject("subjectName");
-        University university = new University("universityName");
-        //when
-        underTest.findCoursesByUniversityAndThirdSubject(university, subject);
-        //then
-        ArgumentCaptor<University> universityArgumentCaptor = ArgumentCaptor.forClass(University.class);
-        ArgumentCaptor<Subject> subjectArgumentCaptor = ArgumentCaptor.forClass(Subject.class);
-        verify(courseRepository).
-                findCoursesByUniversityAndThirdSubject(
-                        universityArgumentCaptor.capture(),
-                        subjectArgumentCaptor.capture());
-        University capturedUniversity = universityArgumentCaptor.getValue();
-        Subject capturedSubject = subjectArgumentCaptor.getValue();
+    void shouldReturnCourses_WhenFindCoursesByUniversity() {
+        // given
+        List<Course> universityCourses = createCourseList();
+        Course course1 = universityCourses.get(0);
+        Course course2 = universityCourses.get(1);
+        Course course3 = universityCourses.get(2);
+        University university = mock(University.class);
+        when(courseRepository.findCoursesByUniversity(university)).thenReturn(universityCourses);
 
-        assertThat(capturedUniversity).isEqualTo(university);
-        assertThat(capturedSubject).isEqualTo(subject);
+        // when
+        List<Course> result = testInstance.findCoursesByUniversity(university);
+
+        // then
+        assertThat(result).contains(course1, course2, course3);
+
     }
 
     @Test
-    void getRequiredSubjects() {
+    void shouldFindCoursesByUniversityAndThirdSubject() {
         //given
-        String name = "name";
-        String code = "123";
-        List<Subject> subjects = new ArrayList<>();
-        University university = new University("universityName");
-        Subject firstSubject = new Subject("firstSubject");
-        Subject secondSubject = new Subject("secondSubject");
-        Subject thirdSubject = new Subject("thirdSubject");
-        subjects.add(firstSubject);
-        subjects.add(secondSubject);
-        subjects.add(thirdSubject);
-        Integer curPassingPoints = 231;
-        Course course = new Course(
-                name,
-                code,
-                university,
-                firstSubject,
-                secondSubject,
-                thirdSubject,
-                curPassingPoints);
-        //when
-        List<Subject> receivedSubjects = underTest.getRequiredSubjects(course);
-        //then
-        for (int i = 0; i <= 2; i++) {
-            Subject subject = subjects.get(i);
-            Subject receivedSubject = receivedSubjects.get(i);
-            assertThat(subject.getName()).isEqualTo(receivedSubject.getName());
-        }
+        Subject subject = mock(Subject.class);
+        University university = mock(University.class);
+
+        // when
+        testInstance.findCoursesByUniversityAndThirdSubject(university, subject);
+
+        // then
+        verify(courseRepository).findCoursesByUniversityAndThirdSubject(university, subject);
+
+    }
+
+    @Test
+    void shouldReturnCourses_WhenFindCoursesByUniversityAndThirdSubject() {
+        // given
+        Subject subject = mock(Subject.class);
+        University university = mock(University.class);
+        List<Course> courses = createCourseList();
+        Course course1 = courses.get(0);
+        Course course2 = courses.get(1);
+        Course course3 = courses.get(2);
+
+
+        when(courseRepository.findCoursesByUniversityAndThirdSubject(university, subject)).thenReturn(courses);
+
+        // when
+        List<Course> result = testInstance.findCoursesByUniversityAndThirdSubject(university, subject);
+
+        // then
+        assertThat(result).contains(course1, course2, course3);
+
+    }
+
+    @Test
+    void shouldReturnCourseRequiredSubjects() {
+        // given
+        Course course = new Course();
+        Subject subject1 = mock(Subject.class);
+        Subject subject2 = mock(Subject.class);
+        Subject subject3 = mock(Subject.class);
+        course.setFirstSubject(subject1);
+        course.setSecondSubject(subject2);
+        course.setThirdSubject(subject3);
+
+        // when
+        List<Subject> result = testInstance.getRequiredSubjects(course);
+
+        // then
+        assertThat(result).contains(subject1, subject2, subject3);
+
+    }
+
+    private List<Course> createCourseList() {
+        List<Course> courses = new ArrayList<>();
+        Course course1 = mock(Course.class);
+        Course course2 = mock(Course.class);
+        Course course3 = mock(Course.class);
+        courses.add(course1);
+        courses.add(course2);
+        courses.add(course3);
+        return courses;
     }
 }
