@@ -28,15 +28,15 @@ public class StudentFacade {
     private final StudentForecastService studentForecastService;
 
     public StudentFacade(StudentService studentService,
-                         StudentConverter converter,
-                         AdmissionService admissionService,
                          StudentForecastService studentForecastService,
+                         StudentAdmissionService studentAdmissionService,
+                         StudentConverter converter,
                          StudentReverseConverter reverseConverter,
-                         StudentAdmissionService studentAdmissionService1, AdmissionConverter admissionConverter) {
+                         AdmissionConverter admissionConverter) {
         this.studentService = studentService;
         this.converter = converter;
         this.reverseConverter = reverseConverter;
-        this.studentAdmissionService = studentAdmissionService1;
+        this.studentAdmissionService = studentAdmissionService;
         this.admissionConverter = admissionConverter;
         this.studentForecastService = studentForecastService;
     }

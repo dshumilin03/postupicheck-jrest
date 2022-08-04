@@ -10,6 +10,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import ru.joinmore.postupicheck.api.converters.SubjectConverter;
 import ru.joinmore.postupicheck.api.converters.SubjectReverseConverter;
 import ru.joinmore.postupicheck.api.dto.SubjectDto;
+import ru.joinmore.postupicheck.api.dto.SubjectDto;
+import ru.joinmore.postupicheck.api.entities.Subject;
 import ru.joinmore.postupicheck.api.entities.Subject;
 import ru.joinmore.postupicheck.api.services.SubjectService;
 
@@ -38,56 +40,153 @@ class SubjectFacadeTest {
     }
 
     @Test
-    void shouldCallConverterAndSubjectServiceWhenGivenId() {
-        //given
-        long id = 5;
-        Subject subject = new Subject("math");
+    void shouldCallSubjectServiceAndConverter_WhenGet() {
+        // given
+        long id = 5L;
+        Subject subject = mock(Subject.class);
         when(subjectService.get(id)).thenReturn(subject);
 
-        //when
+        // when
         testInstance.get(id);
 
-        //then
+        // then
         verify(converter).convert(subject);
+
     }
 
     @Test
-    void shouldReturnConvertedSubjectsWhenGetAll() {
-        //given
-        long id = 5;
-        Subject subject = new Subject("math");
-        when(subjectService.get(id)).thenReturn(subject);
+    void shouldReturnConvertedSubject_WhenGet() {
+        // given
+        long id = 5L;
+        Subject subject = mock(Subject.class);
         SubjectDto convertedSubject = mock(SubjectDto.class);
+        when(subjectService.get(id)).thenReturn(subject);
         when(converter.convert(subject)).thenReturn(convertedSubject);
-        //when
+
+        // when
         SubjectDto result = testInstance.get(id);
 
+        // then
+        assertThat(result).isEqualTo(convertedSubject);
+
+    }
+
+    @Test
+    void shouldCallConvertListAndSubjectService_WhenGetAll() {
+        // given
+        List<Subject> subjectList = new ArrayList<>();
+
+        // when
+        testInstance.getAll();
+
         //then
+        verify(subjectService).getAll();
+        verify(converter).convert(subjectList);
+
+    }
+
+    @Test
+    void shouldReturnConvertedList_WhenGetAll() {
+        // given
+        List<Subject> subjectList = new ArrayList<>();
+        List<SubjectDto> convertedList = new ArrayList<>();
+        SubjectDto subjectDto1 = mock(SubjectDto.class);
+        SubjectDto subjectDto2 = mock(SubjectDto.class);
+        SubjectDto subjectDto3 = mock(SubjectDto.class);
+        convertedList.add(subjectDto1);
+        convertedList.add(subjectDto2);
+        convertedList.add(subjectDto3);
+        when(subjectService.getAll()).thenReturn(subjectList);
+        when(converter.convert(subjectList)).thenReturn(convertedList);
+
+        // when
+        List<SubjectDto> result = testInstance.getAll();
+
+        //then
+        assertThat(result).contains(subjectDto1, subjectDto2, subjectDto3);
+
+    }
+
+    @Test
+    void shouldCallReverseConverterAndSubjectServiceAndConverter_WhenCreate() {
+        // given
+        SubjectDto newSubjectDto = mock(SubjectDto.class);
+        Subject newSubject = mock(Subject.class);
+        Subject createdSubject = mock(Subject.class);
+        when(reverseConverter.convert(newSubjectDto)).thenReturn(newSubject);
+        when(subjectService.create(newSubject)).thenReturn(createdSubject);
+
+        // when
+        testInstance.create(newSubjectDto);
+
+        // then
+        verify(converter).convert(createdSubject);
+    }
+
+    @Test
+    void shouldReturnConvertedSubject_WhenCreate() {
+        // given
+        SubjectDto newSubjectDto = mock(SubjectDto.class);
+        Subject newSubject = mock(Subject.class);
+        Subject createdSubject = mock(Subject.class);
+        SubjectDto convertedSubject = mock(SubjectDto.class);
+        when(reverseConverter.convert(newSubjectDto)).thenReturn(newSubject);
+        when(subjectService.create(newSubject)).thenReturn(createdSubject);
+        when(converter.convert(createdSubject)).thenReturn(convertedSubject);
+
+        // when
+        SubjectDto result = testInstance.create(newSubjectDto);
+
+        // then
         assertThat(result).isEqualTo(convertedSubject);
     }
 
     @Test
-    void getAll() {
-        //given
-        List<Subject> allSubjects = new ArrayList<>();
-        when(subjectService.getAll()).thenReturn(allSubjects);
+    void shouldCallReverseConverterAndSubjectServiceAndConverter_WhenReplace() {
+        // given
+        long id = 15L;
+        SubjectDto updatedSubjectDto = mock(SubjectDto.class);
+        Subject updatedSubject = mock(Subject.class);
+        Subject newSubject = mock(Subject.class);
+        when(reverseConverter.convert(updatedSubjectDto)).thenReturn(updatedSubject);
+        when(subjectService.replace(updatedSubject, id)).thenReturn(newSubject);
 
-        //when
-        testInstance.getAll();
+        // when
+        testInstance.replace(updatedSubjectDto, id);
 
-        //then
-        verify(converter).convert(allSubjects);
+        // then
+        verify(converter).convert(newSubject);
     }
 
     @Test
-    void create() {
+    void shouldReturnConvertedSubject_WhenReplace() {
+        // given
+        long id = 515L;
+        SubjectDto updatedSubjectDto = mock(SubjectDto.class);
+        Subject updatedSubject = mock(Subject.class);
+        Subject newSubject = mock(Subject.class);
+        SubjectDto convertedSubject = mock(SubjectDto.class);
+        when(reverseConverter.convert(updatedSubjectDto)).thenReturn(updatedSubject);
+        when(subjectService.replace(updatedSubject, id)).thenReturn(newSubject);
+        when(converter.convert(newSubject)).thenReturn(convertedSubject);
+
+        // when
+        SubjectDto result = testInstance.replace(updatedSubjectDto, id);
+
+        // then
+        assertThat(result).isEqualTo(convertedSubject);
     }
 
-    @Test
-    void replace() {
-    }
 
     @Test
-    void delete() {
+    void shouldCallSubjectServiceDelete() {
+        // given
+        long id = 5L;
+
+        // when
+        testInstance.delete(id);
+
+        // then
+        verify(subjectService).delete(id);
     }
 }

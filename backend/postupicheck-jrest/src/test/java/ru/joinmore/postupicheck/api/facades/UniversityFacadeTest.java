@@ -18,8 +18,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class UniversityFacadeTest {
@@ -31,9 +30,6 @@ class UniversityFacadeTest {
     @Mock
     UniversityReverseConverter reverseConverter;
 
-    @Captor
-    ArgumentCaptor<ArrayList<University>> universityListArgumentCaptor;
-
     private UniversityFacade testInstance;
 
     @BeforeEach
@@ -42,88 +38,153 @@ class UniversityFacadeTest {
     }
 
     @Test
-    void get() {
-        //given
-        University university = new University();
-        given(universityService.get(1L)).willReturn(university);
-        //when
-        testInstance.get(1L);
-        //then
-        ArgumentCaptor<Long> longArgumentCaptor = ArgumentCaptor.forClass(Long.class);
-        ArgumentCaptor<University> universityArgumentCaptor = ArgumentCaptor.forClass(University.class);
+    void shouldCallUniversityServiceAndConverter_WhenGet() {
+        // given
+        long id = 5L;
+        University university = mock(University.class);
+        when(universityService.get(id)).thenReturn(university);
 
-        verify(universityService).get(longArgumentCaptor.capture());
-        verify(converter).convert(universityArgumentCaptor.capture());
+        // when
+        testInstance.get(id);
 
-        long capturedLong = longArgumentCaptor.getValue();
-        University capturedUniversity = universityArgumentCaptor.getValue();
+        // then
+        verify(converter).convert(university);
 
-        assertThat(capturedLong).isEqualTo(1L);
-        assertThat(capturedUniversity).isEqualTo(university);
     }
 
     @Test
-    void getAll() {
-        //given
-        List<University> universityList = new ArrayList<>();
-        University university = new University();
-        university.setId(1L);
-        universityList.add(university);
-        given(universityService.getAll()).willReturn(universityList);
+    void shouldReturnConvertedUniversity_WhenGet() {
+        // given
+        long id = 5L;
+        University university = mock(University.class);
+        UniversityDto convertedUniversity = mock(UniversityDto.class);
+        when(universityService.get(id)).thenReturn(university);
+        when(converter.convert(university)).thenReturn(convertedUniversity);
 
-        //when
+        // when
+        UniversityDto result = testInstance.get(id);
+
+        // then
+        assertThat(result).isEqualTo(convertedUniversity);
+
+    }
+
+    @Test
+    void shouldCallConvertListAndUniversityService_WhenGetAll() {
+        // given
+        List<University> universityList = new ArrayList<>();
+
+        // when
         testInstance.getAll();
 
         //then
         verify(universityService).getAll();
-        verify(converter, times(universityList.size())).convert(universityListArgumentCaptor.capture());
+        verify(converter).convert(universityList);
 
-        List<University> capturedUniversities = universityListArgumentCaptor.getValue();
-
-        for (int i = 0; i < capturedUniversities.size(); i++)
-            assertThat(capturedUniversities.get(i).getId()).isEqualTo(universityList.get(i).getId());
     }
 
     @Test
-    void create() {
-        //given
-        University newUniversity = new University();
-        UniversityDto newUniversityDto = new UniversityDto(1, "testName");
-        University createdUniversity = new University();
-        given(reverseConverter.convert(newUniversityDto)).willReturn(newUniversity);
-        given(universityService.create(newUniversity)).willReturn(createdUniversity);
-        //when
-        testInstance.create(newUniversityDto);
+    void shouldReturnConvertedList_WhenGetAll() {
+        // given
+        List<University> universityList = new ArrayList<>();
+        List<UniversityDto> convertedList = new ArrayList<>();
+        UniversityDto universityDto1 = mock(UniversityDto.class);
+        UniversityDto universityDto2 = mock(UniversityDto.class);
+        UniversityDto universityDto3 = mock(UniversityDto.class);
+        convertedList.add(universityDto1);
+        convertedList.add(universityDto2);
+        convertedList.add(universityDto3);
+        when(universityService.getAll()).thenReturn(universityList);
+        when(converter.convert(universityList)).thenReturn(convertedList);
+
+        // when
+        List<UniversityDto> result = testInstance.getAll();
+
         //then
-        verify(reverseConverter).convert(newUniversityDto);
-        verify(universityService).create(newUniversity);
+        assertThat(result).contains(universityDto1, universityDto2, universityDto3);
+
+    }
+
+    @Test
+    void shouldCallReverseConverterAndUniversityServiceAndConverter_WhenCreate() {
+        // given
+        UniversityDto newUniversityDto = mock(UniversityDto.class);
+        University newUniversity = mock(University.class);
+        University createdUniversity = mock(University.class);
+        when(reverseConverter.convert(newUniversityDto)).thenReturn(newUniversity);
+        when(universityService.create(newUniversity)).thenReturn(createdUniversity);
+
+        // when
+        testInstance.create(newUniversityDto);
+
+        // then
         verify(converter).convert(createdUniversity);
     }
 
     @Test
-    void replace() {
-        //given
-        UniversityDto updatedUniversityDto = new UniversityDto(1, "testName");
-        long id = 1;
-        University updatedUniversity = new University();
-        University newUniversity = new University();
-        given(reverseConverter.convert(updatedUniversityDto)).willReturn(updatedUniversity);
-        given(universityService.replace(updatedUniversity, id)).willReturn(newUniversity);
-        //when
+    void shouldReturnConvertedUniversity_WhenCreate() {
+        // given
+        UniversityDto newUniversityDto = mock(UniversityDto.class);
+        University newUniversity = mock(University.class);
+        University createdUniversity = mock(University.class);
+        UniversityDto convertedUniversity = mock(UniversityDto.class);
+        when(reverseConverter.convert(newUniversityDto)).thenReturn(newUniversity);
+        when(universityService.create(newUniversity)).thenReturn(createdUniversity);
+        when(converter.convert(createdUniversity)).thenReturn(convertedUniversity);
+
+        // when
+        UniversityDto result = testInstance.create(newUniversityDto);
+
+        // then
+        assertThat(result).isEqualTo(convertedUniversity);
+    }
+
+    @Test
+    void shouldCallReverseConverterAndUniversityServiceAndConverter_WhenReplace() {
+        // given
+        long id = 15L;
+        UniversityDto updatedUniversityDto = mock(UniversityDto.class);
+        University updatedUniversity = mock(University.class);
+        University newUniversity = mock(University.class);
+        when(reverseConverter.convert(updatedUniversityDto)).thenReturn(updatedUniversity);
+        when(universityService.replace(updatedUniversity, id)).thenReturn(newUniversity);
+
+        // when
         testInstance.replace(updatedUniversityDto, id);
-        //then
-        verify(reverseConverter).convert(updatedUniversityDto);
-        verify(universityService).replace(updatedUniversity, id);
+
+        // then
         verify(converter).convert(newUniversity);
     }
 
     @Test
-    void delete() {
-        //given
-        long id = 5;
-        //when
+    void shouldReturnConvertedUniversity_WhenReplace() {
+        // given
+        long id = 515L;
+        UniversityDto updatedUniversityDto = mock(UniversityDto.class);
+        University updatedUniversity = mock(University.class);
+        University newUniversity = mock(University.class);
+        UniversityDto convertedUniversity = mock(UniversityDto.class);
+        when(reverseConverter.convert(updatedUniversityDto)).thenReturn(updatedUniversity);
+        when(universityService.replace(updatedUniversity, id)).thenReturn(newUniversity);
+        when(converter.convert(newUniversity)).thenReturn(convertedUniversity);
+
+        // when
+        UniversityDto result = testInstance.replace(updatedUniversityDto, id);
+
+        // then
+        assertThat(result).isEqualTo(convertedUniversity);
+    }
+
+
+    @Test
+    void shouldCallUniversityServiceDelete() {
+        // given
+        long id = 5L;
+
+        // when
         testInstance.delete(id);
-        //then
+
+        // then
         verify(universityService).delete(id);
     }
 }
