@@ -116,7 +116,8 @@ class AdmissionServiceTest {
         // given
         Student student = mock(Student.class);
         Course course = mock(Course.class);
-        Admission admission = new Admission(student, course);
+        int points = 235;
+        Admission admission = new Admission(student, course, points);
 
         // when
         testInstance.create(admission);
@@ -131,7 +132,8 @@ class AdmissionServiceTest {
         // given
         Student student = mock(Student.class);
         Course course = mock(Course.class);
-        Admission admission = new Admission(student, course);
+        int points = 234;
+        Admission admission = new Admission(student, course, points);
         when(admissionRepository.save(admission)).thenReturn(admission);
 
         // when
@@ -149,7 +151,8 @@ class AdmissionServiceTest {
         Student student = new Student("testName", "testSnils");
         Course course = new Course();
         course.setName(name);
-        Admission admission = new Admission(student, course);
+        int points = 123;
+        Admission admission = new Admission(student, course, points);
         
         // when
         when(admissionRepository.existsByCourseNameAndStudent(name, student)).thenReturn(true);
@@ -167,7 +170,8 @@ class AdmissionServiceTest {
         Student student = new Student("testName", "testSnils");
         Course course = new Course();
         course.setName(name);
-        Admission admission = new Admission(student, course);
+        int points = 143;
+        Admission admission = new Admission(student, course, points);
 
         // when
         when(admissionRepository.existsByCourseNameAndStudent(name, student)).thenReturn(true);
@@ -187,7 +191,8 @@ class AdmissionServiceTest {
         Course newCourse = mock(Course.class);
         Admission oldAdmission = mock(Admission.class);
         boolean newConsent = true;
-        Admission newAdmission = new Admission(newStudent, newCourse, newConsent);
+        int points = 235;
+        Admission newAdmission = new Admission(newStudent, newCourse, newConsent, points);
         long id = 45L;
         when(admissionRepository.findById(id)).thenReturn(Optional.of(oldAdmission));
 
@@ -199,6 +204,7 @@ class AdmissionServiceTest {
         inOrder.verify(oldAdmission).setStudent(newStudent);
         inOrder.verify(oldAdmission).setCourse(newCourse);
         inOrder.verify(oldAdmission).setConsent(newConsent);
+        inOrder.verify(oldAdmission).setPoints(points);
         inOrder.verify(admissionRepository).save(oldAdmission);
 
     }
@@ -209,7 +215,8 @@ class AdmissionServiceTest {
         Student newStudent = mock(Student.class);
         Course newCourse = mock(Course.class);
         Admission oldAdmission = mock(Admission.class);
-        Admission newAdmission = new Admission(newStudent, newCourse);
+        int points = 124;
+        Admission newAdmission = new Admission(newStudent, newCourse, points);
         long id = 45L;
         when(admissionRepository.findById(id)).thenReturn(Optional.of(oldAdmission));
         when(admissionRepository.save(oldAdmission)).thenReturn(oldAdmission);
@@ -381,6 +388,35 @@ class AdmissionServiceTest {
 
         // when
         List<Admission> result = testInstance.findAdmissionsByStudentId(id);
+
+        // then
+        assertThat(result).contains(admission1, admission2, admission3);
+    }
+
+    @Test
+    void shouldCallRepositoryGetCourseAdmissions() {
+        // given
+        Course course = mock(Course.class);
+
+        // when
+        testInstance.getCourseAdmissions(course);
+
+        // then
+        verify(admissionRepository).findAdmissionsByCourseOrderByPoints(course);
+    }
+
+    @Test
+    void shouldReturnCourseAdmissions() {
+        // given
+        List<Admission> courseAdmissions = createAdmissionList();
+        Admission admission1 = courseAdmissions.get(0);
+        Admission admission2 = courseAdmissions.get(1);
+        Admission admission3 = courseAdmissions.get(2);
+        Course course = mock(Course.class);
+        when(testInstance.getCourseAdmissions(course)).thenReturn(courseAdmissions);
+
+        // when
+        List<Admission> result = testInstance.getCourseAdmissions(course);
 
         // then
         assertThat(result).contains(admission1, admission2, admission3);

@@ -17,8 +17,9 @@ public class AdmissionConverter implements Converter<Admission, AdmissionDto>, L
         long studentId = admission.getStudent().getId();
         long courseId = admission.getCourse().getId();
         boolean consent = admission.isConsent();
+        int points = admission.getPoints();
 
-        return new AdmissionDto(admissionId, studentId, courseId, consent);
+        return new AdmissionDto(admissionId, studentId, courseId, consent, points);
     }
 
     @Override

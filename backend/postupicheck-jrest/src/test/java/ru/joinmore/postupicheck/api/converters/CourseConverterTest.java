@@ -35,6 +35,7 @@ class CourseConverterTest {
         Subject thirdSubject = new Subject();
         thirdSubject.setId(2L);
         int curPassingPoints = 231;
+        int budgetPlaces = 14;
 
         Course course = new Course(
                 "testName",
@@ -43,7 +44,8 @@ class CourseConverterTest {
                 firstSubject,
                 secondSubject,
                 thirdSubject,
-                curPassingPoints);
+                curPassingPoints,
+                budgetPlaces);
         course.setId(0L);
         //when
         CourseDto createdDto = testInstance.convert(course);
@@ -57,6 +59,7 @@ class CourseConverterTest {
         assertThat(createdDto.getThirdSubjectId()).isEqualTo(2L);
         assertThat(createdDto.getUniversityId()).isEqualTo(0L);
         assertThat((createdDto.getCurPassingPoints())).isEqualTo(231);
+        assertThat(createdDto.getBudgetPlaces()).isEqualTo(14);
 
     }
 
@@ -78,6 +81,8 @@ class CourseConverterTest {
         thirdSubject.setId(2L);
         int curPassingPoints1 = 231;
         int curPassingPoints2 = 211;
+        int budgetPlaces1 = 54;
+        int budgetPlaces2 = 34;
 
         Course course1 = new Course(
                 "testName1",
@@ -86,7 +91,8 @@ class CourseConverterTest {
                 firstSubject,
                 secondSubject,
                 thirdSubject,
-                curPassingPoints1);
+                curPassingPoints1,
+                budgetPlaces1);
         Course course2 = new Course(
                 "testName2",
                 "12355",
@@ -94,7 +100,8 @@ class CourseConverterTest {
                 firstSubject,
                 secondSubject,
                 thirdSubject,
-                curPassingPoints2);
+                curPassingPoints2,
+                budgetPlaces2);
         course1.setId(0L);
         course2.setId(1L);
         courses.add(course1);
@@ -113,6 +120,7 @@ class CourseConverterTest {
         assertThat(createdDto1.getThirdSubjectId()).isEqualTo(2L);
         assertThat(createdDto1.getUniversityId()).isEqualTo(0L);
         assertThat((createdDto1.getCurPassingPoints())).isEqualTo(231);
+        assertThat(createdDto1.getBudgetPlaces()).isEqualTo(54);
 
         assertThat(createdDto2.getId()).isEqualTo(1L);
         assertThat(createdDto2.getName()).isEqualTo("testName2");
@@ -122,6 +130,7 @@ class CourseConverterTest {
         assertThat(createdDto2.getThirdSubjectId()).isEqualTo(2L);
         assertThat(createdDto2.getUniversityId()).isEqualTo(1L);
         assertThat((createdDto2.getCurPassingPoints())).isEqualTo(211);
+        assertThat(createdDto2.getBudgetPlaces()).isEqualTo(34);
 
     }
 }

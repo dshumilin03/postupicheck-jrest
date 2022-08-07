@@ -107,8 +107,10 @@ class StudentAdmissionServiceTest {
         Course course2 = new Course();
         course1.setCurPassingPoints(150);
         course2.setCurPassingPoints(300);
-        Admission admission1 = new Admission(student, course1, true);
-        Admission admission2 = new Admission(student, course2, false);
+        int points1 = 213;
+        int points2 = 214;
+        Admission admission1 = new Admission(student, course1, true, points1);
+        Admission admission2 = new Admission(student, course2, false, points2);
         List<Admission> studentAdmissions = new ArrayList<>();
         studentAdmissions.add(admission1);
         studentAdmissions.add(admission2);
@@ -136,37 +138,16 @@ class StudentAdmissionServiceTest {
 //        when(testSpy.getStudentAdmissionPoints(student, course2)).thenReturn(165);
 
         // when
-        List<Admission> availableAdmissions = testInstance.getStudentAvailableAdmissions(id);
+        List<Admission> result = testInstance.getStudentAvailableAdmissions(id);
 
         // then
-        availableAdmissions.forEach(admission -> {
+        result.forEach(admission -> {
             assertThat(admission.getCourse().getCurPassingPoints()).isLessThan(165);
         });
     }
 
     @Test
     void shouldGetStudentAdmissionPoints() {
-
-//        StudentAdmissionService testSpy = spy(testInstance);
-//        when(testSpy.getStudentAdmissionPoints()).thenReturn(234);
-//
-//        Admission adm1 = new Admission();
-//        adm1.setCourse(new Course());
-//
-//        Admission adm2 = createAdmission();
-
-
-        // adm2
-        // adm3
-        // adm4
-        //
-
-        // testInstance.get...
-
-        // assertThat(result).contains(adm1, adm2);
-        // assertThat(result).hasSize(2)
-
-
         // given
         Student student = mock(Student.class);
         Course course = mock(Course.class);

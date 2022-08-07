@@ -23,7 +23,8 @@ class AdmissionConverterTest {
         //given
         Student student = new Student();
         Course course = new Course();
-        Admission admission = new Admission(student, course);
+        int points = 123;
+        Admission admission = new Admission(student, course, points);
         admission.setId(0L);
         student.setId(0L);
         course.setId(0L);
@@ -35,6 +36,7 @@ class AdmissionConverterTest {
         assertThat(createdDto.getId()).isEqualTo(0L);
         assertThat(createdDto.getStudentId()).isEqualTo(0L);
         assertThat(createdDto.getCourseId()).isEqualTo(0L);
+        assertThat(createdDto.getPoints()).isEqualTo(123);
 
     }
 
@@ -46,8 +48,10 @@ class AdmissionConverterTest {
         Student student2 = new Student();
         Course course = new Course();
         Course course2 = new Course();
-        Admission admission = new Admission(student, course);
-        Admission admission2 = new Admission(student2, course2);
+        int points1 = 123;
+        int points2 = 244;
+        Admission admission = new Admission(student, course, points1);
+        Admission admission2 = new Admission(student2, course2, points2);
         admission.setId(0L);
         admission2.setId(1L);
         student.setId(0L);
@@ -67,10 +71,12 @@ class AdmissionConverterTest {
         assertThat(createdDto1.getId()).isEqualTo(0L);
         assertThat(createdDto1.getStudentId()).isEqualTo(0L);
         assertThat(createdDto1.getCourseId()).isEqualTo(0L);
+        assertThat(createdDto1.getPoints()).isEqualTo(123);
 
         assertThat(createdDto2.getId()).isEqualTo(1L);
         assertThat(createdDto2.getStudentId()).isEqualTo(1L);
         assertThat(createdDto2.getCourseId()).isEqualTo(1L);
+        assertThat(createdDto2.getPoints()).isEqualTo(244);
 
     }
 

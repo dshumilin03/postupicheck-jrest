@@ -10,8 +10,8 @@ public class CourseDto {
     private long firstSubjectId;
     private long secondSubjectId;
     private long thirdSubjectId;
-
     private int curPassingPoints;
+    private int budgetPlaces;
 
     public CourseDto(
             long id,
@@ -21,7 +21,8 @@ public class CourseDto {
             long firstSubjectId,
             long secondSubjectId,
             long thirdSubjectId,
-            int curPassingPoints) {
+            int curPassingPoints,
+            int budgetPlaces) {
 
         this.id = id;
         this.name = name;
@@ -31,6 +32,15 @@ public class CourseDto {
         this.secondSubjectId = secondSubjectId;
         this.thirdSubjectId = thirdSubjectId;
         this.curPassingPoints = curPassingPoints;
+        this.budgetPlaces = budgetPlaces;
+    }
+
+    public int getBudgetPlaces() {
+        return budgetPlaces;
+    }
+
+    public void setBudgetPlaces(int budgetPlaces) {
+        this.budgetPlaces = budgetPlaces;
     }
 
     public long getId() {

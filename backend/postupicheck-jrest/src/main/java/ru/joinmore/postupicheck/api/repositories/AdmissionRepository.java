@@ -15,4 +15,5 @@ public interface AdmissionRepository extends JpaRepository<Admission, Long> {
     List<Admission> findAdmissionsByStudent(Student student);
     List<Admission> findAdmissionsByStudentId(long id);
     List<Admission> findAdmissionsByStudentAndCourseUniversity(Student student, University university);
+    List<Admission> findAdmissionsByCourseOrderByPoints(Course course);
 }

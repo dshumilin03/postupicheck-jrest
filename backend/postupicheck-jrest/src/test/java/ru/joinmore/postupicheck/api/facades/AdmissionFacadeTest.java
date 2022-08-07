@@ -10,12 +10,13 @@ import ru.joinmore.postupicheck.api.converters.AdmissionReverseConverter;
 import ru.joinmore.postupicheck.api.dto.AdmissionDto;
 import ru.joinmore.postupicheck.api.entities.Admission;
 import ru.joinmore.postupicheck.api.services.AdmissionService;
+import ru.joinmore.postupicheck.api.services.CourseAdmissionService;
+import ru.joinmore.postupicheck.api.services.CourseService;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -27,11 +28,13 @@ class AdmissionFacadeTest {
     @Mock
     private AdmissionConverter converter;
     @Mock
+    private CourseAdmissionService courseAdmissionService;
+    @Mock
     private AdmissionReverseConverter reverseConverter;
 
     @BeforeEach
     void setUp() {
-        testInstance = new AdmissionFacade(admissionService, converter, reverseConverter);
+        testInstance = new AdmissionFacade(admissionService, courseAdmissionService, converter, reverseConverter);
     }
 
     @Test
@@ -192,5 +195,25 @@ class AdmissionFacadeTest {
 
         // then
         verify(admissionService).deleteAll();
+    }
+
+    @Test
+    void shouldReturnCourseAdmissions() {
+        // given
+        long id = 124L;
+        List<Admission> admissions = new ArrayList<>();
+        Admission admission = mock(Admission.class);
+        admissions.add(admission);
+        List<AdmissionDto> admissionDtoList = new ArrayList<>();
+        AdmissionDto admissionDto = mock(AdmissionDto.class);
+        admissionDtoList.add(admissionDto);
+        when(courseAdmissionService.getCourseAdmissions(id)).thenReturn(admissions);
+        when(converter.convert(admissions)).thenReturn(admissionDtoList);
+
+        // when
+        List<AdmissionDto> result = testInstance.getCourseAdmissions(id);
+
+        // then
+        assertThat(result).contains(admissionDto);
     }
 }

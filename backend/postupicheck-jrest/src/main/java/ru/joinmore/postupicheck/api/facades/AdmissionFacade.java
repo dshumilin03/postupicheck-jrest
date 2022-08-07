@@ -13,16 +13,18 @@ import java.util.List;
 public class AdmissionFacade {
 
     private final AdmissionService admissionService;
+    private final CourseAdmissionService courseAdmissionService;
     private final AdmissionConverter converter;
 
 
     private final AdmissionReverseConverter reverseConverter;
 
     public AdmissionFacade(AdmissionService admissionService,
-                           AdmissionConverter converter,
+                           CourseAdmissionService courseAdmissionService, AdmissionConverter converter,
                            AdmissionReverseConverter reverseConverter) {
 
         this.admissionService = admissionService;
+        this.courseAdmissionService = courseAdmissionService;
         this.converter = converter;
         this.reverseConverter = reverseConverter;
 
@@ -56,6 +58,10 @@ public class AdmissionFacade {
         Admission newAdmission = admissionService.replace(updatedAdmission, id);
 
         return converter.convert(newAdmission);
+    }
+
+    public List<AdmissionDto> getCourseAdmissions(long id) {
+        return converter.convert(courseAdmissionService.getCourseAdmissions(id));
     }
 
     public void delete(long id) {

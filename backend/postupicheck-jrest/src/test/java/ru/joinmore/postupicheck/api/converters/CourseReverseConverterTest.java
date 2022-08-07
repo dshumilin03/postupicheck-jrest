@@ -41,7 +41,8 @@ class CourseReverseConverterTest {
                 1,
                 2,
                 3,
-                231);
+                231,
+                23);
         Subject subject = new Subject(1L, "testSubject1");
         Subject subject2 = new Subject(2L, "testSubject2");
         Subject subject3 = new Subject(3L, "testSubject3");
@@ -61,6 +62,8 @@ class CourseReverseConverterTest {
         assertThat(createdDao.getFirstSubject().getId()).isEqualTo(1);
         assertThat(createdDao.getSecondSubject().getId()).isEqualTo(2);
         assertThat(createdDao.getThirdSubject().getId()).isEqualTo(3);
+        assertThat(createdDao.getCurPassingPoints()).isEqualTo(231);
+        assertThat(createdDao.getBudgetPlaces()).isEqualTo(23);
 
     }
 

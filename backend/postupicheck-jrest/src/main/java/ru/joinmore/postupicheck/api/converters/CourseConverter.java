@@ -18,6 +18,7 @@ public class CourseConverter implements Converter<Course, CourseDto> , ListConve
         long secondSubjectId = course.getSecondSubject().getId();
         long thirdSubjectId = course.getThirdSubject().getId();
         int curPassingPoints = course.getCurPassingPoints();
+        int budgetPlaces = course.getBudgetPlaces();
         long id = course.getId();
         String name = course.getName();
         String code = course.getCode();
@@ -30,7 +31,8 @@ public class CourseConverter implements Converter<Course, CourseDto> , ListConve
                 firstSubjectId,
                 secondSubjectId,
                 thirdSubjectId,
-                curPassingPoints);
+                curPassingPoints,
+                budgetPlaces);
     }
 
     @Override

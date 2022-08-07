@@ -14,14 +14,16 @@ public class TestDataService {
     private final StudentService studentService;
     private final CourseService courseService;
     private final AdmissionService admissionService;
+    private final StudentAdmissionService studentAdmissionService;
 
-    public TestDataService(UniversityService universityService, SubjectService subjectService, StudentExamResultService studentExamResultService, StudentService studentService, CourseService courseService, AdmissionService admissionService) {
+    public TestDataService(UniversityService universityService, SubjectService subjectService, StudentExamResultService studentExamResultService, StudentService studentService, CourseService courseService, AdmissionService admissionService, StudentAdmissionService studentAdmissionService) {
         this.universityService = universityService;
         this.subjectService = subjectService;
         this.studentExamResultService = studentExamResultService;
         this.studentService = studentService;
         this.courseService = courseService;
         this.admissionService = admissionService;
+        this.studentAdmissionService = studentAdmissionService;
     }
 
     public void createTestStudents() {
@@ -93,6 +95,7 @@ public class TestDataService {
 
             String universityName = university.getName();
 
+            int budgetPlaces1 = random.nextInt(100) + 1;
             createTestCourse(informaticsCoursesCount,
                     "Ахматология-Инфа",
                     universityName, informatics,
@@ -100,8 +103,10 @@ public class TestDataService {
                     university,
                     math,
                     ru,
-                    curPassingPoints);
+                    curPassingPoints,
+                    budgetPlaces1);
 
+            int budgetPlaces2 = random.nextInt(100) + 1;
             createTestCourse(physicsCoursesCount,
                     "Ахматология-Физика",
                     universityName, physics,
@@ -109,7 +114,10 @@ public class TestDataService {
                     university,
                     math,
                     ru,
-                    curPassingPoints);
+                    curPassingPoints,
+                    budgetPlaces2);
+
+            int budgetPlaces3 = random.nextInt(100) + 1;
             createTestCourse(socialScienceCoursesCount,
                     "Ахматология-Общага",
                     universityName, socialScience,
@@ -117,7 +125,10 @@ public class TestDataService {
                     university,
                     math,
                     ru,
-                    curPassingPoints);
+                    curPassingPoints,
+                    budgetPlaces3);
+
+            int budgetPlaces4 = random.nextInt(100) + 1;
             createTestCourse(chemistryCoursesCount,
                     "Ахматология-Химия",
                     universityName, chemistry,
@@ -125,7 +136,10 @@ public class TestDataService {
                     university,
                     math,
                     ru,
-                    curPassingPoints);
+                    curPassingPoints,
+                    budgetPlaces4);
+
+            int budgetPlaces5 = random.nextInt(100) + 1;
             createTestCourse(biologyCoursesCount,
                     "Ахматология-Биология",
                     universityName, biology,
@@ -133,27 +147,29 @@ public class TestDataService {
                     university,
                     math,
                     ru,
-                    curPassingPoints);
+                    curPassingPoints,
+                    budgetPlaces5);
 
         });
 
     }
 
-    private void createTestCourse(int coursesCount,
-                             String courseName,
-                             String universityName,
-                             Subject thirdSubject,
-                             int codeNumber,
-                             University university,
-                             Subject math,
-                             Subject ru,
-                             int curPassingPoints
-                             ) {
+    private void createTestCourse(
+            int coursesCount,
+            String courseName,
+            String universityName,
+            Subject thirdSubject,
+            int codeNumber,
+            University university,
+            Subject math,
+            Subject ru,
+            int curPassingPoints,
+            int budgetPlaces) {
 
         for (int i = 1; i <= coursesCount;i++) {
             String name = String.format("%s %d в %s", courseName, i, universityName);
             String code = "код " + codeNumber;
-            Course course = new Course(name, code, university, math, ru, thirdSubject, curPassingPoints);
+            Course course = new Course(name, code, university, math, ru, thirdSubject, curPassingPoints, budgetPlaces);
             courseService.create(course);
         }
     }
@@ -212,7 +228,8 @@ public class TestDataService {
             if (availableCourses.size() > 0) {
                 Collections.shuffle(availableCourses);
                 Course course = availableCourses.get(0);
-                Admission admission = new Admission(student, course);
+                int points = 0;
+                Admission admission = new Admission(student, course, points);
                 admissionService.create(admission);
                 availableCourses.remove(course);
 
@@ -222,6 +239,28 @@ public class TestDataService {
 
     }
 
+    public void setRandomBudgetPlacesForAllCourses() {
+        Random random = new Random();
+        List<Course> allCourses = courseService.getAll();
+        allCourses.forEach(course -> {
+            long id = course.getId();
+            int budgetPlaces = random.nextInt(100) + 1;
+            course.setBudgetPlaces(budgetPlaces);
+            courseService.replace(course, id);
+        });
+    }
+
+    public void setPointsForAllAdmissions() {
+        List<Admission> allAdmissions = admissionService.getAll();
+        allAdmissions.forEach(admission -> {
+            long id = admission.getId();
+            Course admissionCourse = admission.getCourse();
+            Student admissionStudent = admission.getStudent();
+            int points = studentAdmissionService.getStudentAdmissionPoints(admissionStudent, admissionCourse);
+            admission.setPoints(points);
+            admissionService.replace(admission, id);
+        });
+    }
 
     private void chooseUniversityThenCreateAdmissions(Random random, Student student) {
         //Берем рандомный уник
@@ -236,7 +275,6 @@ public class TestDataService {
             chooseUniversityThenCreateAdmissions(random, student);
         }
     }
-
 
     private Set<Subject> getRandomSubjects() {
         Set<Subject> subjects = new HashSet<>();

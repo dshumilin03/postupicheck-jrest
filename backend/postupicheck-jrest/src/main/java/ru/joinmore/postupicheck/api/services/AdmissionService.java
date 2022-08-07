@@ -56,6 +56,12 @@ public class AdmissionService {
         return repository.findAdmissionsByStudentAndCourseUniversity(student, university);
     }
 
+    // create tests
+    public List<Admission> getCourseAdmissions(Course course) {
+
+        return repository.findAdmissionsByCourseOrderByPoints(course);
+    }
+
     public void delete(long id) {
 
         try {
@@ -73,6 +79,7 @@ public class AdmissionService {
         admission.setStudent(updatedAdmission.getStudent());
         admission.setCourse(updatedAdmission.getCourse());
         admission.setConsent(updatedAdmission.isConsent());
+        admission.setPoints(updatedAdmission.getPoints());
         return repository.save(admission);
     }
 

@@ -18,35 +18,43 @@ public class Admission {
     private Course course;
 
     private Boolean consent;
+    private Integer points;
 
     public Admission() {
     }
 
-    public Admission(Student student, Course course) {
+    public Admission(Student student, Course course, int points) {
         this.student = student;
         this.course = course;
         this.consent = false;
+        this.points = points;
     }
 
-    public Admission(Student student, Course course, Boolean consent) {
+    public Admission(Student student, Course course, Boolean consent, int points) {
         this.student = student;
         this.course = course;
         this.consent = consent;
+        this.points = points;
+
     }
 
-    public Admission(Long id, Student student, Course course) {
+    public Admission(Long id, Student student, Course course, int points) {
         this.id = id;
         this.student = student;
         this.course = course;
         this.consent = false;
+        this.points = points;
+
     }
 
 
-    public Admission(Long id, Student student, Course course, Boolean consent) {
+    public Admission(Long id, Student student, Course course, Boolean consent, int points) {
         this.id = id;
         this.student = student;
         this.course = course;
         this.consent = consent;
+        this.points = points;
+
     }
 
     public Boolean isConsent() {
@@ -79,6 +87,18 @@ public class Admission {
 
     public void setCourse(Course course) {
         this.course = course;
+    }
+
+    public Boolean getConsent() {
+        return consent;
+    }
+
+    public int getPoints() {
+        return points;
+    }
+
+    public void setPoints(int points) {
+        this.points = points;
     }
 
     @Override

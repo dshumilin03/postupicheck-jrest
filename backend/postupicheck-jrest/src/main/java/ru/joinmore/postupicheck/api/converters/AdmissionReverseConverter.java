@@ -26,10 +26,11 @@ public class AdmissionReverseConverter implements Converter<AdmissionDto, Admiss
         long newCourseId = newAdmissionDto.getCourseId();
         long admissionId = newAdmissionDto.getId();
         boolean consent = newAdmissionDto.isConsent();
+        int points = newAdmissionDto.getPoints();
 
         Student newStudent = studentService.get(newStudentId);
         Course newCourse = courseService.get(newCourseId);
 
-        return new Admission(admissionId, newStudent, newCourse, consent);
+        return new Admission(admissionId, newStudent, newCourse, consent, points);
     }
 }

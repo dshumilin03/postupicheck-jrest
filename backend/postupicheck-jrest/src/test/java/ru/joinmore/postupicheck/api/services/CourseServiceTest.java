@@ -182,7 +182,16 @@ class CourseServiceTest {
         Subject subject2 = mock(Subject.class);
         Subject subject3 = mock(Subject.class);
         int curPassingPoints = 200;
-        Course newCourse = new Course(newName, newCode, newUniversity, subject1, subject2, subject3, curPassingPoints);
+        int budgetPlaces = 31;
+        Course newCourse = new Course(
+                newName,
+                newCode,
+                newUniversity,
+                subject1,
+                subject2,
+                subject3,
+                curPassingPoints,
+                budgetPlaces);
         long id = 234L;
         when(courseRepository.findById(id)).thenReturn(Optional.of(oldCourse));
 
@@ -198,6 +207,7 @@ class CourseServiceTest {
         inOrder.verify(oldCourse).setSecondSubject(subject2);
         inOrder.verify(oldCourse).setThirdSubject(subject3);
         inOrder.verify(oldCourse).setCurPassingPoints(curPassingPoints);
+        inOrder.verify(oldCourse).setBudgetPlaces(budgetPlaces);
         inOrder.verify(courseRepository).save(oldCourse);
 
     }
@@ -213,7 +223,16 @@ class CourseServiceTest {
         Subject subject2 = mock(Subject.class);
         Subject subject3 = mock(Subject.class);
         int curPassingPoints = 200;
-        Course newCourse = new Course(newName, newCode, newUniversity, subject1, subject2, subject3, curPassingPoints);
+        int budgetPlaces = 55;
+        Course newCourse = new Course(
+                newName,
+                newCode,
+                newUniversity,
+                subject1,
+                subject2,
+                subject3,
+                curPassingPoints,
+                budgetPlaces);
         long id = 234L;
         when(courseRepository.findById(id)).thenReturn(Optional.of(oldCourse));
         when(courseRepository.save(oldCourse)).thenReturn(oldCourse);

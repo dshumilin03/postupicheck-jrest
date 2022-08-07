@@ -35,6 +35,12 @@ public class AdmissionController {
         return admissionFacade.get(id);
     }
 
+    @GetMapping("/course/{id}")
+    @ResponseStatus(code = HttpStatus.OK)
+    List<AdmissionDto> getCourseAdmissions(@PathVariable Long id) {
+        return admissionFacade.getCourseAdmissions(id);
+    }
+
     @PutMapping("/{id}")
     @ResponseStatus(code = HttpStatus.OK)
     AdmissionDto replaceAdmission(@RequestBody AdmissionDto updatedAdmission, @PathVariable Long id) {

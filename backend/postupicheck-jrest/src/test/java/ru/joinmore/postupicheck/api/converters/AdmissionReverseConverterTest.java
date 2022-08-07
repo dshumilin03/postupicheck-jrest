@@ -37,7 +37,7 @@ class AdmissionReverseConverterTest {
     @Test
     void convert() {
         //given
-        AdmissionDto admissionDto = new AdmissionDto(1, 1, 1,  false);
+        AdmissionDto admissionDto = new AdmissionDto(1, 1, 1,  false, 123);
         Student student = new Student(1L, "testName", "1234");
         Course course = new Course();
         course.setId(1L);
@@ -50,6 +50,7 @@ class AdmissionReverseConverterTest {
         assertThat(createdDao.getId()).isEqualTo(1L);
         assertThat(createdDao.getStudent().getId()).isEqualTo(1);
         assertThat(createdDao.getCourse().getId()).isEqualTo(1);
+        assertThat(createdDao.getPoints()).isEqualTo(123);
 
     }
 }

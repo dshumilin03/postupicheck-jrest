@@ -31,13 +31,23 @@ public class CourseReverseConverter implements Converter<CourseDto, Course> {
         long thirdSubjectId = courseDto.getThirdSubjectId();
         long courseId = courseDto.getId();
         int curPassingPoints = courseDto.getCurPassingPoints();
+        int budgetPlaces = courseDto.getBudgetPlaces();
 
         University university = universityService.get(universityId);
         Subject firstSubject = subjectService.get(firstSubjectId);
         Subject secondSubject = subjectService.get(secondSubjectId);
         Subject thirdSubject = subjectService.get(thirdSubjectId);
 
-        return new Course(courseId, courseName, courseCode, university, firstSubject, secondSubject, thirdSubject, curPassingPoints);
+        return new Course(
+                courseId,
+                courseName,
+                courseCode,
+                university,
+                firstSubject,
+                secondSubject,
+                thirdSubject,
+                curPassingPoints,
+                budgetPlaces);
 
     }
 }

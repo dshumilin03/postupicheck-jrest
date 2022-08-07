@@ -6,12 +6,23 @@ public class AdmissionDto {
     private long studentId;
     private long courseId;
     private boolean consent;
+    private int points;
 
-    public AdmissionDto(long id, long studentId, long courseId, boolean consent) {
+    public AdmissionDto(long id, long studentId, long courseId, boolean consent, int points) {
         this.id = id;
         this.studentId = studentId;
         this.courseId = courseId;
         this.consent = consent;
+        this.points = points;
+
+    }
+
+    public int getPoints() {
+        return points;
+    }
+
+    public void setPoints(int points) {
+        this.points = points;
     }
 
     public boolean isConsent() {

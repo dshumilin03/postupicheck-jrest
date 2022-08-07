@@ -12,8 +12,8 @@ public class Course {
     private Long id;
     private String name;
     private String code;
-
     private Integer curPassingPoints;
+    private Integer budgetPlaces;
 
     @ManyToOne
     @JoinColumn(name = "university_id", referencedColumnName = "id")
@@ -45,7 +45,8 @@ public class Course {
             Subject firstSubject,
             Subject secondSubject,
             Subject thirdSubject,
-            Integer curPassingPoints) {
+            Integer curPassingPoints,
+            Integer budgetPlaces) {
         this.name = name;
         this.code = code;
         this.university = university;
@@ -53,6 +54,7 @@ public class Course {
         this.secondSubject = secondSubject;
         this.thirdSubject = thirdSubject;
         this.curPassingPoints = curPassingPoints;
+        this.budgetPlaces = budgetPlaces;
     }
 
     public Course(Long id,
@@ -62,7 +64,8 @@ public class Course {
                   Subject firstSubject,
                   Subject secondSubject,
                   Subject thirdSubject,
-                  Integer curPassingPoints) {
+                  Integer curPassingPoints,
+                  Integer budgetPlaces) {
         this.id = id;
         this.name = name;
         this.code = code;
@@ -71,6 +74,7 @@ public class Course {
         this.secondSubject = secondSubject;
         this.thirdSubject = thirdSubject;
         this.curPassingPoints = curPassingPoints;
+        this.budgetPlaces = budgetPlaces;
     }
 
     public Long getId() {
@@ -103,6 +107,14 @@ public class Course {
 
     public void setCurPassingPoints(Integer curPassingPoints) {
         this.curPassingPoints = curPassingPoints;
+    }
+
+    public Integer getBudgetPlaces() {
+        return budgetPlaces;
+    }
+
+    public void setBudgetPlaces(Integer budgetPlaces) {
+        this.budgetPlaces = budgetPlaces;
     }
 
     public University getUniversity() {
