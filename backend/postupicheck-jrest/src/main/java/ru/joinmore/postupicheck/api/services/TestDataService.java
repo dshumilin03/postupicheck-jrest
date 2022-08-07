@@ -199,6 +199,23 @@ public class TestDataService {
 
     }
 
+    public void createSubjects() {
+        Subject math = new Subject("Математика");
+        Subject ru = new Subject("Русский язык");
+        Subject inf = new Subject("Информатика");
+        Subject phys = new Subject("Физика");
+        Subject biology = new Subject("Биология");
+        Subject chemistry = new Subject("Химия");
+        Subject socialScience = new Subject("Обществознание");
+        subjectService.create(math);
+        subjectService.create(ru);
+        subjectService.create(inf);
+        subjectService.create(phys);
+        subjectService.create(biology);
+        subjectService.create(chemistry);
+        subjectService.create(socialScience);
+    }
+
     private void createAdmissionsWithCourses(Student student, Subject math, Subject ru, int admissionsInUniversityCount, University university) {
 
         List<Subject> passedSubjects = new ArrayList<>();
@@ -222,7 +239,7 @@ public class TestDataService {
             availableCourses.addAll(subjectCourses);
         });
 
-        //костыльно берем результат экзамена НЕ матеши и НЕ русского и создаем заявления
+        // костыльно берем результат экзамена НЕ матеши и НЕ русского и создаем заявления
         for (int i = 1; i <= admissionsInUniversityCount; i++) {
 
             if (availableCourses.size() > 0) {

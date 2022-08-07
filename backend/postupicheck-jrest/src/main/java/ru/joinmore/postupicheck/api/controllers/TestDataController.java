@@ -44,6 +44,12 @@ public class TestDataController {
         testDataService.createTestAdmissions();
     }
 
+    @PostMapping("/create-subjects")
+    @ResponseStatus(code = HttpStatus.CREATED)
+    void createTestSubjects() {
+        testDataService.createSubjects();
+    }
+
     @PostMapping("/set-random-budget-places")
     @ResponseStatus(code = HttpStatus.OK)
     void setRandomBudgetPlacesForAllCourses() {
