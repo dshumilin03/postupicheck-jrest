@@ -2,6 +2,7 @@ package ru.joinmore.postupicheck.api.services;
 
 import org.springframework.stereotype.Service;
 import ru.joinmore.postupicheck.api.entities.*;
+import ru.joinmore.postupicheck.api.repositories.*;
 
 import java.util.*;
 
@@ -15,8 +16,27 @@ public class TestDataService {
     private final CourseService courseService;
     private final AdmissionService admissionService;
     private final StudentAdmissionService studentAdmissionService;
+    private final StudentRepository studentRepository;
+    private final SubjectRepository subjectRepository;
+    private final UniversityRepository universityRepository;
+    private final CourseRepository courseRepository;
+    private final StudentExamResultRepository studentExamResultRepository;
+    private final AdmissionRepository admissionRepository;
 
-    public TestDataService(UniversityService universityService, SubjectService subjectService, StudentExamResultService studentExamResultService, StudentService studentService, CourseService courseService, AdmissionService admissionService, StudentAdmissionService studentAdmissionService) {
+    public TestDataService(
+            UniversityService universityService,
+            SubjectService subjectService,
+            StudentExamResultService studentExamResultService,
+            StudentService studentService,
+            CourseService courseService,
+            AdmissionService admissionService,
+            StudentAdmissionService studentAdmissionService,
+            StudentRepository studentRepository,
+            SubjectRepository subjectRepository,
+            UniversityRepository universityRepository,
+            CourseRepository courseRepository,
+            StudentExamResultRepository studentExamResultRepository,
+            AdmissionRepository admissionRepository) {
         this.universityService = universityService;
         this.subjectService = subjectService;
         this.studentExamResultService = studentExamResultService;
@@ -24,20 +44,26 @@ public class TestDataService {
         this.courseService = courseService;
         this.admissionService = admissionService;
         this.studentAdmissionService = studentAdmissionService;
+        this.studentRepository = studentRepository;
+        this.subjectRepository = subjectRepository;
+        this.universityRepository = universityRepository;
+        this.courseRepository = courseRepository;
+        this.studentExamResultRepository = studentExamResultRepository;
+        this.admissionRepository = admissionRepository;
     }
 
     public void createTestStudents() {
-        for (int i = 1; i < 10000; i++) {
+        for (int i = 1; i <= 10000; i++) {
             String snils = String.format("%011d", i);
-            Student student = new Student("Кадыров" + i, snils);
-            studentService.create(student);
+            Student student = new Student("Иванов " + i, snils);
+            studentRepository.save(student);
         }
     }
 
     public void createTestUniversities() {
         for (int i = 1; i <= 100; i++) {
-            University university = new University("Чеченский Государственный Университет " + i);
-            universityService.create(university);
+            University university = new University("Государственный Университет " + i);
+            universityRepository.save(university);
         }
     }
 
@@ -55,13 +81,13 @@ public class TestDataService {
         Set<Subject> subjects = getRandomSubjects();
         StudentExamResult studentExamResultMath = new StudentExamResult(mathPoints, student, firstSubject);
         StudentExamResult studentExamResultRu = new StudentExamResult(ruPoints, student, secondSubject);
-        studentExamResultService.create(studentExamResultMath);
-        studentExamResultService.create(studentExamResultRu);
+        studentExamResultRepository.save(studentExamResultMath);
+        studentExamResultRepository.save(studentExamResultRu);
 
         subjects.forEach(subject -> {
             int points = random.nextInt(100) + 1;
             StudentExamResult studentExamResult = new StudentExamResult(points, student, subject);
-            studentExamResultService.create(studentExamResult);
+            studentExamResultRepository.save(studentExamResult);
         });
 
     }
@@ -97,7 +123,7 @@ public class TestDataService {
 
             int budgetPlaces1 = random.nextInt(100) + 1;
             createTestCourse(informaticsCoursesCount,
-                    "Ахматология-Инфа",
+                    "Направление-Информатика",
                     universityName, informatics,
                     informaticsCodeNumber,
                     university,
@@ -108,7 +134,7 @@ public class TestDataService {
 
             int budgetPlaces2 = random.nextInt(100) + 1;
             createTestCourse(physicsCoursesCount,
-                    "Ахматология-Физика",
+                    "Направление-Физика",
                     universityName, physics,
                     physicsCodeNumber,
                     university,
@@ -119,7 +145,7 @@ public class TestDataService {
 
             int budgetPlaces3 = random.nextInt(100) + 1;
             createTestCourse(socialScienceCoursesCount,
-                    "Ахматология-Общага",
+                    "Направление-Обществознание",
                     universityName, socialScience,
                     socialScienceCodeNumber,
                     university,
@@ -130,7 +156,7 @@ public class TestDataService {
 
             int budgetPlaces4 = random.nextInt(100) + 1;
             createTestCourse(chemistryCoursesCount,
-                    "Ахматология-Химия",
+                    "Направление-Химия",
                     universityName, chemistry,
                     chemistryCodeNumber,
                     university,
@@ -141,7 +167,7 @@ public class TestDataService {
 
             int budgetPlaces5 = random.nextInt(100) + 1;
             createTestCourse(biologyCoursesCount,
-                    "Ахматология-Биология",
+                    "Направление-Биология",
                     universityName, biology,
                     biologyCodeNumber,
                     university,
@@ -170,7 +196,7 @@ public class TestDataService {
             String name = String.format("%s %d в %s", courseName, i, universityName);
             String code = "код " + codeNumber;
             Course course = new Course(name, code, university, math, ru, thirdSubject, curPassingPoints, budgetPlaces);
-            courseService.create(course);
+            courseRepository.save(course);
         }
     }
 
@@ -207,13 +233,13 @@ public class TestDataService {
         Subject biology = new Subject("Биология");
         Subject chemistry = new Subject("Химия");
         Subject socialScience = new Subject("Обществознание");
-        subjectService.create(math);
-        subjectService.create(ru);
-        subjectService.create(inf);
-        subjectService.create(phys);
-        subjectService.create(biology);
-        subjectService.create(chemistry);
-        subjectService.create(socialScience);
+        subjectRepository.save(math);
+        subjectRepository.save(ru);
+        subjectRepository.save(inf);
+        subjectRepository.save(phys);
+        subjectRepository.save(biology);
+        subjectRepository.save(chemistry);
+        subjectRepository.save(socialScience);
     }
 
     private void createAdmissionsWithCourses(Student student, Subject math, Subject ru, int admissionsInUniversityCount, University university) {
@@ -247,7 +273,7 @@ public class TestDataService {
                 Course course = availableCourses.get(0);
                 int points = 0;
                 Admission admission = new Admission(student, course, points);
-                admissionService.create(admission);
+                admissionRepository.save(admission);
                 availableCourses.remove(course);
 
             }
