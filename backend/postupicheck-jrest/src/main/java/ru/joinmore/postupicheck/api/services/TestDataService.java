@@ -219,7 +219,7 @@ public class TestDataService {
         Subject math = subjectService.get(1);
         Subject ru = subjectService.get(2);
         int admissionsInUniversityCount = random.nextInt(5) + 1;
-        // выбираем сколько студент подаст заявлений в данный уник
+        // Выбираем сколько студент подаст заявлений в данный уник
         // подаем столько заявлений сколько рассчитали выше
         createAdmissionsWithCourses(student, math, ru, admissionsInUniversityCount, randomUniversity);
 
@@ -265,7 +265,7 @@ public class TestDataService {
             availableCourses.addAll(subjectCourses);
         });
 
-        // костыльно берем результат экзамена НЕ матеши и НЕ русского и создаем заявления
+        // Костыльно берем результат экзамена НЕ математики и НЕ русского и создаем заявления
         for (int i = 1; i <= admissionsInUniversityCount; i++) {
 
             if (availableCourses.size() > 0) {
@@ -306,11 +306,11 @@ public class TestDataService {
     }
 
     private void chooseUniversityThenCreateAdmissions(Random random, Student student) {
-        //Берем рандомный уник
+        // Берем рандомный уник
         int id = random.nextInt(100) + 1;
         University randomUniversity = universityService.get(id);
         List<Admission> admissions = admissionService.findAdmissionsByStudentAndCourseUniversity(student, randomUniversity);
-        //проверяем что он уже туда не подавал
+        // Проверяем что он уже туда не подавал
         if (admissions.size() == 0) {
             chooseCoursesThenCreateAdmissions(random, randomUniversity, student);
 

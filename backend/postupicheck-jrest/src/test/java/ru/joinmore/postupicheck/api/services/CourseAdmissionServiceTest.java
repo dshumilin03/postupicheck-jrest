@@ -33,22 +33,26 @@ class CourseAdmissionServiceTest {
     void shouldSetCurPassingScoreToLastBudgetPlace() {
         // given
         long id = 145L;
+
         Course course = new Course();
-        int budgetPlaces = 2;
-        course.setBudgetPlaces(budgetPlaces);
+        course.setBudgetPlaces(2);
         course.setId(id);
+
         List<Course> allCourses = new ArrayList<>();
         allCourses.add(course);
-        List<Admission> courseAdmissions = new ArrayList<>();
+
         Admission admission1 = new Admission();
         Admission admission2 = new Admission();
         Admission admission3 = new Admission();
         admission1.setPoints(120);
         admission2.setPoints(140);
         admission3.setPoints(250);
+
+        List<Admission> courseAdmissions = new ArrayList<>();
         courseAdmissions.add(admission1);
         courseAdmissions.add(admission2);
         courseAdmissions.add(admission3);
+
         when(admissionService.getCourseAdmissions(course)).thenReturn(courseAdmissions);
         when(courseService.getAll()).thenReturn(allCourses);
 
