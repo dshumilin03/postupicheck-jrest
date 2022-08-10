@@ -1,6 +1,7 @@
 package ru.joinmore.postupicheck.api.entities;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "student_forecasts")
@@ -12,7 +13,7 @@ public class StudentForecast {
     private Long id;
 
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "admission_id", referencedColumnName = "id")
     private Admission admission;
 
@@ -44,6 +45,4 @@ public class StudentForecast {
     public void setAdmission(Admission admission) {
         this.admission = admission;
     }
-
-
 }

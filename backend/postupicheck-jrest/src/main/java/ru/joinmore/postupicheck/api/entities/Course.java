@@ -2,8 +2,10 @@ package ru.joinmore.postupicheck.api.entities;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
+@Table(indexes = @Index(columnList = "id"))
 public class Course {
 
     @Id
@@ -15,15 +17,15 @@ public class Course {
     private Integer curPassingPoints;
     private Integer budgetPlaces;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "university_id", referencedColumnName = "id")
     private University university;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "first_subject_id", referencedColumnName = "id")
     private Subject firstSubject;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "second_subject_id", referencedColumnName = "id")
     private Subject secondSubject;
 

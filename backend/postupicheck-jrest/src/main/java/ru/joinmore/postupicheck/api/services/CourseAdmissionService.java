@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 import ru.joinmore.postupicheck.api.entities.Admission;
 import ru.joinmore.postupicheck.api.entities.Course;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -19,11 +18,9 @@ public class CourseAdmissionService {
     }
 
     // need to test
-    public List<Course> updateCourseCurPassingScore() {
+    public void updateCourseCurPassingScore() {
         List<Course> courses = courseService.getAll();
-        List<Course> updatedCourses = new ArrayList<>();
         courses.forEach(course -> {
-            long id = course.getId();
             int budgetPlaces = course.getBudgetPlaces();
 
             List<Admission> courseAdmissions = admissionService.getCourseAdmissions(course);
@@ -36,11 +33,9 @@ public class CourseAdmissionService {
             }
             int newPassingScore = lastAdmission.getPoints();
             course.setCurPassingPoints(newPassingScore);
-            Course updatedCourse = courseService.replace(course, id);
-            updatedCourses.add(updatedCourse);
 
         });
-        return updatedCourses;
+        courseService.saveAll(courses);
     }
 
     public List<Admission> getCourseAdmissions(long id) {

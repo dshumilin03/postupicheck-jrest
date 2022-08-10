@@ -86,4 +86,8 @@ public class AdmissionService {
     public List<Admission> findAdmissionsByStudentId(Long id) {
         return repository.findAdmissionsByStudentId(id);
     }
+
+    public List<Admission> saveAll(List<Admission> admissions) {
+        return repository.saveAll(admissions);
+    }
 }

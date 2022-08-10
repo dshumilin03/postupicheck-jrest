@@ -4,6 +4,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 @Entity(name = "universities")
 public class University {
@@ -13,7 +14,7 @@ public class University {
     private Long id;
     private String name;
 
-    @OneToMany(mappedBy="university", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="university", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Course> courses;
 
     public University() {

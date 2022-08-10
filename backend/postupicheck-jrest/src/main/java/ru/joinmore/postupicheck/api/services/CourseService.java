@@ -25,6 +25,10 @@ public class CourseService {
         return repository.findAll();
     }
 
+//    public void updateCurPassingPoints(long id, int points) {
+//        repository.updateCurPassingPoints(id, points);
+//    }
+
     public Course get(long id) {
         return repository.findById(id) //
                 .orElseThrow(() -> new ResourceNotExistsException("Course with id [" + id + "]"));
@@ -78,6 +82,11 @@ public class CourseService {
         requiredSubjects.add(course.getThirdSubject());
 
         return requiredSubjects;
+    }
+
+    public List<Course> saveAll(List<Course> courses) {
+        return repository.saveAll(courses);
+
     }
 
     private Course replaceCourse(Course course, Course updatedCourse) {

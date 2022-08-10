@@ -2,6 +2,7 @@ package ru.joinmore.postupicheck.api.entities;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "students")
@@ -13,10 +14,10 @@ public class Student {
     private String name;
     private String snils;
 
-    @OneToMany(mappedBy="student", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="student", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Admission> admissions;
 
-    @OneToMany(mappedBy="student", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="student", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<StudentExamResult> studentExamResults;
 
     public Student() {}

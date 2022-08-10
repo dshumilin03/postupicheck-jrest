@@ -1,19 +1,27 @@
 package ru.joinmore.postupicheck.api.entities;
 
+import org.hibernate.FetchMode;
+
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
+@Table(indexes = {
+        @Index(columnList = "course_id"),
+        @Index(columnList = "student_id"),
+        @Index(columnList = "id")
+})
 public class Admission {
     @Id
     @SequenceGenerator(name = "admission_sequence", sequenceName = "admission_sequence", allocationSize = 1)
-    @GeneratedValue( strategy = GenerationType.SEQUENCE, generator = "admission_sequence")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "admission_sequence")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "student_id", referencedColumnName = "id")
     private Student student;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id", referencedColumnName = "id")
     private Course course;
 

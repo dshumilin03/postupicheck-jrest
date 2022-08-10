@@ -3,7 +3,7 @@ Rest API for postupicheck project
 
 ### Requirements
 
-- jdk 18 (You can use IDEA to install and configure)
+- jdk 18 (You can use IDEA to install and configure all project)
 - Postgress 14 [Download PostgreSQL](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads)
 - Maven 3.8.5 (or mvnw)
 
@@ -12,6 +12,7 @@ Rest API for postupicheck project
 #### Environment variables
 
 - JAVA_HOME
+- MAVEN_HOME
 
 ### Create DB 
 
@@ -37,7 +38,7 @@ spring.datasource.password={pass}
 
 ### Import test data
 
-Currently `test-data` endpoints are used.
+Currently `test-data` and `data` endpoints are used.
 
 Import order:
 
@@ -55,13 +56,15 @@ http POST http://localhost:8080/test-data/create-universities
 	
 	http POST http://localhost:8080/test-data/create-admissions
 	
+	http POST http://localhost:8080/test-data/set-points-for-all-admissions
+	
+	http POST http://localhost:8080/data/update-passing-scores
+	
 ```
 
-Import can take several hours (examresults, admissions) depending on hardware
-
+Import can take several minutes (admissions) depending on hardware
 ### Alternative way
 
-- Download database dump
-- Restore db from dump
+1. [Download JoinMoreDB backup](https://disk.yandex.ru/d/B7AvTu3iT1xIKA)
+2. [Restore dump file to PostgreSQL](https://www.postgresql.org/docs/current/app-pgrestore.html)
 
-TODO instruction how to do this

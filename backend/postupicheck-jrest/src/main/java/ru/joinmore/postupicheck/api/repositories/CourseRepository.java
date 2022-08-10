@@ -1,6 +1,9 @@
 package ru.joinmore.postupicheck.api.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.joinmore.postupicheck.api.entities.Admission;
 import ru.joinmore.postupicheck.api.entities.Course;
@@ -13,6 +16,5 @@ import java.util.List;
 public interface CourseRepository extends JpaRepository<Course, Long> {
     Boolean existsByName(String name);
     List<Course> findCoursesByUniversity(University university);
-
     List<Course> findCoursesByUniversityAndThirdSubject(University university, Subject subject);
 }

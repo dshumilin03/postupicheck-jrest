@@ -153,10 +153,10 @@ class AdmissionServiceTest {
         course.setName(name);
         int points = 123;
         Admission admission = new Admission(student, course, points);
-        
+
         // when
         when(admissionRepository.existsByCourseNameAndStudent(name, student)).thenReturn(true);
-        
+
         // then
         assertThatThrownBy(() -> testInstance.create(admission));
         verify(admissionRepository, never()).save(admission);
@@ -422,6 +422,36 @@ class AdmissionServiceTest {
         assertThat(result).contains(admission1, admission2, admission3);
     }
 
+    @Test
+    void shouldCallRepositorySaveALl() {
+        // given
+        List<Admission> allAdmissions = createAdmissionList();
+
+        // when
+        testInstance.saveAll(allAdmissions);
+
+        // then
+        verify(admissionRepository).saveAll(allAdmissions);
+
+    }
+
+    @Test
+    void shouldReturnAllAdmissions_WhenRepositorySaveAll() {
+        // given
+        List<Admission> allAdmissions = createAdmissionList();
+        Admission admission1 = allAdmissions.get(0);
+        Admission admission2 = allAdmissions.get(1);
+        Admission admission3 = allAdmissions.get(2);
+        when(admissionRepository.saveAll(allAdmissions)).thenReturn(allAdmissions);
+
+        // when
+        List<Admission> result = testInstance.saveAll(allAdmissions);
+
+        // then
+        assertThat(result).contains(admission1, admission2, admission3);
+
+    }
+    
     private List<Admission> createAdmissionList() {
         List<Admission> admissions = new ArrayList<>();
         Admission admission1 = mock(Admission.class);

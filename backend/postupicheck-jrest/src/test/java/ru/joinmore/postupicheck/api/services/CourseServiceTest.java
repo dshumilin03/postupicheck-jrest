@@ -410,4 +410,34 @@ class CourseServiceTest {
         courses.add(course3);
         return courses;
     }
+
+    @Test
+    void shouldCallRepositorySaveALl() {
+        // given
+        List<Course> allCourses = createCourseList();
+
+        // when
+        testInstance.saveAll(allCourses);
+
+        // then
+        verify(courseRepository).saveAll(allCourses);
+
+    }
+
+    @Test
+    void shouldReturnAllCourses_WhenRepositorySaveAll() {
+        // given
+        List<Course> allCourses = createCourseList();
+        Course course1 = allCourses.get(0);
+        Course course2 = allCourses.get(1);
+        Course course3 = allCourses.get(2);
+        when(courseRepository.saveAll(allCourses)).thenReturn(allCourses);
+
+        // when
+        List<Course> result = testInstance.saveAll(allCourses);
+
+        // then
+        assertThat(result).contains(course1, course2, course3);
+
+    }
 }

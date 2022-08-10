@@ -4,6 +4,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "subjects")
@@ -14,13 +15,13 @@ public class Subject {
     private long id;
     private String name;
 
-    @OneToMany(mappedBy="firstSubject", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="firstSubject", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Course> coursesWithFirstSubject;
 
-    @OneToMany(mappedBy="secondSubject", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="secondSubject", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Course> coursesWithSecondSubject;
 
-    @OneToMany(mappedBy="thirdSubject", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="thirdSubject", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Course> coursesWithThirdSubject;
 
     public Subject() {
