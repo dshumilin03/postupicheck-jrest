@@ -2,7 +2,6 @@ package ru.joinmore.postupicheck.api.entities;
 
 import javax.persistence.*;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 @Table(indexes = @Index(columnList = "id"))
@@ -16,26 +15,21 @@ public class Course {
     private String code;
     private Integer curPassingPoints;
     private Integer budgetPlaces;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "university_id", referencedColumnName = "id")
     private University university;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "first_subject_id", referencedColumnName = "id")
     private Subject firstSubject;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "second_subject_id", referencedColumnName = "id")
     private Subject secondSubject;
-
     @ManyToOne
     @JoinColumn(name = "third_subject_id", referencedColumnName = "id")
     private Subject thirdSubject;
 
     @OneToMany(mappedBy="course", cascade = CascadeType.ALL)
     private List<Admission> courses;
-
 
     public Course() {
     }

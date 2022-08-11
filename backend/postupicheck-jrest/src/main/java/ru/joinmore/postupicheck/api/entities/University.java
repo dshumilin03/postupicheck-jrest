@@ -1,19 +1,16 @@
 package ru.joinmore.postupicheck.api.entities;
 
-import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
 import java.util.List;
-import java.util.Objects;
 
 @Entity(name = "universities")
 public class University {
+
     @Id
     @SequenceGenerator(name = "university_sequence", sequenceName = "university_sequence", allocationSize = 1)
     @GeneratedValue( strategy = GenerationType.SEQUENCE, generator = "university_sequence")
     private Long id;
     private String name;
-
     @OneToMany(mappedBy="university", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Course> courses;
 

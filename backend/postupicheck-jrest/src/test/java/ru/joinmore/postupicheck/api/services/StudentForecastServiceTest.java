@@ -3,14 +3,12 @@ package ru.joinmore.postupicheck.api.services;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.EmptyResultDataAccessException;
 import ru.joinmore.postupicheck.api.entities.Admission;
 import ru.joinmore.postupicheck.api.entities.Student;
-import ru.joinmore.postupicheck.api.entities.StudentExamResult;
 import ru.joinmore.postupicheck.api.entities.StudentForecast;
 import ru.joinmore.postupicheck.api.exceptions.AlreadyExistsException;
 import ru.joinmore.postupicheck.api.exceptions.ResourceNotExistsException;
@@ -22,10 +20,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -47,19 +41,13 @@ class StudentForecastServiceTest {
 
         // then
         verify(studentForecastRepository).findAll();
-
     }
 
     @Test
     void shouldReturnAllForecasts_WhenRepositoryGetAll() {
         // given
-        List<StudentForecast> studentForecastList = new ArrayList<>();
-        StudentForecast studentForecast1 = mock(StudentForecast.class);
-        StudentForecast studentForecast2 = mock(StudentForecast.class);
-        StudentForecast studentForecast3 = mock(StudentForecast.class);
-        studentForecastList.add(studentForecast1);
-        studentForecastList.add(studentForecast2);
-        studentForecastList.add(studentForecast3);
+        List<StudentForecast> studentForecastList = createStudentForecast();
+
         when(studentForecastRepository.findAll()).thenReturn(studentForecastList);
 
         // when
@@ -75,6 +63,7 @@ class StudentForecastServiceTest {
         // given
         long id = 1L;
         StudentForecast studentForecast = mock(StudentForecast.class);
+
         when(studentForecastRepository.findById(id)).thenReturn(Optional.of(studentForecast));
 
         // when
@@ -89,6 +78,7 @@ class StudentForecastServiceTest {
         // given
         long id = 1L;
         StudentForecast studentForecast = mock(StudentForecast.class);
+
         when(studentForecastRepository.findById(id)).thenReturn(Optional.of(studentForecast));
 
         // when
@@ -119,6 +109,7 @@ class StudentForecastServiceTest {
         Student student = mock(Student.class);
         admission.setStudent(student);
         StudentForecast studentForecast = new StudentForecast(admission);
+
         when(studentForecastRepository.existsStudentForecastByAdmissionStudent(student)).thenReturn(false);
 
         // when
@@ -126,7 +117,6 @@ class StudentForecastServiceTest {
 
         // then
         verify(studentForecastRepository).save(studentForecast);
-
     }
 
     @Test
@@ -136,6 +126,7 @@ class StudentForecastServiceTest {
         Student student = mock(Student.class);
         admission.setStudent(student);
         StudentForecast studentForecast = new StudentForecast(admission);
+
         when(studentForecastRepository.existsStudentForecastByAdmissionStudent(student)).thenReturn(false);
         when(studentForecastRepository.save(studentForecast)).thenReturn(studentForecast);
 
@@ -144,7 +135,6 @@ class StudentForecastServiceTest {
 
         // then
         assertThat(result).isEqualTo(studentForecast);
-
     }
 
     @Test
@@ -162,7 +152,6 @@ class StudentForecastServiceTest {
         // then
         assertThatThrownBy(() -> testInstance.create(studentForecast));
         verify(studentForecastRepository, never()).save(studentForecast);
-
     }
 
     @Test
@@ -178,10 +167,11 @@ class StudentForecastServiceTest {
         when(studentForecastRepository.existsStudentForecastByAdmissionStudent(student)).thenReturn(true);
 
         // then
-        assertThatThrownBy(() -> testInstance.create(studentForecast))
+        assertThatThrownBy(() ->
+                testInstance
+                        .create(studentForecast))
                 .isInstanceOf(AlreadyExistsException.class)
                 .hasMessageContaining("StudentForecast for student testName ");
-
     }
 
     @Test
@@ -192,6 +182,7 @@ class StudentForecastServiceTest {
         Admission newAdmission = mock(Admission.class);
         StudentForecast newStudentForecast = new StudentForecast(newAdmission);
         long id = 2L;
+
         when(studentForecastRepository.findById(id)).thenReturn(Optional.of(oldStudentForecast));
 
         // when
@@ -201,7 +192,6 @@ class StudentForecastServiceTest {
         InOrder inOrder = inOrder(oldStudentForecast, studentForecastRepository);
         inOrder.verify(oldStudentForecast).setAdmission(newAdmission);
         inOrder.verify(studentForecastRepository).save(oldStudentForecast);
-
     }
 
     @Test
@@ -211,6 +201,7 @@ class StudentForecastServiceTest {
         Admission newAdmission = mock(Admission.class);
         StudentForecast newStudentForecast = new StudentForecast(newAdmission);
         long id = 2L;
+
         when(studentForecastRepository.findById(id)).thenReturn(Optional.of(oldStudentForecast));
         when(studentForecastRepository.save(oldStudentForecast)).thenReturn(oldStudentForecast);
 
@@ -219,7 +210,6 @@ class StudentForecastServiceTest {
 
         // then
         assertThat(result).isEqualTo(oldStudentForecast);
-
     }
 
     @Test
@@ -227,14 +217,16 @@ class StudentForecastServiceTest {
         // given
         StudentForecast oldStudentForecast = mock(StudentForecast.class);
         long id = 2;
+
         when(studentForecastRepository.findById(id)).thenReturn(Optional.empty());
 
         // when
-        assertThatThrownBy(() -> testInstance.replace(new StudentForecast(), id));
+        assertThatThrownBy(() ->
+                testInstance
+                        .replace(new StudentForecast(), id));
 
         // then
         verify(studentForecastRepository, never()).save(oldStudentForecast);
-
     }
 
     @Test
@@ -246,12 +238,12 @@ class StudentForecastServiceTest {
         when(studentForecastRepository.findById(id)).thenReturn(Optional.empty());
 
         // when
-        assertThatThrownBy(() -> testInstance.replace(new StudentForecast(), id))
+        assertThatThrownBy(() ->
+                testInstance
+                        .replace(new StudentForecast(), id))
                 .isInstanceOf(ResourceNotExistsException.class)
                 .hasMessageContaining("Student forecast with id [2]");
-
     }
-
 
     @Test
     void shouldCallRepositoryDeleteById() {
@@ -263,7 +255,6 @@ class StudentForecastServiceTest {
 
         // then
         verify(studentForecastRepository).deleteById(id);
-
     }
 
     @Test
@@ -275,7 +266,8 @@ class StudentForecastServiceTest {
         doThrow(new EmptyResultDataAccessException(1)).when(studentForecastRepository).deleteById(id);
 
         // then
-        assertThatThrownBy(() -> testInstance.delete(id))
+        assertThatThrownBy(() ->
+                testInstance.delete(id))
                 .isInstanceOf(ResourceNotExistsException.class)
                 .hasMessageContaining("Student forecast with id [13]");
     }
@@ -285,6 +277,7 @@ class StudentForecastServiceTest {
         // given
         long id = 1;
         StudentForecast studentForecast = mock(StudentForecast.class);
+
         when(studentForecastRepository.findStudentForecastByAdmissionStudentId(id)).thenReturn(studentForecast);
 
         // when
@@ -292,7 +285,6 @@ class StudentForecastServiceTest {
 
         // then
         assertThat(result).isEqualTo(studentForecast);
-
     }
 
     @Test
@@ -304,10 +296,24 @@ class StudentForecastServiceTest {
         when(studentForecastRepository.findStudentForecastByAdmissionStudentId(id)).thenReturn(null);
 
         // then
-        assertThatThrownBy(() -> testInstance.getStudentForecast(id))
+        assertThatThrownBy(() ->
+                testInstance
+                        .getStudentForecast(id))
                 .isInstanceOf(ResourceNotExistsException.class)
                 .hasMessageContaining("Student forecast with id [134]");
-
     }
 
+    private List<StudentForecast> createStudentForecast() {
+        List<StudentForecast> studentForecastList = new ArrayList<>();
+
+        StudentForecast studentForecast1 = mock(StudentForecast.class);
+        StudentForecast studentForecast2 = mock(StudentForecast.class);
+        StudentForecast studentForecast3 = mock(StudentForecast.class);
+
+        studentForecastList.add(studentForecast1);
+        studentForecastList.add(studentForecast2);
+        studentForecastList.add(studentForecast3);
+
+        return studentForecastList;
+    }
 }

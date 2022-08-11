@@ -12,7 +12,6 @@ public class StudentConverter implements Converter<Student, StudentDto>, ListCon
 
     @Override
     public StudentDto convert(Student student) {
-
         Long id = student.getId();
         String studentName = student.getName();
         String snils = student.getSnils();
@@ -24,11 +23,13 @@ public class StudentConverter implements Converter<Student, StudentDto>, ListCon
     @Override
     public List<StudentDto> convert(List<Student> students) {
         List<StudentDto> studentDtoList = new ArrayList<>();
+
         students.
                 forEach(student -> {
                     StudentDto studentDto = convert(student);
                     studentDtoList.add(studentDto);
                 });
+
         return studentDtoList;
     }
 }

@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,6 +38,7 @@ class StudentForecastFacadeTest {
         // given
         long id = 5L;
         StudentForecast studentForecast = mock(StudentForecast.class);
+
         when(studentForecastService.get(id)).thenReturn(studentForecast);
 
         // when
@@ -46,7 +46,6 @@ class StudentForecastFacadeTest {
 
         // then
         verify(converter).convert(studentForecast);
-
     }
 
     @Test
@@ -55,6 +54,7 @@ class StudentForecastFacadeTest {
         long id = 5L;
         StudentForecast studentForecast = mock(StudentForecast.class);
         StudentForecastDto convertedStudentForecast = mock(StudentForecastDto.class);
+
         when(studentForecastService.get(id)).thenReturn(studentForecast);
         when(converter.convert(studentForecast)).thenReturn(convertedStudentForecast);
 
@@ -63,7 +63,6 @@ class StudentForecastFacadeTest {
 
         // then
         assertThat(result).isEqualTo(convertedStudentForecast);
-
     }
 
     @Test
@@ -77,20 +76,22 @@ class StudentForecastFacadeTest {
         //then
         verify(studentForecastService).getAll();
         verify(converter).convert(studentForecastList);
-
     }
 
     @Test
     void shouldReturnConvertedList_WhenGetAll() {
         // given
         List<StudentForecast> studentForecastList = new ArrayList<>();
-        List<StudentForecastDto> convertedList = new ArrayList<>();
+
         StudentForecastDto studentForecastDto1 = mock(StudentForecastDto.class);
         StudentForecastDto studentForecastDto2 = mock(StudentForecastDto.class);
         StudentForecastDto studentForecastDto3 = mock(StudentForecastDto.class);
+
+        List<StudentForecastDto> convertedList = new ArrayList<>();
         convertedList.add(studentForecastDto1);
         convertedList.add(studentForecastDto2);
         convertedList.add(studentForecastDto3);
+
         when(studentForecastService.getAll()).thenReturn(studentForecastList);
         when(converter.convert(studentForecastList)).thenReturn(convertedList);
 
@@ -99,7 +100,6 @@ class StudentForecastFacadeTest {
 
         //then
         assertThat(result).contains(studentForecastDto1, studentForecastDto2, studentForecastDto3);
-
     }
 
     @Test
@@ -108,6 +108,7 @@ class StudentForecastFacadeTest {
         StudentForecastDto newStudentForecastDto = mock(StudentForecastDto.class);
         StudentForecast newStudentForecast = mock(StudentForecast.class);
         StudentForecast createdStudentForecast = mock(StudentForecast.class);
+
         when(reverseConverter.convert(newStudentForecastDto)).thenReturn(newStudentForecast);
         when(studentForecastService.create(newStudentForecast)).thenReturn(createdStudentForecast);
 
@@ -125,6 +126,7 @@ class StudentForecastFacadeTest {
         StudentForecast newStudentForecast = mock(StudentForecast.class);
         StudentForecast createdStudentForecast = mock(StudentForecast.class);
         StudentForecastDto convertedStudentForecast = mock(StudentForecastDto.class);
+
         when(reverseConverter.convert(newStudentForecastDto)).thenReturn(newStudentForecast);
         when(studentForecastService.create(newStudentForecast)).thenReturn(createdStudentForecast);
         when(converter.convert(createdStudentForecast)).thenReturn(convertedStudentForecast);
@@ -143,6 +145,7 @@ class StudentForecastFacadeTest {
         StudentForecastDto updatedStudentForecastDto = mock(StudentForecastDto.class);
         StudentForecast updatedStudentForecast = mock(StudentForecast.class);
         StudentForecast newStudentForecast = mock(StudentForecast.class);
+
         when(reverseConverter.convert(updatedStudentForecastDto)).thenReturn(updatedStudentForecast);
         when(studentForecastService.replace(updatedStudentForecast, id)).thenReturn(newStudentForecast);
 
@@ -161,6 +164,7 @@ class StudentForecastFacadeTest {
         StudentForecast updatedStudentForecast = mock(StudentForecast.class);
         StudentForecast newStudentForecast = mock(StudentForecast.class);
         StudentForecastDto convertedStudentForecast = mock(StudentForecastDto.class);
+
         when(reverseConverter.convert(updatedStudentForecastDto)).thenReturn(updatedStudentForecast);
         when(studentForecastService.replace(updatedStudentForecast, id)).thenReturn(newStudentForecast);
         when(converter.convert(newStudentForecast)).thenReturn(convertedStudentForecast);
@@ -171,7 +175,6 @@ class StudentForecastFacadeTest {
         // then
         assertThat(result).isEqualTo(convertedStudentForecast);
     }
-
 
     @Test
     void shouldCallStudentForecastServiceDelete() {

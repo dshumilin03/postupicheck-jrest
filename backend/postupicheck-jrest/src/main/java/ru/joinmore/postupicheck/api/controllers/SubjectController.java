@@ -32,7 +32,8 @@ public class SubjectController {
     @GetMapping("/{id}")
     @ResponseStatus(code = HttpStatus.OK)
     SubjectDto getSubject(@PathVariable Long id) {
-        return subjectFacade.get(id);}
+        return subjectFacade.get(id);
+    }
 
     @PutMapping("/{id}")
     @ResponseStatus(code = HttpStatus.OK)

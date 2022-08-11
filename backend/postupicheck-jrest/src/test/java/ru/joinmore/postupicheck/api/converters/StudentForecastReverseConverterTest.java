@@ -12,15 +12,14 @@ import ru.joinmore.postupicheck.api.entities.StudentForecast;
 import ru.joinmore.postupicheck.api.services.AdmissionService;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class StudentForecastReverseConverterTest {
 
     private StudentForecastReverseConverter testInstance;
-
     @Mock
     private AdmissionService admissionService;
 
@@ -30,23 +29,20 @@ class StudentForecastReverseConverterTest {
     }
 
     @Test
-    void convert() {
-        //given
+    void shouldReturnConvertedEntity() {
+        // given
         long id = 4;
         long admissionId = 2;
         Admission admission = new Admission();
         admission.setId(2L);
         StudentForecastDto studentForecastDto = new StudentForecastDto(id, admissionId);
-        given(admissionService.get(admissionId)).willReturn(admission);
-        //when
-        StudentForecast studentForecast = testInstance.convert(studentForecastDto);
-        //then
-        ArgumentCaptor<Long> longArgumentCaptor = ArgumentCaptor.forClass(Long.class);
-        verify(admissionService).get(longArgumentCaptor.capture());
-        long capturedLong = longArgumentCaptor.getValue();
-        assertThat(capturedLong).isEqualTo(2);
-        assertThat(studentForecast.getId()).isEqualTo(4);
-        assertThat(studentForecast.getAdmission().getId()).isEqualTo(2);
+        when(admissionService.get(admissionId)).thenReturn(admission);
 
+        // when
+        StudentForecast result = testInstance.convert(studentForecastDto);
+
+        // then
+        assertThat(result.getId()).isEqualTo(4);
+        assertThat(result.getAdmission().getId()).isEqualTo(2);
     }
 }

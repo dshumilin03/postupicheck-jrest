@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -34,7 +33,8 @@ class StudentExamResultFacadeTest {
 
     @BeforeEach
     void setUp() {
-        testInstance = new StudentExamResultFacade(studentService, converter, reverseConverter, studentExamResultService);
+        testInstance =
+                new StudentExamResultFacade(studentService, converter, reverseConverter, studentExamResultService);
     }
 
     @Test
@@ -42,6 +42,7 @@ class StudentExamResultFacadeTest {
         // given
         long id = 5L;
         StudentExamResult studentExamResult = mock(StudentExamResult.class);
+
         when(studentExamResultService.get(id)).thenReturn(studentExamResult);
 
         // when
@@ -49,7 +50,6 @@ class StudentExamResultFacadeTest {
 
         // then
         verify(converter).convert(studentExamResult);
-
     }
 
     @Test
@@ -58,6 +58,7 @@ class StudentExamResultFacadeTest {
         long id = 5L;
         StudentExamResult studentExamResult = mock(StudentExamResult.class);
         StudentExamResultDto convertedStudentExamResult = mock(StudentExamResultDto.class);
+
         when(studentExamResultService.get(id)).thenReturn(studentExamResult);
         when(converter.convert(studentExamResult)).thenReturn(convertedStudentExamResult);
 
@@ -66,7 +67,6 @@ class StudentExamResultFacadeTest {
 
         // then
         assertThat(result).isEqualTo(convertedStudentExamResult);
-
     }
 
     @Test
@@ -80,20 +80,22 @@ class StudentExamResultFacadeTest {
         //then
         verify(studentExamResultService).getAll();
         verify(converter).convert(studentExamResultList);
-
     }
 
     @Test
     void shouldReturnConvertedList_WhenGetAll() {
         // given
         List<StudentExamResult> studentExamResultList = new ArrayList<>();
-        List<StudentExamResultDto> convertedList = new ArrayList<>();
+
         StudentExamResultDto studentExamResultDto1 = mock(StudentExamResultDto.class);
         StudentExamResultDto studentExamResultDto2 = mock(StudentExamResultDto.class);
         StudentExamResultDto studentExamResultDto3 = mock(StudentExamResultDto.class);
+
+        List<StudentExamResultDto> convertedList = new ArrayList<>();
         convertedList.add(studentExamResultDto1);
         convertedList.add(studentExamResultDto2);
         convertedList.add(studentExamResultDto3);
+
         when(studentExamResultService.getAll()).thenReturn(studentExamResultList);
         when(converter.convert(studentExamResultList)).thenReturn(convertedList);
 
@@ -102,7 +104,6 @@ class StudentExamResultFacadeTest {
 
         //then
         assertThat(result).contains(studentExamResultDto1, studentExamResultDto2, studentExamResultDto3);
-
     }
 
     @Test
@@ -111,6 +112,7 @@ class StudentExamResultFacadeTest {
         StudentExamResultDto newStudentExamResultDto = mock(StudentExamResultDto.class);
         StudentExamResult newStudentExamResult = mock(StudentExamResult.class);
         StudentExamResult createdStudentExamResult = mock(StudentExamResult.class);
+
         when(reverseConverter.convert(newStudentExamResultDto)).thenReturn(newStudentExamResult);
         when(studentExamResultService.create(newStudentExamResult)).thenReturn(createdStudentExamResult);
 
@@ -128,6 +130,7 @@ class StudentExamResultFacadeTest {
         StudentExamResult newStudentExamResult = mock(StudentExamResult.class);
         StudentExamResult createdStudentExamResult = mock(StudentExamResult.class);
         StudentExamResultDto convertedStudentExamResult = mock(StudentExamResultDto.class);
+
         when(reverseConverter.convert(newStudentExamResultDto)).thenReturn(newStudentExamResult);
         when(studentExamResultService.create(newStudentExamResult)).thenReturn(createdStudentExamResult);
         when(converter.convert(createdStudentExamResult)).thenReturn(convertedStudentExamResult);
@@ -146,6 +149,7 @@ class StudentExamResultFacadeTest {
         StudentExamResultDto updatedStudentExamResultDto = mock(StudentExamResultDto.class);
         StudentExamResult updatedStudentExamResult = mock(StudentExamResult.class);
         StudentExamResult newStudentExamResult = mock(StudentExamResult.class);
+
         when(reverseConverter.convert(updatedStudentExamResultDto)).thenReturn(updatedStudentExamResult);
         when(studentExamResultService.replace(updatedStudentExamResult, id)).thenReturn(newStudentExamResult);
 
@@ -164,6 +168,7 @@ class StudentExamResultFacadeTest {
         StudentExamResult updatedStudentExamResult = mock(StudentExamResult.class);
         StudentExamResult newStudentExamResult = mock(StudentExamResult.class);
         StudentExamResultDto convertedStudentExamResult = mock(StudentExamResultDto.class);
+
         when(reverseConverter.convert(updatedStudentExamResultDto)).thenReturn(updatedStudentExamResult);
         when(studentExamResultService.replace(updatedStudentExamResult, id)).thenReturn(newStudentExamResult);
         when(converter.convert(newStudentExamResult)).thenReturn(convertedStudentExamResult);
@@ -174,7 +179,6 @@ class StudentExamResultFacadeTest {
         // then
         assertThat(result).isEqualTo(convertedStudentExamResult);
     }
-
 
     @Test
     void shouldCallStudentExamResultServiceDelete() {
@@ -193,6 +197,7 @@ class StudentExamResultFacadeTest {
         // given
         long id = 5L;
         List<StudentExamResult> studentExamResults = new ArrayList<>();
+
         when(studentExamResultService.getAllStudentResultsByStudentId(id)).thenReturn(studentExamResults);
 
         // when
@@ -200,7 +205,6 @@ class StudentExamResultFacadeTest {
 
         // then
         verify(converter).convert(studentExamResults);
-
     }
 
     @Test
@@ -209,6 +213,7 @@ class StudentExamResultFacadeTest {
         long id = 5L;
         List<StudentExamResult> studentExamResults = new ArrayList<>();
         List<StudentExamResultDto> convertedStudentExamResults = new ArrayList<>();
+
         when(converter.convert(studentExamResults)).thenReturn(convertedStudentExamResults);
 
         // when
@@ -216,6 +221,5 @@ class StudentExamResultFacadeTest {
 
         // then
         assertThat(result).isEqualTo(convertedStudentExamResults);
-
     }
 }

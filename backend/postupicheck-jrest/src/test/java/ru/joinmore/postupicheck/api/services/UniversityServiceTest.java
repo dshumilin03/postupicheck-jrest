@@ -3,12 +3,10 @@ package ru.joinmore.postupicheck.api.services;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.EmptyResultDataAccessException;
-import ru.joinmore.postupicheck.api.entities.University;
 import ru.joinmore.postupicheck.api.entities.University;
 import ru.joinmore.postupicheck.api.exceptions.AlreadyExistsException;
 import ru.joinmore.postupicheck.api.exceptions.ResourceNotExistsException;
@@ -20,9 +18,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -44,19 +39,13 @@ class UniversityServiceTest {
 
         // then
         verify(universityRepository).findAll();
-
     }
 
     @Test
     void shouldReturnAllUniversities_WhenGetAll() {
         //given
-        List<University> universities = new ArrayList<>();
-        University university1 = mock(University.class);
-        University university2 = mock(University.class);
-        University university3 = mock(University.class);
-        universities.add(university1);
-        universities.add(university2);
-        universities.add(university3);
+        List<University> universities = createUniversities();
+
         when(universityRepository.findAll()).thenReturn(universities);
 
         // when
@@ -64,7 +53,6 @@ class UniversityServiceTest {
 
         // then
         assertThat(result).isEqualTo(universities);
-
     }
 
     @Test
@@ -72,6 +60,7 @@ class UniversityServiceTest {
         // given
         long id = 1L;
         University university = mock(University.class);
+
         when(universityRepository.findById(id)).thenReturn(Optional.of(university));
 
         // when
@@ -86,6 +75,7 @@ class UniversityServiceTest {
         // given
         long id = 1L;
         University university = mock(University.class);
+
         when(universityRepository.findById(id)).thenReturn(Optional.of(university));
 
         // when
@@ -114,6 +104,7 @@ class UniversityServiceTest {
         // given
         String name = "testName";
         University university = new University(name);
+
         when(universityRepository.existsByName(name)).thenReturn(false);
 
         // when
@@ -121,7 +112,6 @@ class UniversityServiceTest {
 
         // then
         verify(universityRepository).save(university);
-
     }
 
     @Test
@@ -129,6 +119,7 @@ class UniversityServiceTest {
         // given
         String name = "testName";
         University university = new University(name);
+
         when(universityRepository.existsByName(name)).thenReturn(false);
         when(universityRepository.save(university)).thenReturn(university);
 
@@ -137,7 +128,6 @@ class UniversityServiceTest {
 
         // then
         assertThat(result).isEqualTo(university);
-
     }
 
     @Test
@@ -152,7 +142,6 @@ class UniversityServiceTest {
         // then
         assertThatThrownBy(() -> testInstance.create(university));
         verify(universityRepository, never()).save(university);
-
     }
 
     @Test
@@ -168,17 +157,16 @@ class UniversityServiceTest {
         assertThatThrownBy(() -> testInstance.create(university))
                 .isInstanceOf(AlreadyExistsException.class)
                 .hasMessageContaining(name);
-
     }
 
     @Test
     void shouldReplaceOldUniversityByNewUniversity() {
-
         // given
         University oldUniversity = mock(University.class);
         String newName = "newName";
         University newUniversity = new University(newName);
         long id = 2L;
+
         when(universityRepository.findById(id)).thenReturn(Optional.of(oldUniversity));
 
         // when
@@ -188,7 +176,6 @@ class UniversityServiceTest {
         InOrder inOrder = inOrder(oldUniversity, universityRepository);
         inOrder.verify(oldUniversity).setName(newName);
         inOrder.verify(universityRepository).save(oldUniversity);
-
     }
 
     @Test
@@ -196,6 +183,7 @@ class UniversityServiceTest {
         // given
         University oldUniversity = mock(University.class);
         long id = 2L;
+
         when(universityRepository.findById(id)).thenReturn(Optional.of(oldUniversity));
         when(universityRepository.save(oldUniversity)).thenReturn(oldUniversity);
 
@@ -204,7 +192,6 @@ class UniversityServiceTest {
 
         // then
         assertThat(result).isEqualTo(oldUniversity);
-
     }
 
     @Test
@@ -212,6 +199,7 @@ class UniversityServiceTest {
         // given
         University oldUniversity = mock(University.class);
         long id = 2;
+
         when(universityRepository.findById(id)).thenReturn(Optional.empty());
 
         // when
@@ -219,7 +207,6 @@ class UniversityServiceTest {
 
         // then
         verify(universityRepository, never()).save(oldUniversity);
-
     }
 
     @Test
@@ -231,10 +218,11 @@ class UniversityServiceTest {
         when(universityRepository.findById(id)).thenReturn(Optional.empty());
 
         // when
-        assertThatThrownBy(() -> testInstance.replace(new University(), id))
+        assertThatThrownBy(() ->
+                testInstance
+                        .replace(new University(), id))
                 .isInstanceOf(ResourceNotExistsException.class)
                 .hasMessageContaining("University with id [2]");
-
     }
 
     @Test
@@ -247,7 +235,6 @@ class UniversityServiceTest {
 
         // then
         verify(universityRepository).deleteById(id);
-
     }
 
     @Test
@@ -262,5 +249,18 @@ class UniversityServiceTest {
         assertThatThrownBy(() -> testInstance.delete(id))
                 .isInstanceOf(ResourceNotExistsException.class)
                 .hasMessageContaining("University with id [13]");
+    }
+
+    private List<University> createUniversities() {
+        University university1 = mock(University.class);
+        University university2 = mock(University.class);
+        University university3 = mock(University.class);
+
+        List<University> universities = new ArrayList<>();
+        universities.add(university1);
+        universities.add(university2);
+        universities.add(university3);
+
+        return universities;
     }
 }

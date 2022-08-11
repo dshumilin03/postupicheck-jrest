@@ -16,30 +16,28 @@ public class StudentForecastFacade {
     private final StudentForecastConverter converter;
     private final StudentForecastReverseConverter reverseConverter;
 
-    public StudentForecastFacade(StudentForecastService studentForecastService,
-                                 StudentForecastConverter converter,
-                                 StudentForecastReverseConverter reverseConverter) {
+    public StudentForecastFacade(
+            StudentForecastService studentForecastService,
+            StudentForecastConverter converter,
+            StudentForecastReverseConverter reverseConverter) {
         this.studentForecastService = studentForecastService;
         this.converter = converter;
         this.reverseConverter = reverseConverter;
     }
 
     public StudentForecastDto get(long id) {
-
         StudentForecast studentForecast =  studentForecastService.get(id);
 
         return converter.convert(studentForecast);
     }
 
     public List<StudentForecastDto> getAll() {
-
         List<StudentForecast> allStudentForecasts = studentForecastService.getAll();
 
         return converter.convert(allStudentForecasts);
     }
 
     public StudentForecastDto create(StudentForecastDto newStudentForecastDto) {
-
         StudentForecast newStudentForecast = reverseConverter.convert(newStudentForecastDto);
         StudentForecast createdStudentForecast = studentForecastService.create(newStudentForecast);
 
@@ -47,7 +45,6 @@ public class StudentForecastFacade {
     }
 
     public StudentForecastDto replace(StudentForecastDto updatedStudentForecastDto, long id) {
-
         StudentForecast updatedStudentForecast = reverseConverter.convert(updatedStudentForecastDto);
         StudentForecast newStudentForecast = studentForecastService.replace(updatedStudentForecast, id);
 
@@ -57,5 +54,4 @@ public class StudentForecastFacade {
     public void delete(long id) {
         studentForecastService.delete(id);
     }
-
 }

@@ -14,9 +14,9 @@ public interface StudentExamResultRepository extends JpaRepository<StudentExamRe
     Boolean existsBySubjectAndStudent(Subject subject, Student student);
 
     List<StudentExamResult> findStudentExamResultsByStudentId(long id);
+
     List<StudentExamResult> findStudentExamResultsByStudent(Student student);
 
     @Query("select s.points from StudentExamResult s where s.student = ?1 and s.subject = ?2")
     int getPointsByStudentAndSubject(Student student, Subject subject);
-
 }

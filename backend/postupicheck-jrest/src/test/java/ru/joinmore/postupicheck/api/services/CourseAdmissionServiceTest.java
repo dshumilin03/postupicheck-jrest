@@ -1,7 +1,6 @@
 package ru.joinmore.postupicheck.api.services;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -13,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -62,20 +60,19 @@ class CourseAdmissionServiceTest {
 
         // then
         assertThat(course.getCurPassingPoints()).isEqualTo(140);
-
     }
 
     @Test
     void shouldSetCurPassingScoreToLastCoursePlace() {
         // given
-        long id = 145L;
         Course course = new Course();
-        int budgetPlaces = 5;
-        course.setBudgetPlaces(budgetPlaces);
-        course.setId(id);
+        course.setBudgetPlaces(5);
+        course.setId(145L);
+
         List<Course> allCourses = new ArrayList<>();
         allCourses.add(course);
         List<Admission> courseAdmissions = createAdmissions();
+
         when(admissionService.getCourseAdmissions(course)).thenReturn(courseAdmissions);
         when(courseService.getAll()).thenReturn(allCourses);
 
@@ -84,44 +81,26 @@ class CourseAdmissionServiceTest {
 
         // then
         assertThat(course.getCurPassingPoints()).isEqualTo(120);
-
     }
 
     @Test
-    @Disabled
     void shouldReturnUpdatedCourses() {
         // given
-        long id1 = 145L;
-        long id2 = 1435L;
-        int budgetPlaces1 = 2;
-        int budgetPlaces2 = 5;
-        Course course1 = new Course();
-        course1.setBudgetPlaces(budgetPlaces1);
-        course1.setId(id1);
-        Course course2 = new Course();
-        course2.setBudgetPlaces(budgetPlaces2);
-        course2.setId(id2);
-        List<Course> allCourses = new ArrayList<>();
-        allCourses.add(course1);
-        allCourses.add(course2);
+        List<Course> allCourses = createCourses();
+        Course course1 = allCourses.get(0);
+        Course course2 = allCourses.get(1);
         List<Admission> courseAdmissions = createAdmissions();
-        Course updatedCourse1 = mock(Course.class);
-        Course updatedCourse2 = mock(Course.class);
-        List<Course> updatedCourses = new ArrayList<>();
-        updatedCourses.add(updatedCourse1);
-        updatedCourses.add(updatedCourse2);
+
         when(admissionService.getCourseAdmissions(course1)).thenReturn(courseAdmissions);
         when(admissionService.getCourseAdmissions(course2)).thenReturn(courseAdmissions);
         when(courseService.getAll()).thenReturn(allCourses);
-        when(courseService.replace(course1, id1)).thenReturn(updatedCourse1);
-        when(courseService.replace(course2, id2)).thenReturn(updatedCourse2);
+        when(courseService.saveAll(allCourses)).thenReturn(allCourses);
 
         // when
-        //List<Course> result = testInstance.updateCourseCurPassingScore();
+        List<Course> result = testInstance.updateCourseCurPassingScore();
 
         // then
-        //assertThat(result).isEqualTo(updatedCourses);
-
+        assertThat(result).contains(course1, course2);
     }
 
     @Test
@@ -130,6 +109,7 @@ class CourseAdmissionServiceTest {
         long id = 135L;
         Course course = mock(Course.class);
         List<Admission> courseAdmissions = createAdmissions();
+
         when(courseService.get(id)).thenReturn(course);
         when(admissionService.getCourseAdmissions(course)).thenReturn(courseAdmissions);
 
@@ -151,6 +131,27 @@ class CourseAdmissionServiceTest {
         courseAdmissions.add(admission1);
         courseAdmissions.add(admission2);
         courseAdmissions.add(admission3);
+
         return courseAdmissions;
+    }
+
+    private List<Course> createCourses() {
+        Course course1 = new Course();
+        int budgetPlaces1 = 2;
+        long id1 = 145L;
+        course1.setBudgetPlaces(budgetPlaces1);
+        course1.setId(id1);
+
+        Course course2 = new Course();
+        long id2 = 1435L;
+        int budgetPlaces2 = 5;
+        course2.setBudgetPlaces(budgetPlaces2);
+        course2.setId(id2);
+
+        List<Course> allCourses = new ArrayList<>();
+        allCourses.add(course1);
+        allCourses.add(course2);
+
+        return allCourses;
     }
 }

@@ -9,7 +9,6 @@ public class SubjectReverseConverter implements Converter<SubjectDto, Subject> {
 
     @Override
     public Subject convert(SubjectDto subjectDto) {
-
         String subjectName = subjectDto.getName();
         long subjectId = subjectDto.getId();
 

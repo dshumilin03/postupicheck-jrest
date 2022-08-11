@@ -16,28 +16,28 @@ public class SubjectFacade {
     private final SubjectConverter converter;
     private final SubjectReverseConverter reverseConverter;
 
-    public SubjectFacade(SubjectService subjectService, SubjectConverter converter, SubjectReverseConverter reverseConverter) {
+    public SubjectFacade(
+            SubjectService subjectService,
+            SubjectConverter converter,
+            SubjectReverseConverter reverseConverter) {
         this.subjectService = subjectService;
         this.converter = converter;
         this.reverseConverter = reverseConverter;
     }
 
     public SubjectDto get(long id) {
-
         Subject subject = subjectService.get(id);
 
         return converter.convert(subject);
     }
 
     public List<SubjectDto> getAll() {
-
         List<Subject> allSubjects = subjectService.getAll();
 
         return converter.convert(allSubjects);
     }
 
     public SubjectDto create(SubjectDto newSubjectDto) {
-
         Subject newSubject = reverseConverter.convert(newSubjectDto);
         Subject createdSubject = subjectService.create(newSubject);
 
@@ -45,7 +45,6 @@ public class SubjectFacade {
     }
 
     public SubjectDto replace(SubjectDto updatedSubjectDto, long id) {
-
         Subject updatedSubject = reverseConverter.convert(updatedSubjectDto);
         Subject newSubject = subjectService.replace(updatedSubject, id);
 
@@ -55,5 +54,4 @@ public class SubjectFacade {
     public void delete(long id) {
         subjectService.delete(id);
     }
-
 }

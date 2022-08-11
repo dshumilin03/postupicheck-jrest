@@ -1,11 +1,8 @@
 package ru.joinmore.postupicheck.api.services;
 
-import org.checkerframework.checker.units.qual.C;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -21,9 +18,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -54,6 +48,7 @@ class AdmissionServiceTest {
         Admission admission1 = allAdmissions.get(0);
         Admission admission2 = allAdmissions.get(1);
         Admission admission3 = allAdmissions.get(2);
+
         when(admissionRepository.findAll()).thenReturn(allAdmissions);
 
         // when
@@ -61,7 +56,6 @@ class AdmissionServiceTest {
 
         // then
         assertThat(result).contains(admission1, admission2, admission3);
-
     }
 
     @Test
@@ -69,6 +63,7 @@ class AdmissionServiceTest {
         // given
         long id = 123L;
         var testAdmission = Optional.of(mock(Admission.class));
+
         when(admissionRepository.findById(id)).thenReturn(testAdmission);
 
         // when
@@ -76,7 +71,6 @@ class AdmissionServiceTest {
 
         // then
         verify(admissionRepository).findById(id);
-
     }
 
     @Test
@@ -93,7 +87,6 @@ class AdmissionServiceTest {
         )
                 .isInstanceOf(ResourceNotExistsException.class)
                 .hasMessageContaining("Admission with id [123]");
-
     }
 
     @Test
@@ -101,6 +94,7 @@ class AdmissionServiceTest {
         // given
         long id = 123L;
         Admission testAdmission = mock(Admission.class);
+
         when(admissionRepository.findById(id)).thenReturn(Optional.of(testAdmission));
 
         // when
@@ -110,12 +104,12 @@ class AdmissionServiceTest {
         assertThat(result).isEqualTo(testAdmission);
     }
 
-
     @Test
     void shouldSaveAdmissionIfDoesntExist() {
         // given
         Student student = mock(Student.class);
         Course course = mock(Course.class);
+
         int points = 235;
         Admission admission = new Admission(student, course, points);
 
@@ -124,7 +118,6 @@ class AdmissionServiceTest {
 
         // then
         verify(admissionRepository).save(admission);
-
     }
 
     @Test
@@ -132,8 +125,10 @@ class AdmissionServiceTest {
         // given
         Student student = mock(Student.class);
         Course course = mock(Course.class);
+
         int points = 234;
         Admission admission = new Admission(student, course, points);
+
         when(admissionRepository.save(admission)).thenReturn(admission);
 
         // when
@@ -141,7 +136,6 @@ class AdmissionServiceTest {
 
         // then
         assertThat(result).isEqualTo(admission);
-
     }
 
     @Test
@@ -151,6 +145,7 @@ class AdmissionServiceTest {
         Student student = new Student("testName", "testSnils");
         Course course = new Course();
         course.setName(name);
+
         int points = 123;
         Admission admission = new Admission(student, course, points);
 
@@ -160,7 +155,6 @@ class AdmissionServiceTest {
         // then
         assertThatThrownBy(() -> testInstance.create(admission));
         verify(admissionRepository, never()).save(admission);
-
     }
 
     @Test
@@ -170,6 +164,7 @@ class AdmissionServiceTest {
         Student student = new Student("testName", "testSnils");
         Course course = new Course();
         course.setName(name);
+
         int points = 143;
         Admission admission = new Admission(student, course, points);
 
@@ -181,7 +176,6 @@ class AdmissionServiceTest {
                 .isInstanceOf(AlreadyExistsException.class)
                 .hasMessageContaining(admission.getStudent().getName())
                 .hasMessageContaining(admission.getCourse().getName());
-
     }
 
     @Test
@@ -190,10 +184,12 @@ class AdmissionServiceTest {
         Student newStudent = mock(Student.class);
         Course newCourse = mock(Course.class);
         Admission oldAdmission = mock(Admission.class);
+
         boolean newConsent = true;
         int points = 235;
         Admission newAdmission = new Admission(newStudent, newCourse, newConsent, points);
         long id = 45L;
+
         when(admissionRepository.findById(id)).thenReturn(Optional.of(oldAdmission));
 
         // when
@@ -206,7 +202,6 @@ class AdmissionServiceTest {
         inOrder.verify(oldAdmission).setConsent(newConsent);
         inOrder.verify(oldAdmission).setPoints(points);
         inOrder.verify(admissionRepository).save(oldAdmission);
-
     }
 
     @Test
@@ -215,9 +210,11 @@ class AdmissionServiceTest {
         Student newStudent = mock(Student.class);
         Course newCourse = mock(Course.class);
         Admission oldAdmission = mock(Admission.class);
+
         int points = 124;
         Admission newAdmission = new Admission(newStudent, newCourse, points);
         long id = 45L;
+
         when(admissionRepository.findById(id)).thenReturn(Optional.of(oldAdmission));
         when(admissionRepository.save(oldAdmission)).thenReturn(oldAdmission);
 
@@ -226,7 +223,6 @@ class AdmissionServiceTest {
 
         // then
         assertThat(result).isEqualTo(oldAdmission);
-
     }
 
     @Test
@@ -234,6 +230,7 @@ class AdmissionServiceTest {
         // given
         long id = 123L;
         var oldAdmission = mock(Admission.class);
+
         when(admissionRepository.findById(id)).thenReturn(Optional.empty());
 
         // when
@@ -269,7 +266,7 @@ class AdmissionServiceTest {
         // when
         testInstance.delete(id);
 
-        //then
+        // then
         verify(admissionRepository).deleteById(id);
     }
 
@@ -281,11 +278,10 @@ class AdmissionServiceTest {
         // when
         doThrow(new EmptyResultDataAccessException(1)).when(admissionRepository).deleteById(id);
 
-        //then
+        // then
         assertThatThrownBy(() -> testInstance.delete(id))
                 .isInstanceOf(ResourceNotExistsException.class)
                 .hasMessageContaining("Admission with id [" + id + "]");
-
     }
 
     @Test
@@ -298,20 +294,18 @@ class AdmissionServiceTest {
 
         // then
         verify(admissionRepository).findAdmissionsByStudent(student);
-
     }
 
     @Test
     void shouldReturnAdmissions_WhenFindAdmissionsByStudent() {
         // given
         Student student = mock(Student.class);
+
         List<Admission> studentAdmissions = createAdmissionList();
         Admission admission1 = studentAdmissions.get(0);
         Admission admission2 = studentAdmissions.get(1);
         Admission admission3 = studentAdmissions.get(2);
-        studentAdmissions.add(admission1);
-        studentAdmissions.add(admission2);
-        studentAdmissions.add(admission3);
+
         when(admissionRepository.findAdmissionsByStudent(student)).thenReturn(studentAdmissions);
 
         // when
@@ -319,7 +313,6 @@ class AdmissionServiceTest {
 
         // then
         assertThat(result).contains(admission1, admission2, admission3);
-
     }
 
     @Test
@@ -333,7 +326,6 @@ class AdmissionServiceTest {
 
         // then
         verify(admissionRepository).findAdmissionsByStudentAndCourseUniversity(student, university);
-
     }
 
     @Test
@@ -341,18 +333,21 @@ class AdmissionServiceTest {
         // given
         Student student = mock(Student.class);
         University university = mock(University.class);
+
         List<Admission> studentAdmissions = createAdmissionList();
         Admission admission1 = studentAdmissions.get(0);
         Admission admission2 = studentAdmissions.get(1);
         Admission admission3 = studentAdmissions.get(2);
-        when(admissionRepository.findAdmissionsByStudentAndCourseUniversity(student, university)).thenReturn(studentAdmissions);
+
+        when(admissionRepository
+                .findAdmissionsByStudentAndCourseUniversity(student, university))
+                .thenReturn(studentAdmissions);
 
         // when
         List<Admission> result = testInstance.findAdmissionsByStudentAndCourseUniversity(student, university);
 
         // then
         assertThat(result).contains(admission1, admission2, admission3);
-
     }
 
     @Test
@@ -413,6 +408,7 @@ class AdmissionServiceTest {
         Admission admission2 = courseAdmissions.get(1);
         Admission admission3 = courseAdmissions.get(2);
         Course course = mock(Course.class);
+
         when(testInstance.getCourseAdmissions(course)).thenReturn(courseAdmissions);
 
         // when
@@ -432,7 +428,6 @@ class AdmissionServiceTest {
 
         // then
         verify(admissionRepository).saveAll(allAdmissions);
-
     }
 
     @Test
@@ -442,6 +437,7 @@ class AdmissionServiceTest {
         Admission admission1 = allAdmissions.get(0);
         Admission admission2 = allAdmissions.get(1);
         Admission admission3 = allAdmissions.get(2);
+
         when(admissionRepository.saveAll(allAdmissions)).thenReturn(allAdmissions);
 
         // when
@@ -449,7 +445,6 @@ class AdmissionServiceTest {
 
         // then
         assertThat(result).contains(admission1, admission2, admission3);
-
     }
     
     private List<Admission> createAdmissionList() {
@@ -460,6 +455,7 @@ class AdmissionServiceTest {
         admissions.add(admission1);
         admissions.add(admission2);
         admissions.add(admission3);
+
         return admissions;
     }
 }

@@ -23,27 +23,34 @@ public class AdmissionService {
     }
 
      public Admission get(long id) {
-        return repository.findById(id) //
+        return repository
+                .findById(id) //
                 .orElseThrow(() -> new ResourceNotExistsException("Admission with id [" + id + "]"));
     }
 
     public Admission create(Admission admission) {
+        String courseName = admission
+                .getCourse()
+                .getName();
         Student student = admission.getStudent();
-        String courseName = admission.getCourse().getName();
         Boolean exists = repository.existsByCourseNameAndStudent(courseName, student);
 
         if (exists) {
-            String message = String.format("Admission with student %s and courseName %s",
+            String message = String.format(
+                    "Admission with student %s and courseName %s",
                     student.getName(),
                     courseName);
             throw new AlreadyExistsException(message);
         }
+
         return repository.save(admission);
     }
 
     public Admission replace(Admission updatedAdmission, long id) {
-        Admission admission = repository.findById(id) //
+        Admission admission = repository
+                .findById(id) //
                 .orElseThrow(() -> new ResourceNotExistsException("Admission with id [" + id + "]"));
+
         return replaceAdmission(admission, updatedAdmission);
     }
 
@@ -56,14 +63,11 @@ public class AdmissionService {
         return repository.findAdmissionsByStudentAndCourseUniversity(student, university);
     }
 
-    // create tests
     public List<Admission> getCourseAdmissions(Course course) {
-
         return repository.findAdmissionsByCourseOrderByPoints(course);
     }
 
     public void delete(long id) {
-
         try {
             repository.deleteById(id);
         } catch (EmptyResultDataAccessException e) {
@@ -80,6 +84,7 @@ public class AdmissionService {
         admission.setCourse(updatedAdmission.getCourse());
         admission.setConsent(updatedAdmission.isConsent());
         admission.setPoints(updatedAdmission.getPoints());
+
         return repository.save(admission);
     }
 

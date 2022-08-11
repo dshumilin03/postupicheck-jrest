@@ -9,19 +9,13 @@ import ru.joinmore.postupicheck.api.dto.AdmissionDto;
 import ru.joinmore.postupicheck.api.entities.*;
 import ru.joinmore.postupicheck.api.services.CourseService;
 import ru.joinmore.postupicheck.api.services.StudentService;
-import ru.joinmore.postupicheck.api.services.SubjectService;
-import ru.joinmore.postupicheck.api.services.UniversityService;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class AdmissionReverseConverterTest {
 
-
-
-    @Mock
-    UniversityService universityService;
     @Mock
     StudentService studentService;
     @Mock
@@ -35,22 +29,23 @@ class AdmissionReverseConverterTest {
     }
 
     @Test
-    void convert() {
-        //given
+    void shouldReturnConvertedEntity() {
+        // given
         AdmissionDto admissionDto = new AdmissionDto(1, 1, 1,  false, 123);
         Student student = new Student(1L, "testName", "1234");
         Course course = new Course();
         course.setId(1L);
 
-        given(studentService.get(1L)).willReturn(student);
-        given(courseService.get(1L)).willReturn(course);
-        //when
-        Admission createdDao = testInstance.convert(admissionDto);
-        //then
-        assertThat(createdDao.getId()).isEqualTo(1L);
-        assertThat(createdDao.getStudent().getId()).isEqualTo(1);
-        assertThat(createdDao.getCourse().getId()).isEqualTo(1);
-        assertThat(createdDao.getPoints()).isEqualTo(123);
+        when(studentService.get(1L)).thenReturn(student);
+        when(courseService.get(1L)).thenReturn(course);
 
+        // when
+        Admission result = testInstance.convert(admissionDto);
+
+        // then
+        assertThat(result.getId()).isEqualTo(1L);
+        assertThat(result.getStudent().getId()).isEqualTo(1);
+        assertThat(result.getCourse().getId()).isEqualTo(1);
+        assertThat(result.getPoints()).isEqualTo(123);
     }
 }

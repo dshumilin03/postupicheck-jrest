@@ -3,8 +3,6 @@ package ru.joinmore.postupicheck.api.facades;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.joinmore.postupicheck.api.converters.UniversityConverter;
@@ -17,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -42,6 +39,7 @@ class UniversityFacadeTest {
         // given
         long id = 5L;
         University university = mock(University.class);
+
         when(universityService.get(id)).thenReturn(university);
 
         // when
@@ -49,7 +47,6 @@ class UniversityFacadeTest {
 
         // then
         verify(converter).convert(university);
-
     }
 
     @Test
@@ -58,6 +55,7 @@ class UniversityFacadeTest {
         long id = 5L;
         University university = mock(University.class);
         UniversityDto convertedUniversity = mock(UniversityDto.class);
+
         when(universityService.get(id)).thenReturn(university);
         when(converter.convert(university)).thenReturn(convertedUniversity);
 
@@ -66,7 +64,6 @@ class UniversityFacadeTest {
 
         // then
         assertThat(result).isEqualTo(convertedUniversity);
-
     }
 
     @Test
@@ -80,20 +77,22 @@ class UniversityFacadeTest {
         //then
         verify(universityService).getAll();
         verify(converter).convert(universityList);
-
     }
 
     @Test
     void shouldReturnConvertedList_WhenGetAll() {
         // given
         List<University> universityList = new ArrayList<>();
-        List<UniversityDto> convertedList = new ArrayList<>();
+
         UniversityDto universityDto1 = mock(UniversityDto.class);
         UniversityDto universityDto2 = mock(UniversityDto.class);
         UniversityDto universityDto3 = mock(UniversityDto.class);
+
+        List<UniversityDto> convertedList = new ArrayList<>();
         convertedList.add(universityDto1);
         convertedList.add(universityDto2);
         convertedList.add(universityDto3);
+
         when(universityService.getAll()).thenReturn(universityList);
         when(converter.convert(universityList)).thenReturn(convertedList);
 
@@ -102,7 +101,6 @@ class UniversityFacadeTest {
 
         //then
         assertThat(result).contains(universityDto1, universityDto2, universityDto3);
-
     }
 
     @Test
@@ -111,6 +109,7 @@ class UniversityFacadeTest {
         UniversityDto newUniversityDto = mock(UniversityDto.class);
         University newUniversity = mock(University.class);
         University createdUniversity = mock(University.class);
+
         when(reverseConverter.convert(newUniversityDto)).thenReturn(newUniversity);
         when(universityService.create(newUniversity)).thenReturn(createdUniversity);
 
@@ -128,6 +127,7 @@ class UniversityFacadeTest {
         University newUniversity = mock(University.class);
         University createdUniversity = mock(University.class);
         UniversityDto convertedUniversity = mock(UniversityDto.class);
+
         when(reverseConverter.convert(newUniversityDto)).thenReturn(newUniversity);
         when(universityService.create(newUniversity)).thenReturn(createdUniversity);
         when(converter.convert(createdUniversity)).thenReturn(convertedUniversity);
@@ -146,6 +146,7 @@ class UniversityFacadeTest {
         UniversityDto updatedUniversityDto = mock(UniversityDto.class);
         University updatedUniversity = mock(University.class);
         University newUniversity = mock(University.class);
+
         when(reverseConverter.convert(updatedUniversityDto)).thenReturn(updatedUniversity);
         when(universityService.replace(updatedUniversity, id)).thenReturn(newUniversity);
 
@@ -164,6 +165,7 @@ class UniversityFacadeTest {
         University updatedUniversity = mock(University.class);
         University newUniversity = mock(University.class);
         UniversityDto convertedUniversity = mock(UniversityDto.class);
+
         when(reverseConverter.convert(updatedUniversityDto)).thenReturn(updatedUniversity);
         when(universityService.replace(updatedUniversity, id)).thenReturn(newUniversity);
         when(converter.convert(newUniversity)).thenReturn(convertedUniversity);
@@ -174,7 +176,6 @@ class UniversityFacadeTest {
         // then
         assertThat(result).isEqualTo(convertedUniversity);
     }
-
 
     @Test
     void shouldCallUniversityServiceDelete() {

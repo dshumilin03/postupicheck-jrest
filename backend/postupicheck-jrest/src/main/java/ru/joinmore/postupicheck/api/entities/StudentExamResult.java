@@ -1,9 +1,6 @@
 package ru.joinmore.postupicheck.api.entities;
 
-import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
 @Table(indexes = {
@@ -11,16 +8,15 @@ import java.util.Objects;
         @Index(columnList = "student_id, subject_id")
 })
 public class StudentExamResult {
+
     @Id
     @SequenceGenerator(name = "studentExamResult_sequence", sequenceName = "studentExamResult_sequence", allocationSize = 1)
     @GeneratedValue( strategy = GenerationType.SEQUENCE, generator = "studentExamResult_sequence")
     private long id;
     private int points;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "student_id", referencedColumnName = "id")
     private Student student;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subject_id", referencedColumnName = "id")
     private Subject subject;

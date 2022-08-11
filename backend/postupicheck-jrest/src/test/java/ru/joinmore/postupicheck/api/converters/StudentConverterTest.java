@@ -3,9 +3,7 @@ package ru.joinmore.postupicheck.api.converters;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.joinmore.postupicheck.api.dto.StudentDto;
-import ru.joinmore.postupicheck.api.dto.SubjectDto;
 import ru.joinmore.postupicheck.api.entities.Student;
-import ru.joinmore.postupicheck.api.entities.Subject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +12,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class StudentConverterTest {
 
-
     private StudentConverter testInstance;
 
     @BeforeEach
@@ -22,23 +19,43 @@ class StudentConverterTest {
         testInstance = new StudentConverter();
 
     }
-    @Test
-    void convert() {
-        //given
-        Student student = new Student("testName", "1235");
-        student.setId(1L);
-        //when
-        StudentDto createdDto = testInstance.convert(student);
-        //then
-        assertThat(createdDto.getId()).isEqualTo(1L);
-        assertThat(createdDto.getName()).isEqualTo("testName");
-        assertThat(createdDto.getSnils()).isEqualTo("1235");
 
+    @Test
+    void shouldReturnConvertedEntity() {
+        // given
+        Student student = new Student(1L, "testName", "1235");
+
+        // when
+        StudentDto result = testInstance.convert(student);
+
+        // then
+        assertThat(result.getId()).isEqualTo(1L);
+        assertThat(result.getName()).isEqualTo("testName");
+        assertThat(result.getSnils()).isEqualTo("1235");
     }
 
     @Test
-    void convertList() {
-        //given
+    void shouldReturnConvertedListEntity() {
+        // given
+        List<Student> students = createStudents();
+
+        // when
+        List<StudentDto> result = testInstance.convert(students);
+
+        // then
+        StudentDto createdDto = result.get(0);
+        StudentDto createdDto2 = result.get(1);
+
+        assertThat(createdDto.getId()).isEqualTo(1L);
+        assertThat(createdDto.getName()).isEqualTo("testName1");
+        assertThat(createdDto.getSnils()).isEqualTo("123");
+
+        assertThat(createdDto2.getId()).isEqualTo(2L);
+        assertThat(createdDto2.getName()).isEqualTo("testName2");
+        assertThat(createdDto2.getSnils()).isEqualTo("345");
+    }
+
+    private List<Student> createStudents() {
         List<Student> students = new ArrayList<>();
         Student student1 = new Student("testName1", "123");
         Student student2 = new Student("testName2", "345");
@@ -46,14 +63,7 @@ class StudentConverterTest {
         students.add(student2);
         student2.setId(2L);
         student1.setId(1L);
-        //when
-        List<StudentDto> createdDtoList = testInstance.convert(students);
-        //then
-        assertThat(createdDtoList.get(0).getId()).isEqualTo(1L);
-        assertThat(createdDtoList.get(0).getName()).isEqualTo("testName1");
-        assertThat(createdDtoList.get(0).getSnils()).isEqualTo("123");
-        assertThat(createdDtoList.get(1).getId()).isEqualTo(2L);
-        assertThat(createdDtoList.get(1).getName()).isEqualTo("testName2");
-        assertThat(createdDtoList.get(1).getSnils()).isEqualTo("345");
+
+        return students;
     }
 }

@@ -65,6 +65,6 @@ http POST http://localhost:8080/test-data/create-universities
 Import can take several minutes (admissions) depending on hardware
 ### Alternative way
 
-1. [Download JoinMoreDB backup](https://disk.yandex.ru/d/B7AvTu3iT1xIKA)
+1. [Download JoinMoreDB backup](https://disk.yandex.ru/d/XS7QdutzKNGcgQ)
 2. [Restore dump file to PostgreSQL](https://www.postgresql.org/docs/current/app-pgrestore.html)
 

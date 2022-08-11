@@ -12,12 +12,15 @@ public class AdmissionConverter implements Converter<Admission, AdmissionDto>, L
 
     @Override
     public AdmissionDto convert(Admission admission) {
-
         long admissionId = admission.getId();
-        long studentId = admission.getStudent().getId();
-        long courseId = admission.getCourse().getId();
-        boolean consent = admission.isConsent();
+        long studentId = admission
+                .getStudent()
+                .getId();
+        long courseId = admission
+                .getCourse()
+                .getId();
         int points = admission.getPoints();
+        boolean consent = admission.isConsent();
 
         return new AdmissionDto(admissionId, studentId, courseId, consent, points);
     }
@@ -25,11 +28,13 @@ public class AdmissionConverter implements Converter<Admission, AdmissionDto>, L
     @Override
     public List<AdmissionDto> convert(List<Admission> admissions) {
         List<AdmissionDto> admissionDtoList = new ArrayList<>();
+
         admissions.
                 forEach(admission -> {
                     AdmissionDto admissionDto = convert(admission);
                     admissionDtoList.add(admissionDto);
                 });
+
         return admissionDtoList;
     }
 

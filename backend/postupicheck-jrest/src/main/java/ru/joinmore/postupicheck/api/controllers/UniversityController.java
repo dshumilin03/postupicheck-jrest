@@ -33,7 +33,8 @@ public class UniversityController {
     @GetMapping("/{id}")
     @ResponseStatus(code = HttpStatus.OK)
     UniversityDto getUniversity(@PathVariable Long id) {
-        return universityFacade.get(id);}
+        return universityFacade.get(id);
+    }
 
     @PutMapping("/{id}")
     @ResponseStatus(code = HttpStatus.OK)

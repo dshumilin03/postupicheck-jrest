@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class StudentForecastConverterTest {
 
@@ -22,23 +21,42 @@ class StudentForecastConverterTest {
     }
 
     @Test
-    void convert() {
-        //given
+    void shouldReturnConvertedDto() {
+        // given
         Admission admission = new Admission();
         admission.setId(12L);
         StudentForecast studentForecast = new StudentForecast();
         studentForecast.setId(1L);
         studentForecast.setAdmission(admission);
-        //when
-        StudentForecastDto forecastDto = testInstance.convert(studentForecast);
-        //then
-        assertThat(forecastDto.getId()).isEqualTo(1L);
-        assertThat(forecastDto.getAdmissionId()).isEqualTo(12L);
+
+        // when
+        StudentForecastDto result = testInstance.convert(studentForecast);
+
+        // then
+        assertThat(result.getClass()).isEqualTo(StudentForecastDto.class);
+        assertThat(result.getId()).isEqualTo(1L);
+        assertThat(result.getAdmissionId()).isEqualTo(12L);
     }
 
     @Test
-    void convertALl() {
-        //given
+    void shouldReturnConvertedDtoList() {
+        // given
+        List<StudentForecast> studentsForecasts = createStudentForecasts();
+
+        // when
+        List<StudentForecastDto> result = testInstance.convert(studentsForecasts);
+
+        // then
+        StudentForecastDto forecastDto1 = result.get(0);
+        assertThat(forecastDto1.getId()).isEqualTo(1L);
+        assertThat(forecastDto1.getAdmissionId()).isEqualTo(12L);
+
+        StudentForecastDto forecastDto2 = result.get(1);
+        assertThat(forecastDto2.getId()).isEqualTo(2L);
+        assertThat(forecastDto2.getAdmissionId()).isEqualTo(11L);
+    }
+
+    private List<StudentForecast> createStudentForecasts() {
         List<StudentForecast> studentsForecasts = new ArrayList<>();
         Admission admission = new Admission();
         admission.setId(12L);
@@ -53,15 +71,7 @@ class StudentForecastConverterTest {
 
         studentsForecasts.add(studentForecast);
         studentsForecasts.add(studentForecast2);
-        //when
-        List<StudentForecastDto> forecastDtoList = testInstance.convert(studentsForecasts);
-        //then
-        StudentForecastDto forecastDto1 = forecastDtoList.get(0);
-        StudentForecastDto forecastDto2 = forecastDtoList.get(1);
-        assertThat(forecastDto1.getId()).isEqualTo(1L);
-        assertThat(forecastDto1.getAdmissionId()).isEqualTo(12L);
 
-        assertThat(forecastDto2.getId()).isEqualTo(2L);
-        assertThat(forecastDto2.getAdmissionId()).isEqualTo(11L);
+        return studentsForecasts;
     }
 }

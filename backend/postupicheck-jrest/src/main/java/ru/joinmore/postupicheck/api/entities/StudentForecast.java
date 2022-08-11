@@ -1,7 +1,6 @@
 package ru.joinmore.postupicheck.api.entities;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
 @Table(name = "student_forecasts")
@@ -11,8 +10,6 @@ public class StudentForecast {
     @SequenceGenerator(name = "studentForecast_sequence", sequenceName = "studentForecast_sequence", allocationSize = 1)
     @GeneratedValue( strategy = GenerationType.SEQUENCE, generator = "studentForecast_sequence")
     private Long id;
-
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "admission_id", referencedColumnName = "id")
     private Admission admission;

@@ -3,7 +3,6 @@ package ru.joinmore.postupicheck.api.entities;
 import org.hibernate.FetchMode;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
 @Table(indexes = {
@@ -12,19 +11,17 @@ import java.util.Objects;
         @Index(columnList = "id")
 })
 public class Admission {
+
     @Id
     @SequenceGenerator(name = "admission_sequence", sequenceName = "admission_sequence", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "admission_sequence")
     private Long id;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "student_id", referencedColumnName = "id")
     private Student student;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id", referencedColumnName = "id")
     private Course course;
-
     private Boolean consent;
     private Integer points;
 
@@ -65,14 +62,6 @@ public class Admission {
 
     }
 
-    public Boolean isConsent() {
-        return consent;
-    }
-
-    public void setConsent(Boolean consent) {
-        this.consent = consent;
-    }
-
     public Long getId() {
         return id;
     }
@@ -97,8 +86,12 @@ public class Admission {
         this.course = course;
     }
 
-    public Boolean getConsent() {
+    public Boolean isConsent() {
         return consent;
+    }
+
+    public void setConsent(Boolean consent) {
+        this.consent = consent;
     }
 
     public int getPoints() {

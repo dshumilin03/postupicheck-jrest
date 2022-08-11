@@ -8,15 +8,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class StudentExamResultConverter implements Converter<StudentExamResult, StudentExamResultDto>,
+public class StudentExamResultConverter implements
+        Converter<StudentExamResult, StudentExamResultDto>,
         ListConverter<StudentExamResult, StudentExamResultDto> {
 
     @Override
     public StudentExamResultDto convert(StudentExamResult result) {
-
         int points = result.getPoints();
-        long studentId = result.getStudent().getId();
-        long subjectId = result.getSubject().getId();
+        long studentId = result
+                        .getStudent()
+                        .getId();
+        long subjectId = result
+                        .getSubject()
+                        .getId();
         long resultId = result.getId();
 
         return new StudentExamResultDto(resultId, studentId, subjectId, points);
@@ -25,11 +29,13 @@ public class StudentExamResultConverter implements Converter<StudentExamResult, 
     @Override
     public List<StudentExamResultDto> convert(List<StudentExamResult> studentExamResults) {
         List<StudentExamResultDto> studentExamResultDtoList = new ArrayList<>();
+
         studentExamResults.
                 forEach(studentExamResult -> {
                     StudentExamResultDto studentExamResultDto = convert(studentExamResult);
                     studentExamResultDtoList.add(studentExamResultDto);
                 });
+
         return studentExamResultDtoList;
     }
 }

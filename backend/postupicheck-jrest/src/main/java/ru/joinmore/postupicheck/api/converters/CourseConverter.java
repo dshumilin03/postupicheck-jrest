@@ -12,14 +12,24 @@ public class CourseConverter implements Converter<Course, CourseDto> , ListConve
 
     @Override
     public CourseDto convert(Course course) {
-
-        long universityId = course.getUniversity().getId();
-        long firstSubjectId = course.getFirstSubject().getId();
-        long secondSubjectId = course.getSecondSubject().getId();
-        long thirdSubjectId = course.getThirdSubject().getId();
-        int curPassingPoints = course.getCurPassingPoints();
-        int budgetPlaces = course.getBudgetPlaces();
+        long universityId = course
+                        .getUniversity()
+                        .getId();
+        long firstSubjectId = course
+                        .getFirstSubject()
+                        .getId();
+        long secondSubjectId = course
+                        .getSecondSubject()
+                        .getId();
+        long thirdSubjectId = course
+                .getThirdSubject()
+                .getId();
+        int curPassingPoints = course
+                .getCurPassingPoints();
+        int budgetPlaces = course
+                .getBudgetPlaces();
         long id = course.getId();
+
         String name = course.getName();
         String code = course.getCode();
 
@@ -43,6 +53,7 @@ public class CourseConverter implements Converter<Course, CourseDto> , ListConve
                     CourseDto courseDto = convert(course);
                     courseDtoList.add(courseDto);
                 });
+
         return courseDtoList;
     }
 }

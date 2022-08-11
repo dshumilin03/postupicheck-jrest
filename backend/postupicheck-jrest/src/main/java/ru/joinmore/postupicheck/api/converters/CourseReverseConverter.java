@@ -21,7 +21,6 @@ public class CourseReverseConverter implements Converter<CourseDto, Course> {
 
     @Override
     public Course convert(CourseDto courseDto) {
-
         String courseName = courseDto.getName();
         String courseCode = courseDto.getCode();
 
@@ -48,6 +47,5 @@ public class CourseReverseConverter implements Converter<CourseDto, Course> {
                 thirdSubject,
                 curPassingPoints,
                 budgetPlaces);
-
     }
 }

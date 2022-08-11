@@ -37,8 +37,9 @@ public class StudentForecastController {
 
     @PutMapping("/{id}")
     @ResponseStatus(code = HttpStatus.OK)
-    StudentForecastDto replaceStudentForecast(@RequestBody StudentForecastDto updatedStudentForecastDto,
-                                              @PathVariable Long id) {
+    StudentForecastDto replaceStudentForecast(
+            @RequestBody StudentForecastDto updatedStudentForecastDto,
+            @PathVariable Long id) {
         return studentForecastFacade.replace(updatedStudentForecastDto, id);
     }
 

@@ -54,58 +54,63 @@ public class TestDataService {
 
     public void createTestStudents() {
         List<Student> students = new ArrayList<>();
+
         for (int i = 1; i <= 10000; i++) {
             String snils = String.format("%011d", i);
             Student student = new Student("Иванов " + i, snils);
             students.add(student);
         }
+
         studentRepository.saveAll(students);
     }
 
     public void createTestUniversities() {
         List<University> universities = new ArrayList<>();
+
         for (int i = 1; i <= 100; i++) {
             University university = new University("Государственный Университет " + i);
             universities.add(university);
         }
+
         universityRepository.saveAll(universities);
     }
 
     public void createTestStudentExamResults() {
         List<Student> students = studentService.getAll();
         List<StudentExamResult> allStudentExamResults = new ArrayList<>();
+
         students.forEach(student -> {
             List<StudentExamResult> createdStudentExamResults = createAllResultsForStudent(student);
             allStudentExamResults.addAll(createdStudentExamResults);
         });
+
         studentExamResultRepository.saveAll(allStudentExamResults);
     }
 
     public List<StudentExamResult> createAllResultsForStudent(Student student) {
         Random random = new Random();
-        List<StudentExamResult> currentStudentExamResults = new ArrayList<>();
 
         int ruPoints = random.nextInt(100) + 1;
         int mathPoints = random.nextInt(100) + 1;
 
         Subject firstSubject = subjectService.get(1);
         Subject secondSubject = subjectService.get(2);
-        Set<Subject> subjects = getRandomSubjects();
 
         StudentExamResult studentExamResultMath = new StudentExamResult(mathPoints, student, firstSubject);
         StudentExamResult studentExamResultRu = new StudentExamResult(ruPoints, student, secondSubject);
 
+        List<StudentExamResult> currentStudentExamResults = new ArrayList<>();
         currentStudentExamResults.add(studentExamResultMath);
         currentStudentExamResults.add(studentExamResultRu);
-        //studentExamResultRepository.save(studentExamResultMath);
-        //studentExamResultRepository.save(studentExamResultRu);
+
+        Set<Subject> subjects = getRandomSubjects();
 
         subjects.forEach(subject -> {
             int points = random.nextInt(100) + 1;
             StudentExamResult studentExamResult = new StudentExamResult(points, student, subject);
             currentStudentExamResults.add(studentExamResult);
-            //studentExamResultRepository.save(studentExamResult);
         });
+
         return currentStudentExamResults;
     }
 
@@ -141,7 +146,8 @@ public class TestDataService {
 
             int budgetPlaces1 = random.nextInt(100) + 1;
             List<Course> infCourses =
-                    createTestCourse(informaticsCoursesCount,
+                    createTestCourse(
+                            informaticsCoursesCount,
                     "Направление-Информатика",
                     universityName, informatics,
                     informaticsCodeNumber,
@@ -153,7 +159,8 @@ public class TestDataService {
 
             int budgetPlaces2 = random.nextInt(100) + 1;
             List<Course> physCourses =
-                    createTestCourse(physicsCoursesCount,
+                    createTestCourse(
+                            physicsCoursesCount,
                     "Направление-Физика",
                     universityName, physics,
                     physicsCodeNumber,
@@ -164,9 +171,9 @@ public class TestDataService {
                     budgetPlaces2);
 
             int budgetPlaces3 = random.nextInt(100) + 1;
-
             List<Course> ssCourses =
-                    createTestCourse(socialScienceCoursesCount,
+                    createTestCourse(
+                            socialScienceCoursesCount,
                     "Направление-Обществознание",
                     universityName, socialScience,
                     socialScienceCodeNumber,
@@ -177,9 +184,9 @@ public class TestDataService {
                     budgetPlaces3);
 
             int budgetPlaces4 = random.nextInt(100) + 1;
-
             List<Course> chemistryCourses =
-            createTestCourse(chemistryCoursesCount,
+            createTestCourse(
+                    chemistryCoursesCount,
                     "Направление-Химия",
                     universityName, chemistry,
                     chemistryCodeNumber,
@@ -190,9 +197,9 @@ public class TestDataService {
                     budgetPlaces4);
 
             int budgetPlaces5 = random.nextInt(100) + 1;
-
             List<Course> biologyCourses =
-            createTestCourse(biologyCoursesCount,
+            createTestCourse(
+                    biologyCoursesCount,
                     "Направление-Биология",
                     universityName, biology,
                     biologyCodeNumber,
@@ -230,10 +237,9 @@ public class TestDataService {
             String code = "код " + codeNumber;
             Course course = new Course(name, code, university, math, ru, thirdSubject, curPassingPoints, budgetPlaces);
             allCourses.add(course);
-            //courseRepository.save(course);
         }
+
         return allCourses;
-        //courseRepository.saveAll(allCourses);
     }
 
     public void createTestAdmissions() {
@@ -242,7 +248,6 @@ public class TestDataService {
         List<Admission> allAdmissions = new ArrayList<>();
 
         students.forEach(student -> {
-
             int universityAdmissionsCount = random.nextInt(5) + 1;
 
             for (int i=1; i <= universityAdmissionsCount; i++) {
@@ -260,10 +265,12 @@ public class TestDataService {
         int admissionsInUniversityCount = random.nextInt(5) + 1;
         // Выбираем сколько студент подаст заявлений в данный уник
         // подаем столько заявлений сколько рассчитали выше
+
         return new ArrayList<>(createAdmissionsWithCourses(student, math, ru, admissionsInUniversityCount, randomUniversity));
     }
 
     public void createSubjects() {
+        List<Subject> allSubjects = new ArrayList<>();
         Subject math = new Subject("Математика");
         Subject ru = new Subject("Русский язык");
         Subject inf = new Subject("Информатика");
@@ -271,24 +278,30 @@ public class TestDataService {
         Subject biology = new Subject("Биология");
         Subject chemistry = new Subject("Химия");
         Subject socialScience = new Subject("Обществознание");
-        subjectRepository.save(math);
-        subjectRepository.save(ru);
-        subjectRepository.save(inf);
-        subjectRepository.save(phys);
-        subjectRepository.save(biology);
-        subjectRepository.save(chemistry);
-        subjectRepository.save(socialScience);
+
+        allSubjects.add(math);
+        allSubjects.add(ru);
+        allSubjects.add(inf);
+        allSubjects.add(phys);
+        allSubjects.add(biology);
+        allSubjects.add(chemistry);
+        allSubjects.add(socialScience);
+
+        subjectRepository.saveAll(allSubjects);
     }
 
-    private List<Admission> createAdmissionsWithCourses(Student student, Subject math, Subject ru, int admissionsInUniversityCount, University university) {
-
-        List<Admission> allAdmissions = new ArrayList<>();
-        List<Subject> passedSubjects = new ArrayList<>();
-        List<StudentExamResult> studentExamResults = studentExamResultService.
-                getAllStudentResults(student);
-
+    private List<Admission> createAdmissionsWithCourses(
+            Student student,
+            Subject math,
+            Subject ru,
+            int admissionsInUniversityCount,
+            University university) {
         String mathName = math.getName();
         String ruName = ru.getName();
+
+        List<Subject> passedSubjects = new ArrayList<>();
+        List<StudentExamResult> studentExamResults = studentExamResultService.getAllStudentResults(student);
+
         studentExamResults.forEach(studentExamResult -> {
             Subject subject = studentExamResult.getSubject();
             String subjectName = subject.getName();
@@ -299,48 +312,54 @@ public class TestDataService {
 
         List<Course> availableCourses = new ArrayList<>();
 
-        passedSubjects.forEach(subject -> {
-            List<Course> subjectCourses = courseService.findCoursesByUniversityAndThirdSubject(university, subject);
-            availableCourses.addAll(subjectCourses);
-        });
+        passedSubjects
+                .forEach(subject -> {
+                    List<Course> subjectCourses =
+                            courseService
+                                    .findCoursesByUniversityAndThirdSubject(university, subject);
+                    availableCourses.addAll(subjectCourses)
+                    ;
+                });
 
+        List<Admission> allAdmissions = new ArrayList<>();
         // Костыльно берем результат экзамена НЕ математики и НЕ русского и создаем заявления
         for (int i = 1; i <= admissionsInUniversityCount; i++) {
-
             if (availableCourses.size() > 0) {
                 Collections.shuffle(availableCourses);
                 Course course = availableCourses.get(0);
                 int points = 0;
                 Admission admission = new Admission(student, course, points);
                 allAdmissions.add(admission);
-                //admissionRepository.save(admission);
                 availableCourses.remove(course);
-
             }
-
         }
+
         return allAdmissions;
     }
 
     public void setRandomBudgetPlacesForAllCourses() {
         Random random = new Random();
         List<Course> allCourses = courseService.getAll();
-        allCourses.forEach(course -> {
-            long id = course.getId();
-            int budgetPlaces = random.nextInt(100) + 1;
-            course.setBudgetPlaces(budgetPlaces);
-            courseService.replace(course, id);
-        });
+
+        allCourses
+                .forEach(course -> {
+                    long id = course.getId();
+                    int budgetPlaces = random.nextInt(100) + 1;
+                    course.setBudgetPlaces(budgetPlaces);
+                    courseService.replace(course, id);
+                });
     }
 
     public void setPointsForAllAdmissions() {
         List<Admission> allAdmissions = admissionService.getAll();
+
         allAdmissions.forEach(admission -> {
             Course admissionCourse = admission.getCourse();
             Student admissionStudent = admission.getStudent();
             int points = studentAdmissionService.getStudentAdmissionPoints(admissionStudent, admissionCourse);
             admission.setPoints(points);
         });
+
         admissionService.saveAll(allAdmissions);
     }
 
@@ -348,15 +367,17 @@ public class TestDataService {
         // Берем рандомный уник
         int id = random.nextInt(100) + 1;
         University randomUniversity = universityService.get(id);
+        // Берем все заявления из данного уника
         List<Admission> admissions = admissionService.findAdmissionsByStudentAndCourseUniversity(student, randomUniversity);
         // Проверяем что он уже туда не подавал
         List<Admission> allAdmissions = new ArrayList<>();
+
         if (admissions.size() == 0) {
             allAdmissions.addAll(chooseCoursesThenCreateAdmissions(random, randomUniversity, student));
-
         } else {
             chooseUniversityThenCreateAdmissions(random, student);
         }
+
         return allAdmissions;
     }
 
@@ -368,18 +389,22 @@ public class TestDataService {
         if (informaticsChance <= 60) {
             subjects.add(subjectService.get(3));
         }
+
         int physicsChance = random.nextInt(100) + 1;
         if (physicsChance <= 30) {
             subjects.add(subjectService.get(4));
         }
+
         int biologyChance = random.nextInt(100) + 1;
         if (biologyChance <= 10) {
             subjects.add(subjectService.get(5));
         }
+
         int chemistryChance = random.nextInt(100) + 1;
         if (chemistryChance <= 10) {
             subjects.add(subjectService.get(6));
         }
+
         int socialScienceChance = random.nextInt(100) + 1;
         if (socialScienceChance <= 30) {
             subjects.add(subjectService.get(7));

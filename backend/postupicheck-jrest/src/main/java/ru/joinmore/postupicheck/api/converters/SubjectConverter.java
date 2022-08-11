@@ -12,7 +12,6 @@ public class SubjectConverter implements Converter<Subject, SubjectDto>, ListCon
 
     @Override
     public SubjectDto convert(Subject subject) {
-
         long subjectId = subject.getId();
         String subjectName = subject.getName();
 
@@ -23,11 +22,13 @@ public class SubjectConverter implements Converter<Subject, SubjectDto>, ListCon
     @Override
     public List<SubjectDto> convert(List<Subject> subjects) {
         List<SubjectDto> subjectDtoList = new ArrayList<>();
+
         subjects.
                 forEach(subject -> {
                     SubjectDto subjectDto = convert(subject);
                     subjectDtoList.add(subjectDto);
                 });
+
         return subjectDtoList;
     }
 }

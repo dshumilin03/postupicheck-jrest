@@ -15,8 +15,6 @@ public class AdmissionFacade {
     private final AdmissionService admissionService;
     private final CourseAdmissionService courseAdmissionService;
     private final AdmissionConverter converter;
-
-
     private final AdmissionReverseConverter reverseConverter;
 
     public AdmissionFacade(AdmissionService admissionService,
@@ -31,21 +29,18 @@ public class AdmissionFacade {
     }
 
     public AdmissionDto get(long id) {
-
         Admission admission = admissionService.get(id);
 
         return converter.convert(admission);
     }
 
     public List<AdmissionDto> getAll() {
-
         List<Admission> admissionList = admissionService.getAll();
 
         return converter.convert(admissionList);
     }
 
     public AdmissionDto create(AdmissionDto newAdmissionDto) {
-
         Admission newAdmission = reverseConverter.convert(newAdmissionDto);
         Admission createdAdmission = admissionService.create(newAdmission);
 
@@ -53,7 +48,6 @@ public class AdmissionFacade {
     }
 
     public AdmissionDto replace(AdmissionDto updatedAdmissionDto, long id) {
-
         Admission updatedAdmission = reverseConverter.convert(updatedAdmissionDto);
         Admission newAdmission = admissionService.replace(updatedAdmission, id);
 
@@ -71,5 +65,4 @@ public class AdmissionFacade {
     public void deleteAll() {
         admissionService.deleteAll();
     }
-
 }

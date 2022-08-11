@@ -16,14 +16,15 @@ class SubjectReverseConverterTest {
     }
 
     @Test
-    void convert() {
-        //given
+    void shouldReturnConvertedEntity() {
+        // given
         SubjectDto subjectDto = new SubjectDto(1, "testName");
-        //when
-        Subject createdDao = testInstance.convert(subjectDto);
-        //then
-        assertThat(createdDao.getId()).isEqualTo(1L);
-        assertThat(createdDao.getName()).isEqualTo("testName");
 
+        // when
+        Subject result = testInstance.convert(subjectDto);
+
+        // then
+        assertThat(result.getId()).isEqualTo(1L);
+        assertThat(result.getName()).isEqualTo("testName");
     }
 }

@@ -16,30 +16,28 @@ public class CourseFacade {
     private final CourseConverter converter;
     private final CourseReverseConverter reverseConverter;
 
-    public CourseFacade(CourseService courseService,
-                        CourseConverter converter,
-                        CourseReverseConverter reverseConverter) {
+    public CourseFacade(
+            CourseService courseService,
+            CourseConverter converter,
+            CourseReverseConverter reverseConverter) {
         this.courseService = courseService;
         this.converter = converter;
         this.reverseConverter = reverseConverter;
     }
 
     public CourseDto get(long id) {
-
         Course course = courseService.get(id);
 
         return converter.convert(course);
     }
 
     public List<CourseDto> getAll() {
-
         List<Course> courseList = courseService.getAll();
 
         return converter.convert(courseList);
     }
 
     public CourseDto create(CourseDto newCourseDto) {
-
         Course newCourse = reverseConverter.convert(newCourseDto);
         Course createdCourse = courseService.create(newCourse);
 
@@ -47,7 +45,6 @@ public class CourseFacade {
     }
 
     public CourseDto replace(CourseDto updatedCourseDto, long id) {
-
         Course updatedCourse = reverseConverter.convert(updatedCourseDto);
         Course newCourse = courseService.replace(updatedCourse, id);
 

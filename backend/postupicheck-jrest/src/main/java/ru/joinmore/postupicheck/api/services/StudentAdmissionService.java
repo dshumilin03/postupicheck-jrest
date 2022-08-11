@@ -15,13 +15,13 @@ public class StudentAdmissionService {
     private final StudentService studentService;
     private final AdmissionService admissionService;
     private final StudentExamResultService studentExamResultService;
-
     private final CourseService courseService;
 
-    public StudentAdmissionService(StudentService studentService,
-                                   CourseService courseService,
-                                   StudentExamResultService studentExamResultService,
-                                   AdmissionService admissionService) {
+    public StudentAdmissionService(
+            StudentService studentService,
+            CourseService courseService,
+            StudentExamResultService studentExamResultService,
+            AdmissionService admissionService) {
         this.studentService = studentService;
         this.admissionService = admissionService;
         this.studentExamResultService = studentExamResultService;
@@ -29,39 +29,47 @@ public class StudentAdmissionService {
     }
 
     public List<Admission> getStudentAdmissions(Long id) {
-
         return admissionService.findAdmissionsByStudentId(id);
     }
 
     public Admission getStudentConsentAdmission(Long id) {
         List<Admission> studentAdmissionList = admissionService.findAdmissionsByStudentId(id);
 
-        return studentAdmissionList.stream().filter(Admission::isConsent).toList().get(0);
+        return studentAdmissionList
+                .stream()
+                .filter(Admission::isConsent)
+                .toList()
+                .get(0);
     }
 
     public List<Admission> getStudentAvailableAdmissions(Long id) {
         Student student = studentService.get(id);
-
         List<Admission> allStudentAdmissions = admissionService.findAdmissionsByStudentId(id);
 
-        return allStudentAdmissions.stream().
-                filter(admission ->
-                        admission.getCourse().getCurPassingPoints() <
-                                getStudentAdmissionPoints(student, admission.getCourse())).toList();
-
+        return allStudentAdmissions
+                .stream()
+                .filter(admission -> admission
+                        .getCourse()
+                        .getCurPassingPoints()
+                        <
+                        getStudentAdmissionPoints(student, admission.getCourse())
+                )
+                .toList();
     }
 
     public int getStudentAdmissionPoints(Student student, Course course) {
-
         List<Subject> requiredSubjects = courseService.getRequiredSubjects(course);
         AtomicInteger result = new AtomicInteger();
+
         requiredSubjects.
-                forEach(subject -> {
-                    result.addAndGet(studentExamResultService.getPointsByStudentAndSubject(student, subject));
-                });
+                forEach(subject -> result
+                        .addAndGet(
+                                studentExamResultService
+                                        .getPointsByStudentAndSubject(student, subject)
+                        )
+                );
 
         return result.get();
     }
-
 }
 

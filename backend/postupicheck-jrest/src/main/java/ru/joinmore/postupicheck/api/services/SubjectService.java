@@ -23,22 +23,27 @@ public class SubjectService {
     }
 
     public Subject get(long id) {
-        return repository.findById(id) //
+        return repository
+                .findById(id) //
                 .orElseThrow(() -> new ResourceNotExistsException("Subject with id [" + id + "]"));
     }
 
     public Subject create(Subject subject) {
         String subjectName = subject.getName();
         Boolean exists = repository.existsByName(subjectName);
+
         if (exists) {
             throw new AlreadyExistsException(subjectName);
         }
+
         return repository.save(subject);
     }
 
     public Subject replace(Subject updatedSubject, long id) {
-        Subject subject = repository.findById(id) //
+        Subject subject = repository
+                .findById(id) //
                 .orElseThrow(() -> new ResourceNotExistsException("Subject with id [" + id + "]"));
+
         return replaceSubject(subject, updatedSubject);
     }
 
@@ -56,6 +61,7 @@ public class SubjectService {
 
     private Subject replaceSubject(Subject subject, Subject updatedSubject) {
         subject.setName(updatedSubject.getName());
+
         return repository.save(subject);
     }
 }

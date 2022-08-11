@@ -16,30 +16,28 @@ public class UniversityFacade {
     private final UniversityConverter converter;
     private final UniversityReverseConverter reverseConverter;
 
-    public UniversityFacade(UniversityService universityService,
-                            UniversityConverter converter,
-                            UniversityReverseConverter reverseConverter) {
+    public UniversityFacade(
+            UniversityService universityService,
+            UniversityConverter converter,
+            UniversityReverseConverter reverseConverter) {
         this.universityService = universityService;
         this.converter = converter;
         this.reverseConverter = reverseConverter;
     }
 
     public UniversityDto get(long id) {
-
         University university = universityService.get(id);
 
         return converter.convert(university);
     }
 
     public List<UniversityDto> getAll() {
-
         List<University> allUniversities = universityService.getAll();
 
         return converter.convert(allUniversities);
     }
 
     public UniversityDto create(UniversityDto newUniversityDto) {
-
         University newUniversity = reverseConverter.convert(newUniversityDto);
         University createdUniversity = universityService.create(newUniversity);
 
@@ -47,7 +45,6 @@ public class UniversityFacade {
     }
 
     public UniversityDto replace(UniversityDto updatedUniversityDto, long id) {
-
         University updatedUniversity = reverseConverter.convert(updatedUniversityDto);
         University newUniversity = universityService.replace(updatedUniversity, id);
 
@@ -57,5 +54,4 @@ public class UniversityFacade {
     public void delete(long id) {
         universityService.delete(id);
     }
-
 }

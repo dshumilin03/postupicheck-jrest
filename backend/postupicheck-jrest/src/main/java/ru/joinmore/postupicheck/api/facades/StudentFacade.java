@@ -8,7 +8,6 @@ import ru.joinmore.postupicheck.api.dto.AdmissionDto;
 import ru.joinmore.postupicheck.api.dto.StudentDto;
 import ru.joinmore.postupicheck.api.entities.Admission;
 import ru.joinmore.postupicheck.api.entities.Student;
-import ru.joinmore.postupicheck.api.services.AdmissionService;
 import ru.joinmore.postupicheck.api.services.StudentAdmissionService;
 import ru.joinmore.postupicheck.api.services.StudentForecastService;
 import ru.joinmore.postupicheck.api.services.StudentService;
@@ -21,18 +20,17 @@ public class StudentFacade {
     private final StudentService studentService;
     private final StudentConverter converter;
     private final StudentReverseConverter reverseConverter;
-
     private final StudentAdmissionService studentAdmissionService;
-
     private final AdmissionConverter admissionConverter;
     private final StudentForecastService studentForecastService;
 
-    public StudentFacade(StudentService studentService,
-                         StudentForecastService studentForecastService,
-                         StudentAdmissionService studentAdmissionService,
-                         StudentConverter converter,
-                         StudentReverseConverter reverseConverter,
-                         AdmissionConverter admissionConverter) {
+    public StudentFacade(
+            StudentService studentService,
+            StudentForecastService studentForecastService,
+            StudentAdmissionService studentAdmissionService,
+            StudentConverter converter,
+            StudentReverseConverter reverseConverter,
+            AdmissionConverter admissionConverter) {
         this.studentService = studentService;
         this.converter = converter;
         this.reverseConverter = reverseConverter;
@@ -43,21 +41,18 @@ public class StudentFacade {
 
 
     public StudentDto get(long id) {
-
         Student student =  studentService.get(id);
 
         return converter.convert(student);
     }
 
     public List<StudentDto> getAll() {
-
         List<Student> allStudents = studentService.getAll();
 
         return converter.convert(allStudents);
     }
 
     public StudentDto create(StudentDto newStudentDto) {
-
         Student newStudent = reverseConverter.convert(newStudentDto);
         Student createdStudent = studentService.create(newStudent);
 
@@ -65,7 +60,6 @@ public class StudentFacade {
     }
 
     public StudentDto replace(StudentDto updatedStudentDto, long id) {
-
         Student updatedStudent = reverseConverter.convert(updatedStudentDto);
         Student newStudent = studentService.replace(updatedStudent, id);
 
@@ -84,6 +78,7 @@ public class StudentFacade {
 
     public AdmissionDto getStudentConsentAdmission(long id) {
         Admission admission = studentAdmissionService.getStudentConsentAdmission(id);
+
         return admissionConverter.convert(admission);
     }
 
@@ -94,8 +89,8 @@ public class StudentFacade {
     }
 
     public AdmissionDto getStudentForecastAdmission(Long id) {
-            Admission forecast = studentForecastService.getStudentForecast(id).getAdmission();
+        Admission forecast = studentForecastService.getStudentForecast(id).getAdmission();
 
-            return admissionConverter.convert(forecast);
+        return admissionConverter.convert(forecast);
     }
 }

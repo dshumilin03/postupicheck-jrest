@@ -13,7 +13,7 @@ import ru.joinmore.postupicheck.api.services.StudentService;
 import ru.joinmore.postupicheck.api.services.SubjectService;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class StudentExamResultReverseConverterTest {
@@ -30,22 +30,23 @@ class StudentExamResultReverseConverterTest {
     }
 
     @Test
-    void convert() {
-        //given
+    void shouldReturnConvertedDto() {
+        // given
         StudentExamResultDto studentExamResultDto = new StudentExamResultDto(1, 1, 1, 58);
         Student student = new Student(1L, "testName", "1234");
         Subject subject = new Subject(1L, "testSubject");
 
-        given(studentService.get(1L)).willReturn(student);
-        given(subjectService.get(1L)).willReturn(subject);
-        //when
-        StudentExamResult createdDao = testInstance.convert(studentExamResultDto);
-        //then
-        assertThat(createdDao.getId()).isEqualTo(1L);
-        assertThat(createdDao.getStudent().getId()).isEqualTo(1);
-        assertThat(createdDao.getSubject().getId()).isEqualTo(1);
-        assertThat(createdDao.getPoints()).isEqualTo(58);
+        when(studentService.get(1L)).thenReturn(student);
+        when(subjectService.get(1L)).thenReturn(subject);
 
+        // when
+        StudentExamResult result = testInstance.convert(studentExamResultDto);
+
+        // then
+        assertThat(result.getId()).isEqualTo(1L);
+        assertThat(result.getStudent().getId()).isEqualTo(1);
+        assertThat(result.getSubject().getId()).isEqualTo(1);
+        assertThat(result.getPoints()).isEqualTo(58);
     }
 
 }

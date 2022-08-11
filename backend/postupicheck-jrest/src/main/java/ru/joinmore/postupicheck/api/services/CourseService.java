@@ -25,23 +25,22 @@ public class CourseService {
         return repository.findAll();
     }
 
-//    public void updateCurPassingPoints(long id, int points) {
-//        repository.updateCurPassingPoints(id, points);
-//    }
-
     public Course get(long id) {
-        return repository.findById(id) //
+        return repository
+                .findById(id) //
                 .orElseThrow(() -> new ResourceNotExistsException("Course with id [" + id + "]"));
     }
 
     public Course create(Course course) {
-
         String name = course.getName();
         Boolean exists = repository.existsByName(name);
 
         if (exists) {
             University university = course.getUniversity();
-            String message = String.format("Course with name %s in university + %d ", name, university.getId());
+            String message = String.format(
+                    "Course with name %s in university + %d ",
+                    name,
+                    university.getId());
             throw new AlreadyExistsException(message);
         }
 
@@ -49,13 +48,14 @@ public class CourseService {
     }
 
     public Course replace(Course updatedCourse, long id) {
-        Course course = repository.findById(id) //
+        Course course = repository
+                .findById(id) //
                 .orElseThrow(() -> new ResourceNotExistsException("Course with id [" + id + "]"));
+
         return replaceCourse(course, updatedCourse);
     }
 
     public void delete(long id) {
-
         try {
             repository.deleteById(id);
         } catch (EmptyResultDataAccessException e) {

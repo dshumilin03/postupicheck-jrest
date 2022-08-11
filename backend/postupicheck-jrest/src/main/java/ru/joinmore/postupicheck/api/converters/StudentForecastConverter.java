@@ -8,14 +8,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class StudentForecastConverter implements Converter<StudentForecast, StudentForecastDto>,
-    ListConverter<StudentForecast, StudentForecastDto>{
+public class StudentForecastConverter implements
+        Converter<StudentForecast, StudentForecastDto>,
+        ListConverter<StudentForecast, StudentForecastDto>{
 
     @Override
     public StudentForecastDto convert(StudentForecast studentForecast) {
-
         Long id = studentForecast.getId();
-        Long admissionId = studentForecast.getAdmission().getId();
+        Long admissionId = studentForecast
+                        .getAdmission()
+                        .getId();
 
         return new StudentForecastDto(id, admissionId);
 
@@ -24,11 +26,13 @@ public class StudentForecastConverter implements Converter<StudentForecast, Stud
     @Override
     public List<StudentForecastDto> convert(List<StudentForecast> studentForecasts) {
         List<StudentForecastDto> studentForecastDtoList = new ArrayList<>();
+
         studentForecasts.
                 forEach(studentForecast -> {
                     StudentForecastDto studentForecastDto = convert(studentForecast);
                     studentForecastDtoList.add(studentForecastDto);
                 });
+
         return studentForecastDtoList;
     }
 }

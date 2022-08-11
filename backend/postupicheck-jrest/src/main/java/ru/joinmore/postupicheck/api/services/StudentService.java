@@ -2,7 +2,6 @@ package ru.joinmore.postupicheck.api.services;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
-import ru.joinmore.postupicheck.api.dto.AdmissionDto;
 import ru.joinmore.postupicheck.api.exceptions.AlreadyExistsException;
 import ru.joinmore.postupicheck.api.exceptions.ResourceNotExistsException;
 import ru.joinmore.postupicheck.api.entities.Student;
@@ -24,22 +23,27 @@ public class StudentService {
     }
 
     public Student get(long id) {
-        return repository.findById(id) //
+        return repository
+                .findById(id) //
                 .orElseThrow(() -> new ResourceNotExistsException("Student with id [" + id + "]"));
     }
 
     public Student create(Student student) {
-        Boolean existsSnils = repository.
-                existsStudentBySnils(student.getSnils());
+        String snils = student.getSnils();
+        Boolean existsSnils = repository.existsStudentBySnils(snils);
+
         if (existsSnils) {
-            throw new AlreadyExistsException("Snils " + student.getSnils());
+            throw new AlreadyExistsException("Snils " + snils);
         }
+
         return repository.save(student);
     }
 
     public Student replace(Student updatedStudent, long id) {
-        Student student = repository.findById(id) //
+        Student student = repository
+                .findById(id) //
                 .orElseThrow(() -> new ResourceNotExistsException("Student with id [" + id + "]"));
+
         return replaceStudent(student, updatedStudent);
     }
 
@@ -54,6 +58,7 @@ public class StudentService {
     private Student replaceStudent(Student student, Student updatedStudent) {
             student.setName(updatedStudent.getName());
             student.setSnils(updatedStudent.getSnils());
+
             return repository.save(student);
     }
 

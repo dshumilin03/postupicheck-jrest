@@ -21,17 +21,14 @@ public class StudentExamResultReverseConverter implements Converter<StudentExamR
 
     @Override
     public StudentExamResult convert(StudentExamResultDto studentExamResultDto) {
-
-        long subjectId = studentExamResultDto.getSubjectId();
-        Subject subject = subjectService.get(subjectId);
-
+        long studentExamResultId = studentExamResultDto.getId();
         long studentId = studentExamResultDto.getStudentId();
+        long subjectId = studentExamResultDto.getSubjectId();
+        int result = studentExamResultDto.getPoints();
+
+        Subject subject = subjectService.get(subjectId);
         Student student = studentService.get(studentId);
 
-        int result = studentExamResultDto.getPoints();
-        long studentExamResultId = studentExamResultDto.getId();
-
         return new StudentExamResult(studentExamResultId, result, student, subject);
-
     }
 }

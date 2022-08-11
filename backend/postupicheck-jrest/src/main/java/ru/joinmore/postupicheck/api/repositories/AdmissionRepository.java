@@ -12,8 +12,12 @@ import java.util.List;
 @Repository
 public interface AdmissionRepository extends JpaRepository<Admission, Long> {
     Boolean existsByCourseNameAndStudent(String name, Student student);
+
     List<Admission> findAdmissionsByStudent(Student student);
+
     List<Admission> findAdmissionsByStudentId(long id);
+
     List<Admission> findAdmissionsByStudentAndCourseUniversity(Student student, University university);
+
     List<Admission> findAdmissionsByCourseOrderByPoints(Course course);
 }

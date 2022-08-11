@@ -1,15 +1,12 @@
 package ru.joinmore.postupicheck.api.services;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.EmptyResultDataAccessException;
-import ru.joinmore.postupicheck.api.entities.Subject;
 import ru.joinmore.postupicheck.api.entities.Subject;
 import ru.joinmore.postupicheck.api.exceptions.AlreadyExistsException;
 import ru.joinmore.postupicheck.api.exceptions.ResourceNotExistsException;
@@ -21,9 +18,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -37,7 +31,6 @@ class SubjectServiceTest {
     void setUp() {
         testInstance = new SubjectService(subjectRepository);
     }
-
     @Test
     void shouldCallRepositoryFindAll() {
         // when
@@ -45,19 +38,13 @@ class SubjectServiceTest {
 
         // then
         verify(subjectRepository).findAll();
-
     }
 
     @Test
     void shouldReturnAllSubjects_WhenGetAll() {
         //given
-        List<Subject> subjects = new ArrayList<>();
-        Subject subject1 = mock(Subject.class);
-        Subject subject2 = mock(Subject.class);
-        Subject subject3 = mock(Subject.class);
-        subjects.add(subject1);
-        subjects.add(subject2);
-        subjects.add(subject3);
+        List<Subject> subjects = createSubjectList();
+
         when(subjectRepository.findAll()).thenReturn(subjects);
 
         // when
@@ -65,7 +52,6 @@ class SubjectServiceTest {
 
         // then
         assertThat(result).isEqualTo(subjects);
-
     }
 
     @Test
@@ -73,6 +59,7 @@ class SubjectServiceTest {
         // given
         long id = 1L;
         Subject subject = mock(Subject.class);
+
         when(subjectRepository.findById(id)).thenReturn(Optional.of(subject));
 
         // when
@@ -87,6 +74,7 @@ class SubjectServiceTest {
         // given
         long id = 1L;
         Subject subject = mock(Subject.class);
+
         when(subjectRepository.findById(id)).thenReturn(Optional.of(subject));
 
         // when
@@ -105,7 +93,8 @@ class SubjectServiceTest {
         when(subjectRepository.findById(id)).thenReturn(Optional.empty());
 
         // then
-        assertThatThrownBy(() -> testInstance.get(id))
+        assertThatThrownBy(() ->
+                testInstance.get(id))
                 .isInstanceOf(ResourceNotExistsException.class)
                 .hasMessageContaining("Subject with id [1]");
     }
@@ -115,6 +104,7 @@ class SubjectServiceTest {
         // given
         String name = "testName";
         Subject subject = new Subject(name);
+
         when(subjectRepository.existsByName(name)).thenReturn(false);
 
         // when
@@ -122,7 +112,6 @@ class SubjectServiceTest {
 
         // then
         verify(subjectRepository).save(subject);
-
     }
 
     @Test
@@ -130,6 +119,7 @@ class SubjectServiceTest {
         // given
         String name = "testName";
         Subject subject = new Subject(name);
+
         when(subjectRepository.existsByName(name)).thenReturn(false);
         when(subjectRepository.save(subject)).thenReturn(subject);
 
@@ -138,7 +128,6 @@ class SubjectServiceTest {
 
         // then
         assertThat(result).isEqualTo(subject);
-
     }
 
     @Test
@@ -153,7 +142,6 @@ class SubjectServiceTest {
         // then
         assertThatThrownBy(() -> testInstance.create(subject));
         verify(subjectRepository, never()).save(subject);
-
     }
 
     @Test
@@ -166,20 +154,21 @@ class SubjectServiceTest {
         when(subjectRepository.existsByName(name)).thenReturn(true);
 
         // then
-        assertThatThrownBy(() -> testInstance.create(subject))
+        assertThatThrownBy(() ->
+                testInstance
+                        .create(subject))
                 .isInstanceOf(AlreadyExistsException.class)
                 .hasMessageContaining(name);
-
     }
 
     @Test
     void shouldReplaceOldSubjectByNewSubject() {
-
         // given
         Subject oldSubject = mock(Subject.class);
         String newName = "newName";
         Subject newSubject = new Subject(newName);
         long id = 2L;
+
         when(subjectRepository.findById(id)).thenReturn(Optional.of(oldSubject));
 
         // when
@@ -189,7 +178,6 @@ class SubjectServiceTest {
         InOrder inOrder = inOrder(oldSubject, subjectRepository);
         inOrder.verify(oldSubject).setName(newName);
         inOrder.verify(subjectRepository).save(oldSubject);
-
     }
 
     @Test
@@ -197,6 +185,7 @@ class SubjectServiceTest {
         // given
         Subject oldSubject = mock(Subject.class);
         long id = 2L;
+
         when(subjectRepository.findById(id)).thenReturn(Optional.of(oldSubject));
         when(subjectRepository.save(oldSubject)).thenReturn(oldSubject);
 
@@ -205,7 +194,6 @@ class SubjectServiceTest {
 
         // then
         assertThat(result).isEqualTo(oldSubject);
-
     }
 
     @Test
@@ -213,6 +201,7 @@ class SubjectServiceTest {
         // given
         Subject oldSubject = mock(Subject.class);
         long id = 2;
+
         when(subjectRepository.findById(id)).thenReturn(Optional.empty());
 
         // when
@@ -220,7 +209,6 @@ class SubjectServiceTest {
 
         // then
         verify(subjectRepository, never()).save(oldSubject);
-
     }
 
     @Test
@@ -232,10 +220,11 @@ class SubjectServiceTest {
         when(subjectRepository.findById(id)).thenReturn(Optional.empty());
 
         // when
-        assertThatThrownBy(() -> testInstance.replace(new Subject(), id))
+        assertThatThrownBy(() ->
+                testInstance
+                        .replace(new Subject(), id))
                 .isInstanceOf(ResourceNotExistsException.class)
                 .hasMessageContaining("Subject with id [2]");
-
     }
 
     @Test
@@ -248,7 +237,6 @@ class SubjectServiceTest {
 
         // then
         verify(subjectRepository).deleteById(id);
-
     }
 
     @Test
@@ -282,6 +270,7 @@ class SubjectServiceTest {
         // given
         String name = "testName";
         Subject subject = new Subject(name);
+
         when(subjectRepository.findByName(name)).thenReturn(subject);
 
         // when
@@ -291,4 +280,16 @@ class SubjectServiceTest {
         assertThat(result).isEqualTo(subject);
     }
 
+    private List<Subject> createSubjectList() {
+        Subject subject1 = mock(Subject.class);
+        Subject subject2 = mock(Subject.class);
+        Subject subject3 = mock(Subject.class);
+
+        List<Subject> subjects = new ArrayList<>();
+        subjects.add(subject1);
+        subjects.add(subject2);
+        subjects.add(subject3);
+
+        return subjects;
+    }
 }

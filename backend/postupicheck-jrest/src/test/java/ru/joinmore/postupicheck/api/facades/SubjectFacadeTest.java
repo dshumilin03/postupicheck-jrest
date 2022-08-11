@@ -3,15 +3,11 @@ package ru.joinmore.postupicheck.api.facades;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.joinmore.postupicheck.api.converters.SubjectConverter;
 import ru.joinmore.postupicheck.api.converters.SubjectReverseConverter;
 import ru.joinmore.postupicheck.api.dto.SubjectDto;
-import ru.joinmore.postupicheck.api.dto.SubjectDto;
-import ru.joinmore.postupicheck.api.entities.Subject;
 import ru.joinmore.postupicheck.api.entities.Subject;
 import ru.joinmore.postupicheck.api.services.SubjectService;
 
@@ -19,8 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -51,7 +45,6 @@ class SubjectFacadeTest {
 
         // then
         verify(converter).convert(subject);
-
     }
 
     @Test
@@ -60,6 +53,7 @@ class SubjectFacadeTest {
         long id = 5L;
         Subject subject = mock(Subject.class);
         SubjectDto convertedSubject = mock(SubjectDto.class);
+
         when(subjectService.get(id)).thenReturn(subject);
         when(converter.convert(subject)).thenReturn(convertedSubject);
 
@@ -68,7 +62,6 @@ class SubjectFacadeTest {
 
         // then
         assertThat(result).isEqualTo(convertedSubject);
-
     }
 
     @Test
@@ -82,20 +75,22 @@ class SubjectFacadeTest {
         //then
         verify(subjectService).getAll();
         verify(converter).convert(subjectList);
-
     }
 
     @Test
     void shouldReturnConvertedList_WhenGetAll() {
         // given
         List<Subject> subjectList = new ArrayList<>();
-        List<SubjectDto> convertedList = new ArrayList<>();
+
         SubjectDto subjectDto1 = mock(SubjectDto.class);
         SubjectDto subjectDto2 = mock(SubjectDto.class);
         SubjectDto subjectDto3 = mock(SubjectDto.class);
+
+        List<SubjectDto> convertedList = new ArrayList<>();
         convertedList.add(subjectDto1);
         convertedList.add(subjectDto2);
         convertedList.add(subjectDto3);
+
         when(subjectService.getAll()).thenReturn(subjectList);
         when(converter.convert(subjectList)).thenReturn(convertedList);
 
@@ -104,7 +99,6 @@ class SubjectFacadeTest {
 
         //then
         assertThat(result).contains(subjectDto1, subjectDto2, subjectDto3);
-
     }
 
     @Test
@@ -113,6 +107,7 @@ class SubjectFacadeTest {
         SubjectDto newSubjectDto = mock(SubjectDto.class);
         Subject newSubject = mock(Subject.class);
         Subject createdSubject = mock(Subject.class);
+
         when(reverseConverter.convert(newSubjectDto)).thenReturn(newSubject);
         when(subjectService.create(newSubject)).thenReturn(createdSubject);
 
@@ -130,6 +125,7 @@ class SubjectFacadeTest {
         Subject newSubject = mock(Subject.class);
         Subject createdSubject = mock(Subject.class);
         SubjectDto convertedSubject = mock(SubjectDto.class);
+
         when(reverseConverter.convert(newSubjectDto)).thenReturn(newSubject);
         when(subjectService.create(newSubject)).thenReturn(createdSubject);
         when(converter.convert(createdSubject)).thenReturn(convertedSubject);
@@ -148,6 +144,7 @@ class SubjectFacadeTest {
         SubjectDto updatedSubjectDto = mock(SubjectDto.class);
         Subject updatedSubject = mock(Subject.class);
         Subject newSubject = mock(Subject.class);
+
         when(reverseConverter.convert(updatedSubjectDto)).thenReturn(updatedSubject);
         when(subjectService.replace(updatedSubject, id)).thenReturn(newSubject);
 
@@ -166,6 +163,7 @@ class SubjectFacadeTest {
         Subject updatedSubject = mock(Subject.class);
         Subject newSubject = mock(Subject.class);
         SubjectDto convertedSubject = mock(SubjectDto.class);
+
         when(reverseConverter.convert(updatedSubjectDto)).thenReturn(updatedSubject);
         when(subjectService.replace(updatedSubject, id)).thenReturn(newSubject);
         when(converter.convert(newSubject)).thenReturn(convertedSubject);
@@ -176,7 +174,6 @@ class SubjectFacadeTest {
         // then
         assertThat(result).isEqualTo(convertedSubject);
     }
-
 
     @Test
     void shouldCallSubjectServiceDelete() {

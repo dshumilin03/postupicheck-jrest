@@ -18,14 +18,16 @@ class UniversityReverseConverterTest {
     }
 
     @Test
-    void convert() {
-        //given
+    void shouldReturnConvertedEntity() {
+        // given
         UniversityDto universityDto = new UniversityDto(1, "testName");
-        //when
-        University createdDao = testInstance.convert(universityDto);
-        //then
-        assertThat(createdDao.getId()).isEqualTo(1L);
-        assertThat(createdDao.getName()).isEqualTo("testName");
+
+        // when
+        University result = testInstance.convert(universityDto);
+
+        // then
+        assertThat(result.getId()).isEqualTo(1L);
+        assertThat(result.getName()).isEqualTo("testName");
 
     }
 }

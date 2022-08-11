@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -46,7 +45,6 @@ class CourseFacadeTest {
 
         // then
         verify(converter).convert(course);
-
     }
 
     @Test
@@ -55,6 +53,7 @@ class CourseFacadeTest {
         long id = 5L;
         Course course = mock(Course.class);
         CourseDto convertedCourse = mock(CourseDto.class);
+
         when(courseService.get(id)).thenReturn(course);
         when(converter.convert(course)).thenReturn(convertedCourse);
 
@@ -63,7 +62,6 @@ class CourseFacadeTest {
 
         // then
         assertThat(result).isEqualTo(convertedCourse);
-
     }
 
     @Test
@@ -77,20 +75,22 @@ class CourseFacadeTest {
         //then
         verify(courseService).getAll();
         verify(converter).convert(courseList);
-
     }
 
     @Test
     void shouldReturnConvertedList_WhenGetAll() {
         // given
         List<Course> courseList = new ArrayList<>();
-        List<CourseDto> convertedList = new ArrayList<>();
+
         CourseDto courseDto1 = mock(CourseDto.class);
         CourseDto courseDto2 = mock(CourseDto.class);
         CourseDto courseDto3 = mock(CourseDto.class);
+
+        List<CourseDto> convertedList = new ArrayList<>();
         convertedList.add(courseDto1);
         convertedList.add(courseDto2);
         convertedList.add(courseDto3);
+
         when(courseService.getAll()).thenReturn(courseList);
         when(converter.convert(courseList)).thenReturn(convertedList);
 
@@ -99,7 +99,6 @@ class CourseFacadeTest {
 
         //then
         assertThat(result).contains(courseDto1, courseDto2, courseDto3);
-
     }
 
     @Test
@@ -108,6 +107,7 @@ class CourseFacadeTest {
         CourseDto newCourseDto = mock(CourseDto.class);
         Course newCourse = mock(Course.class);
         Course createdCourse = mock(Course.class);
+
         when(reverseConverter.convert(newCourseDto)).thenReturn(newCourse);
         when(courseService.create(newCourse)).thenReturn(createdCourse);
 
@@ -125,6 +125,7 @@ class CourseFacadeTest {
         Course newCourse = mock(Course.class);
         Course createdCourse = mock(Course.class);
         CourseDto convertedCourse = mock(CourseDto.class);
+
         when(reverseConverter.convert(newCourseDto)).thenReturn(newCourse);
         when(courseService.create(newCourse)).thenReturn(createdCourse);
         when(converter.convert(createdCourse)).thenReturn(convertedCourse);
@@ -143,6 +144,7 @@ class CourseFacadeTest {
         CourseDto updatedCourseDto = mock(CourseDto.class);
         Course updatedCourse = mock(Course.class);
         Course newCourse = mock(Course.class);
+
         when(reverseConverter.convert(updatedCourseDto)).thenReturn(updatedCourse);
         when(courseService.replace(updatedCourse, id)).thenReturn(newCourse);
 
@@ -161,6 +163,7 @@ class CourseFacadeTest {
         Course updatedCourse = mock(Course.class);
         Course newCourse = mock(Course.class);
         CourseDto convertedCourse = mock(CourseDto.class);
+
         when(reverseConverter.convert(updatedCourseDto)).thenReturn(updatedCourse);
         when(courseService.replace(updatedCourse, id)).thenReturn(newCourse);
         when(converter.convert(newCourse)).thenReturn(convertedCourse);

@@ -10,6 +10,7 @@ import ru.joinmore.postupicheck.api.entities.University;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class SubjectConvertersTest {
@@ -18,39 +19,50 @@ class SubjectConvertersTest {
 
     @BeforeEach
     void setUp() {
-        testInstance = new SubjectConverter();
+        testInstance = new SubjectConverter();}
 
-    }
     @Test
-    void convert() {
-        //given
+    void shouldReturnConvertedDto() {
+        // given
         Subject subject = new Subject("testSubject");
         subject.setId(1);
-        //when
-        SubjectDto createdDto = testInstance.convert(subject);
-        //then
-        assertThat(createdDto.getId()).isEqualTo(1);
-        assertThat(createdDto.getName()).isEqualTo("testSubject");
 
+        // when
+        SubjectDto result = testInstance.convert(subject);
+
+        // then
+        assertThat(result.getId()).isEqualTo(1);
+        assertThat(result.getName()).isEqualTo("testSubject");
     }
 
     @Test
-    void convertList() {
-        //given
-        List<Subject> subjects = new ArrayList<>();
-        Subject subject1 = new Subject("testName1");
-        Subject subject2 = new Subject("testName2");
-        subjects.add(subject1);
-        subjects.add(subject2);
-        subject2.setId(2L);
-        subject1.setId(1L);
-        //when
-        List<SubjectDto> createdDtoList = testInstance.convert(subjects);
-        //then
-        assertThat(createdDtoList.get(0).getId()).isEqualTo(1L);
-        assertThat(createdDtoList.get(0).getName()).isEqualTo("testName1");
-        assertThat(createdDtoList.get(1).getId()).isEqualTo(2L);
-        assertThat(createdDtoList.get(1).getName()).isEqualTo("testName2");
+    void shouldReturnConvertedDtoList() {
+        // given
+        List<Subject> subjects = createSubjects();
+
+        // when
+        List<SubjectDto> result = testInstance.convert(subjects);
+
+        // then
+        SubjectDto subjectDto1 = result.get(0);
+        assertThat(subjectDto1.getId()).isEqualTo(1L);
+        assertThat(subjectDto1.getName()).isEqualTo("testName1");
+
+        SubjectDto subjectDto2 = result.get(1);
+        assertThat(subjectDto2.getId()).isEqualTo(2L);
+        assertThat(subjectDto2.getName()).isEqualTo("testName2");
     }
 
+    private List<Subject> createSubjects() {
+        Subject subject1 = new Subject("testName1");
+        subject1.setId(1L);
+        Subject subject2 = new Subject("testName2");
+        subject2.setId(2L);
+
+        List<Subject> subjects = new ArrayList<>();
+        subjects.add(subject1);
+        subjects.add(subject2);
+
+        return subjects;
+    }
 }

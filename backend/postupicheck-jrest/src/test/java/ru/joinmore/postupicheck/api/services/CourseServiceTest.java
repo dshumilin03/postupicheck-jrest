@@ -3,7 +3,6 @@ package ru.joinmore.postupicheck.api.services;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -19,10 +18,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -44,7 +39,6 @@ class CourseServiceTest {
 
         // then
         verify(courseRepository).findAll();
-
     }
 
     @Test
@@ -54,6 +48,7 @@ class CourseServiceTest {
         Course course1 = allCourses.get(0);
         Course course2 = allCourses.get(1);
         Course course3 = allCourses.get(2);
+
         when(courseRepository.findAll()).thenReturn(allCourses);
 
         // when
@@ -61,7 +56,6 @@ class CourseServiceTest {
 
         // then
         assertThat(result).contains(course1, course2, course3);
-
     }
 
     @Test
@@ -69,6 +63,7 @@ class CourseServiceTest {
         // given
         long id = 34L;
         var testCourse = Optional.of(mock(Course.class));
+
         when(courseRepository.findById(id)).thenReturn(testCourse);
 
         // when
@@ -76,7 +71,6 @@ class CourseServiceTest {
 
         // then
         verify(courseRepository).findById(id);
-
     }
 
     @Test
@@ -99,6 +93,7 @@ class CourseServiceTest {
         // given
         long id = 34L;
         Course course = mock(Course.class);
+
         when(courseRepository.findById(id)).thenReturn(Optional.of(course));
 
         // when
@@ -118,13 +113,13 @@ class CourseServiceTest {
 
         // then
         verify(courseRepository).save(course);
-
     }
 
     @Test
     void shouldReturnCreatedCourse() {
         // given
         Course course = mock(Course.class);
+
         when(courseRepository.save(course)).thenReturn(course);
 
         // when
@@ -132,7 +127,6 @@ class CourseServiceTest {
 
         // then
         assertThat(result).isEqualTo(course);
-
     }
 
     @Test
@@ -143,44 +137,45 @@ class CourseServiceTest {
         course.setName(name);
 
         // when
-        given(courseRepository.existsByName(name)).willReturn(true);
+        when(courseRepository.existsByName(name)).thenReturn(true);
 
         // then
         assertThatThrownBy(() -> testInstance.create(course));
         verify(courseRepository, never()).save(course);
-
     }
 
     @Test
     void shouldThrowAlreadyExistsException_WhenExists() {
         // given
-        Course course = new Course();
         University university = new University();
         university.setId(14L);
+
+        Course course = new Course();
         course.setUniversity(university);
         String name = ("testName");
         course.setName(name);
 
         // when
-        given(courseRepository.existsByName(name)).willReturn(true);
+        when(courseRepository.existsByName(name)).thenReturn(true);
 
         // then
         assertThatThrownBy(() -> testInstance.create(course))
                 .isInstanceOf(AlreadyExistsException.class)
                 .hasMessageContaining("Course with name %s in university + %d ", name, university.getId());
-
     }
 
     @Test
     void shouldReplaceOldCourseByNewCourse() {
         // given
-        Course oldCourse = mock(Course.class);
         String newName = "newName";
         String newCode = "newName";
+
+        Course oldCourse = mock(Course.class);
         University newUniversity = mock(University.class);
         Subject subject1 = mock(Subject.class);
         Subject subject2 = mock(Subject.class);
         Subject subject3 = mock(Subject.class);
+
         int curPassingPoints = 200;
         int budgetPlaces = 31;
         Course newCourse = new Course(
@@ -193,6 +188,7 @@ class CourseServiceTest {
                 curPassingPoints,
                 budgetPlaces);
         long id = 234L;
+
         when(courseRepository.findById(id)).thenReturn(Optional.of(oldCourse));
 
         // when
@@ -209,19 +205,20 @@ class CourseServiceTest {
         inOrder.verify(oldCourse).setCurPassingPoints(curPassingPoints);
         inOrder.verify(oldCourse).setBudgetPlaces(budgetPlaces);
         inOrder.verify(courseRepository).save(oldCourse);
-
     }
 
     @Test
     void shouldReturnReplacedCourse_WhenReplace() {
         // given
-        Course oldCourse = mock(Course.class);
         String newName = "newName";
         String newCode = "newName";
+
+        Course oldCourse = mock(Course.class);
         University newUniversity = mock(University.class);
         Subject subject1 = mock(Subject.class);
         Subject subject2 = mock(Subject.class);
         Subject subject3 = mock(Subject.class);
+
         int curPassingPoints = 200;
         int budgetPlaces = 55;
         Course newCourse = new Course(
@@ -234,6 +231,7 @@ class CourseServiceTest {
                 curPassingPoints,
                 budgetPlaces);
         long id = 234L;
+
         when(courseRepository.findById(id)).thenReturn(Optional.of(oldCourse));
         when(courseRepository.save(oldCourse)).thenReturn(oldCourse);
 
@@ -242,7 +240,6 @@ class CourseServiceTest {
 
         // then
         assertThat(result).isEqualTo(oldCourse);
-
     }
 
     @Test
@@ -250,6 +247,7 @@ class CourseServiceTest {
         // given
         Course oldCourse = mock(Course.class);
         long id = 234L;
+
         when(courseRepository.findById(id)).thenReturn(Optional.empty());
 
         // when
@@ -257,13 +255,11 @@ class CourseServiceTest {
 
         // then
         verify(courseRepository, never()).save(oldCourse);
-
     }
 
     @Test
     void shouldThrowResourceNotExistsException_WhenDoesntExistsReplacement() {
         // given
-        Course oldCourse = mock(Course.class);
         long id = 234L;
 
         // when
@@ -273,7 +269,6 @@ class CourseServiceTest {
         assertThatThrownBy(() -> testInstance.replace(new Course(), id))
                 .isInstanceOf(ResourceNotExistsException.class)
                 .hasMessageContaining("Course with id [234]");
-
     }
 
     @Test
@@ -286,7 +281,6 @@ class CourseServiceTest {
 
         // then
         verify(courseRepository).deleteById(id);
-
     }
 
     @Test
@@ -302,9 +296,7 @@ class CourseServiceTest {
                 testInstance.delete(id))
                 .isInstanceOf(ResourceNotExistsException.class)
                 .hasMessageContaining("Course with id [23]");
-
     }
-
 
     @Test
     void shouldCallRepositoryDeleteAll() {
@@ -325,17 +317,18 @@ class CourseServiceTest {
 
         // then
         verify(courseRepository).findCoursesByUniversity(university);
-
     }
 
     @Test
     void shouldReturnCourses_WhenFindCoursesByUniversity() {
         // given
+        University university = mock(University.class);
+
         List<Course> universityCourses = createCourseList();
         Course course1 = universityCourses.get(0);
         Course course2 = universityCourses.get(1);
         Course course3 = universityCourses.get(2);
-        University university = mock(University.class);
+
         when(courseRepository.findCoursesByUniversity(university)).thenReturn(universityCourses);
 
         // when
@@ -343,7 +336,6 @@ class CourseServiceTest {
 
         // then
         assertThat(result).contains(course1, course2, course3);
-
     }
 
     @Test
@@ -357,7 +349,6 @@ class CourseServiceTest {
 
         // then
         verify(courseRepository).findCoursesByUniversityAndThirdSubject(university, subject);
-
     }
 
     @Test
@@ -365,11 +356,11 @@ class CourseServiceTest {
         // given
         Subject subject = mock(Subject.class);
         University university = mock(University.class);
+
         List<Course> courses = createCourseList();
         Course course1 = courses.get(0);
         Course course2 = courses.get(1);
         Course course3 = courses.get(2);
-
 
         when(courseRepository.findCoursesByUniversityAndThirdSubject(university, subject)).thenReturn(courses);
 
@@ -378,16 +369,16 @@ class CourseServiceTest {
 
         // then
         assertThat(result).contains(course1, course2, course3);
-
     }
 
     @Test
     void shouldReturnCourseRequiredSubjects() {
         // given
-        Course course = new Course();
         Subject subject1 = mock(Subject.class);
         Subject subject2 = mock(Subject.class);
         Subject subject3 = mock(Subject.class);
+
+        Course course = new Course();
         course.setFirstSubject(subject1);
         course.setSecondSubject(subject2);
         course.setThirdSubject(subject3);
@@ -397,18 +388,6 @@ class CourseServiceTest {
 
         // then
         assertThat(result).contains(subject1, subject2, subject3);
-
-    }
-
-    private List<Course> createCourseList() {
-        List<Course> courses = new ArrayList<>();
-        Course course1 = mock(Course.class);
-        Course course2 = mock(Course.class);
-        Course course3 = mock(Course.class);
-        courses.add(course1);
-        courses.add(course2);
-        courses.add(course3);
-        return courses;
     }
 
     @Test
@@ -421,7 +400,6 @@ class CourseServiceTest {
 
         // then
         verify(courseRepository).saveAll(allCourses);
-
     }
 
     @Test
@@ -431,6 +409,7 @@ class CourseServiceTest {
         Course course1 = allCourses.get(0);
         Course course2 = allCourses.get(1);
         Course course3 = allCourses.get(2);
+
         when(courseRepository.saveAll(allCourses)).thenReturn(allCourses);
 
         // when
@@ -438,6 +417,18 @@ class CourseServiceTest {
 
         // then
         assertThat(result).contains(course1, course2, course3);
+    }
 
+    private List<Course> createCourseList() {
+        Course course1 = mock(Course.class);
+        Course course2 = mock(Course.class);
+        Course course3 = mock(Course.class);
+
+        List<Course> courses = new ArrayList<>();
+        courses.add(course1);
+        courses.add(course2);
+        courses.add(course3);
+
+        return courses;
     }
 }

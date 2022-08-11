@@ -25,7 +25,8 @@ public class StudentExamResultService {
     }
 
     public StudentExamResult get(long id) {
-        return repository.findById(id) //
+        return repository
+                .findById(id) //
                 .orElseThrow(() -> new ResourceNotExistsException("Student exam result with id [" + id + "]"));
     }
 
@@ -37,11 +38,13 @@ public class StudentExamResultService {
         if (exists) {
             throw new AlreadyExistsException(subject.getName() + " result for " + student.getName());
         }
+
         return repository.save(studentExamResult);
     }
 
     public StudentExamResult replace(StudentExamResult updatedStudentExamResult, long id) {
-        StudentExamResult studentExamResult = repository.findById(id) //
+        StudentExamResult studentExamResult = repository
+                .findById(id) //
                 .orElseThrow(() -> new ResourceNotExistsException("Student exam result with id [" + id + "]"));
         return replaceStudent(studentExamResult, updatedStudentExamResult);
     }
@@ -60,6 +63,7 @@ public class StudentExamResultService {
         studentExamResult.setStudent(updatedStudentExamResult.getStudent());
         studentExamResult.setSubject(updatedStudentExamResult.getSubject());
         studentExamResult.setPoints(updatedStudentExamResult.getPoints());
+
         return repository.save(studentExamResult);
     }
 

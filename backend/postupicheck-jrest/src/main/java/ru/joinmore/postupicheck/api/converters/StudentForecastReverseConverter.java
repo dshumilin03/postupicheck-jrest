@@ -16,10 +16,9 @@ public class StudentForecastReverseConverter implements Converter<StudentForecas
 
     @Override
     public StudentForecast convert(StudentForecastDto studentForecastDto) {
-
+        long studentForecastId = studentForecastDto.getId();
         long admissionId = studentForecastDto.getAdmissionId();
         Admission admission =  admissionService.get(admissionId);
-        long studentForecastId = studentForecastDto.getId();
 
         return new StudentForecast(studentForecastId, admission);
     }

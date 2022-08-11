@@ -13,11 +13,14 @@ import ru.joinmore.postupicheck.api.services.SubjectService;
 import ru.joinmore.postupicheck.api.services.UniversityService;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class CourseReverseConverterTest {
-
 
     @Mock
     UniversityService universityService;
@@ -31,8 +34,8 @@ class CourseReverseConverterTest {
     }
 
     @Test
-    void convert() {
-        //given
+    void shouldReturnConvertedEntity() {
+        // given
         CourseDto courseDto = new CourseDto(
                 1,
                 "testName",
@@ -48,23 +51,23 @@ class CourseReverseConverterTest {
         Subject subject3 = new Subject(3L, "testSubject3");
         University university = new University(1L, "testSubject");
 
-        given(universityService.get(1L)).willReturn(university);
-        given(subjectService.get(1L)).willReturn(subject);
-        given(subjectService.get(2L)).willReturn(subject2);
-        given(subjectService.get(3L)).willReturn(subject3);
-        //when
-        Course createdDao = testInstance.convert(courseDto);
-        //then
-        assertThat(createdDao.getId()).isEqualTo(1L);
-        assertThat(createdDao.getName()).isEqualTo("testName");
-        assertThat(createdDao.getCode()).isEqualTo("testCode");
-        assertThat(createdDao.getUniversity().getId()).isEqualTo(1);
-        assertThat(createdDao.getFirstSubject().getId()).isEqualTo(1);
-        assertThat(createdDao.getSecondSubject().getId()).isEqualTo(2);
-        assertThat(createdDao.getThirdSubject().getId()).isEqualTo(3);
-        assertThat(createdDao.getCurPassingPoints()).isEqualTo(231);
-        assertThat(createdDao.getBudgetPlaces()).isEqualTo(23);
+        when(universityService.get(1L)).thenReturn(university);
+        when(subjectService.get(1L)).thenReturn(subject);
+        when(subjectService.get(2L)).thenReturn(subject2);
+        when(subjectService.get(3L)).thenReturn(subject3);
 
+        // when
+        Course result = testInstance.convert(courseDto);
+
+        // then
+        assertThat(result.getId()).isEqualTo(1L);
+        assertThat(result.getName()).isEqualTo("testName");
+        assertThat(result.getCode()).isEqualTo("testCode");
+        assertThat(result.getUniversity().getId()).isEqualTo(1);
+        assertThat(result.getFirstSubject().getId()).isEqualTo(1);
+        assertThat(result.getSecondSubject().getId()).isEqualTo(2);
+        assertThat(result.getThirdSubject().getId()).isEqualTo(3);
+        assertThat(result.getCurPassingPoints()).isEqualTo(231);
+        assertThat(result.getBudgetPlaces()).isEqualTo(23);
     }
-
 }

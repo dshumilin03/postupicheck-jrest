@@ -15,6 +15,5 @@ public class ResourceNotExistsExceptionAdvice {
     String resourceNotFoundHandler(ResourceNotExistsException ex) {
         return ex.getMessage();
     }
-
 }
 
