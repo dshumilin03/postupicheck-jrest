@@ -36,7 +36,7 @@ spring.datasource.password={pass}
   .\mvnw spring-boot:run
 ```
 
-### Import test data
+### Import test data (DEPRECATED)
 
 Currently `test-data` and `data` endpoints are used.
 
