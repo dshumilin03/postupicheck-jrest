@@ -54,10 +54,13 @@ public class TestDataService {
 
     public void createTestStudents() {
         List<Student> students = new ArrayList<>();
+        Random random = new Random();
 
         for (int i = 1; i <= 10000; i++) {
             String snils = String.format("%011d", i);
             Student student = new Student("Иванов " + i, snils);
+            int preferentialChance = random.nextInt(100) + 1;
+            student.setPreferential(preferentialChance > 95);
             students.add(student);
         }
 
@@ -411,5 +414,11 @@ public class TestDataService {
         }
 
         return subjects;
+    }
+
+    public void setPreferential() {
+        List<Student> students = studentService.getAll();
+        students.forEach(student -> student.setPreferential(false));
+        studentRepository.saveAll(students);
     }
 }

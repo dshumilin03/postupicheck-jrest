@@ -61,4 +61,10 @@ public class TestDataController {
     void setPointsForAllAdmissions() {
         testDataService.setPointsForAllAdmissions();
     }
+
+    @PostMapping("/set-preferentials")
+    @ResponseStatus(code = HttpStatus.OK)
+    void setPreferentials() {
+        testDataService.setPreferential();
+    }
 }

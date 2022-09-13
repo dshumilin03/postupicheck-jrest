@@ -15,6 +15,7 @@ public class Course {
     private String code;
     private Integer curPassingPoints;
     private Integer budgetPlaces;
+    private Integer availableBudgetPlaces;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "university_id", referencedColumnName = "id")
     private University university;
@@ -71,6 +72,7 @@ public class Course {
         this.thirdSubject = thirdSubject;
         this.curPassingPoints = curPassingPoints;
         this.budgetPlaces = budgetPlaces;
+        this.availableBudgetPlaces = budgetPlaces;
     }
 
     public Long getId() {
@@ -145,16 +147,28 @@ public class Course {
         this.thirdSubject = thirdSubject;
     }
 
+    public Integer getAvailableBudgetPlaces() {
+        return availableBudgetPlaces;
+    }
+
+    public void setAvailableBudgetPlaces(Integer availableBudgetPlaces) {
+        this.availableBudgetPlaces = availableBudgetPlaces;
+    }
+
     @Override
     public String toString() {
         return "Course{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", code='" + code + '\'' +
+                ", curPassingPoints=" + curPassingPoints +
+                ", budgetPlaces=" + budgetPlaces +
+                ", availableBudgetPlaces=" + availableBudgetPlaces +
                 ", university=" + university +
                 ", firstSubject=" + firstSubject +
                 ", secondSubject=" + secondSubject +
                 ", thirdSubject=" + thirdSubject +
+                ", courses=" + courses +
                 '}';
     }
 }

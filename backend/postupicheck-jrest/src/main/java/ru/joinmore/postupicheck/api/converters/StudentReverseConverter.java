@@ -12,8 +12,9 @@ public class StudentReverseConverter implements Converter<StudentDto, Student> {
         String studentName = studentDto.getName();
         String studentSnils = studentDto.getSnils();
         long studentId = studentDto.getId();
+        boolean preferential = studentDto.isPreferential();
 
-        return new Student(studentId, studentName, studentSnils);
+        return new Student(studentId, studentName, studentSnils, preferential);
 
     }
 }

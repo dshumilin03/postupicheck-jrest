@@ -59,6 +59,10 @@ public class AdmissionService {
         return repository.findAdmissionsByStudent(student);
     }
 
+    public Admission getStudentAdmission(Course course, Student student) {
+        return repository.findAdmissionByStudentAndCourse(student, course);
+    }
+
     public List<Admission> findAdmissionsByStudentAndCourseUniversity(Student student, University university) {
         return repository.findAdmissionsByStudentAndCourseUniversity(student, university);
     }
