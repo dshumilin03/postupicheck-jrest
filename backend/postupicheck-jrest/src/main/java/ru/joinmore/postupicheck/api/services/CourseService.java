@@ -3,22 +3,28 @@ package ru.joinmore.postupicheck.api.services;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import ru.joinmore.postupicheck.api.entities.Course;
+import ru.joinmore.postupicheck.api.entities.CourseRequiredSubject;
 import ru.joinmore.postupicheck.api.entities.Subject;
 import ru.joinmore.postupicheck.api.entities.University;
 import ru.joinmore.postupicheck.api.exceptions.AlreadyExistsException;
 import ru.joinmore.postupicheck.api.exceptions.ResourceNotExistsException;
 import ru.joinmore.postupicheck.api.repositories.CourseRepository;
+import ru.joinmore.postupicheck.api.repositories.CourseRequiredSubjectRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CourseService {
 
     private final CourseRepository repository;
+    private final CourseRequiredSubjectRepository courseRequiredSubjectRepository;
 
-    public CourseService(CourseRepository repository) {
+    public CourseService(CourseRepository repository,
+                         CourseRequiredSubjectRepository courseRequiredSubjectRepository) {
         this.repository = repository;
+        this.courseRequiredSubjectRepository = courseRequiredSubjectRepository;
     }
 
     public List<Course> getAll() {
@@ -71,17 +77,14 @@ public class CourseService {
         return repository.findCoursesByUniversity(university);
     }
 
-    public List<Course> findCoursesByUniversityAndThirdSubject(University university, Subject subject) {
-        return repository.findCoursesByUniversityAndThirdSubject(university, subject);
-    }
+    // for test data service
+//    public List<Course> findCoursesByUniversityAndThirdSubject(University university, Subject subject) {
+//        return repository.findCoursesByUniversityAndThirdSubject(university, subject);
+//    }
 
     public List<Subject> getRequiredSubjects(Course course) {
-        List<Subject> requiredSubjects = new ArrayList<>();
-        requiredSubjects.add(course.getFirstSubject());
-        requiredSubjects.add(course.getSecondSubject());
-        requiredSubjects.add(course.getThirdSubject());
 
-        return requiredSubjects;
+        return courseRequiredSubjectRepository.findCourseRequiredSubjectsByCourse(course);
     }
 
     public List<Course> saveAll(List<Course> courses) {
@@ -93,9 +96,10 @@ public class CourseService {
         course.setName(updatedCourse.getName());
         course.setCode(updatedCourse.getCode());
         course.setUniversity(updatedCourse.getUniversity());
-        course.setFirstSubject(updatedCourse.getFirstSubject());
-        course.setSecondSubject(updatedCourse.getSecondSubject());
-        course.setThirdSubject(updatedCourse.getThirdSubject());
+        // TODO make possibility of changing required subjects
+        // course.setFirstSubject(updatedCourse.getFirstSubject());
+        // course.setSecondSubject(updatedCourse.getSecondSubject());
+        // course.setThirdSubject(updatedCourse.getThirdSubject());
         course.setCurPassingPoints(updatedCourse.getCurPassingPoints());
         course.setBudgetPlaces(updatedCourse.getBudgetPlaces());
         return repository.save(course);

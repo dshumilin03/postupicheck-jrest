@@ -14,5 +14,4 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
 
     List<Course> findCoursesByUniversity(University university);
 
-    List<Course> findCoursesByUniversityAndThirdSubject(University university, Subject subject);
 }

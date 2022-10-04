@@ -41,7 +41,7 @@ public class TestDataController {
     @PostMapping("/create-admissions")
     @ResponseStatus(code = HttpStatus.CREATED)
     void createTestAdmissions() {
-        testDataService.createTestAdmissions();
+        //testDataService.createTestAdmissions();
     }
 
     @PostMapping("/create-subjects")
@@ -66,5 +66,11 @@ public class TestDataController {
     @ResponseStatus(code = HttpStatus.OK)
     void setPreferentials() {
         testDataService.setPreferential();
+    }
+
+    @PostMapping("/move-required-subjects")
+    @ResponseStatus(code = HttpStatus.OK)
+    void updateRequiredSubjects() {
+        testDataService.updateRequiredSubjects();
     }
 }

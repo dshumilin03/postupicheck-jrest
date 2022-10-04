@@ -7,8 +7,6 @@ TODO
 
 3. Liquibase (optional)
 
-4. Подумать над реализацией когда у курса > 3 предметов для поступления
+4. Подумать над таблицей CourseRequiredSubject (id, course_id - foreignkey на courseId, requiredSubjectId - foreignkey на subjectId)
 
-   1. Сделать нормализацию данных для Course (required Subjcets) убрать поля
-      first-second-third Subject и добавить таблицу CourseRequiredSubjects
-      (id, course_id - foreignkey на courseId, requiredSubjectId - foreignkey на subjectId)
+5. Исправить тесты, и все остальные зависимости

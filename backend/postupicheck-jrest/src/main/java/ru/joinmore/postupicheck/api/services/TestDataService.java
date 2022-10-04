@@ -16,6 +16,7 @@ public class TestDataService {
     private final CourseService courseService;
     private final AdmissionService admissionService;
     private final StudentAdmissionService studentAdmissionService;
+    private final CourseRequiredSubjectRepository courseRequiredSubjectRepository;
     private final StudentRepository studentRepository;
     private final SubjectRepository subjectRepository;
     private final UniversityRepository universityRepository;
@@ -31,6 +32,7 @@ public class TestDataService {
             CourseService courseService,
             AdmissionService admissionService,
             StudentAdmissionService studentAdmissionService,
+            CourseRequiredSubjectRepository courseRequiredSubjectRepository,
             StudentRepository studentRepository,
             SubjectRepository subjectRepository,
             UniversityRepository universityRepository,
@@ -44,6 +46,7 @@ public class TestDataService {
         this.courseService = courseService;
         this.admissionService = admissionService;
         this.studentAdmissionService = studentAdmissionService;
+        this.courseRequiredSubjectRepository = courseRequiredSubjectRepository;
         this.studentRepository = studentRepository;
         this.subjectRepository = subjectRepository;
         this.universityRepository = universityRepository;
@@ -238,39 +241,39 @@ public class TestDataService {
         for (int i = 1; i <= coursesCount;i++) {
             String name = String.format("%s %d в %s", courseName, i, universityName);
             String code = "код " + codeNumber;
-            Course course = new Course(name, code, university, math, ru, thirdSubject, curPassingPoints, budgetPlaces);
-            allCourses.add(course);
+            //Course course = new Course(name, code, university, math, ru, thirdSubject, curPassingPoints, budgetPlaces);
+            //allCourses.add(course);
         }
 
         return allCourses;
     }
 
-    public void createTestAdmissions() {
-        Random random = new Random();
-        List<Student> students = studentService.getAll();
-        List<Admission> allAdmissions = new ArrayList<>();
+//    public void createTestAdmissions() {
+//        Random random = new Random();
+//        List<Student> students = studentService.getAll();
+//        List<Admission> allAdmissions = new ArrayList<>();
+//
+//        students.forEach(student -> {
+//            int universityAdmissionsCount = random.nextInt(5) + 1;
+//
+//            for (int i=1; i <= universityAdmissionsCount; i++) {
+//                allAdmissions.addAll(chooseUniversityThenCreateAdmissions(random, student));
+//            }
+//
+//        });
+//
+//        admissionRepository.saveAll(allAdmissions);
+//    }
 
-        students.forEach(student -> {
-            int universityAdmissionsCount = random.nextInt(5) + 1;
-
-            for (int i=1; i <= universityAdmissionsCount; i++) {
-                allAdmissions.addAll(chooseUniversityThenCreateAdmissions(random, student));
-            }
-
-        });
-
-        admissionRepository.saveAll(allAdmissions);
-    }
-
-    private List<Admission> chooseCoursesThenCreateAdmissions(Random random, University randomUniversity, Student student) {
-        Subject math = subjectService.get(1);
-        Subject ru = subjectService.get(2);
-        int admissionsInUniversityCount = random.nextInt(5) + 1;
-        // Выбираем сколько студент подаст заявлений в данный уник
-        // подаем столько заявлений сколько рассчитали выше
-
-        return new ArrayList<>(createAdmissionsWithCourses(student, math, ru, admissionsInUniversityCount, randomUniversity));
-    }
+//    private List<Admission> chooseCoursesThenCreateAdmissions(Random random, University randomUniversity, Student student) {
+//        Subject math = subjectService.get(1);
+//        Subject ru = subjectService.get(2);
+//        int admissionsInUniversityCount = random.nextInt(5) + 1;
+//        // Выбираем сколько студент подаст заявлений в данный уник
+//        // подаем столько заявлений сколько рассчитали выше
+//
+//        return new ArrayList<>(createAdmissionsWithCourses(student, math, ru, admissionsInUniversityCount, randomUniversity));
+//    }
 
     public void createSubjects() {
         List<Subject> allSubjects = new ArrayList<>();
@@ -293,52 +296,52 @@ public class TestDataService {
         subjectRepository.saveAll(allSubjects);
     }
 
-    private List<Admission> createAdmissionsWithCourses(
-            Student student,
-            Subject math,
-            Subject ru,
-            int admissionsInUniversityCount,
-            University university) {
-        String mathName = math.getName();
-        String ruName = ru.getName();
+//    private List<Admission> createAdmissionsWithCourses(
+//            Student student,
+//            Subject math,
+//            Subject ru,
+//            int admissionsInUniversityCount,
+//            University university) {
+//        String mathName = math.getName();
+//        String ruName = ru.getName();
+//
+//        List<Subject> passedSubjects = new ArrayList<>();
+//        List<StudentExamResult> studentExamResults = studentExamResultService.getAllStudentResults(student);
+//
+//        studentExamResults.forEach(studentExamResult -> {
+//            Subject subject = studentExamResult.getSubject();
+//            String subjectName = subject.getName();
+//            if (!mathName.equals(subjectName) && !ruName.equals(subjectName)) {
+//                passedSubjects.add(subject);
+//            }
+//        });
+//
+//        List<Course> availableCourses = new ArrayList<>();
+//
+//        passedSubjects
+//                .forEach(subject -> {
+//                    List<Course> subjectCourses =
+//                            courseService
+//                                    .findCoursesByUniversityAndThirdSubject(university, subject);
+//                    availableCourses.addAll(subjectCourses)
+//                    ;
+//                });
 
-        List<Subject> passedSubjects = new ArrayList<>();
-        List<StudentExamResult> studentExamResults = studentExamResultService.getAllStudentResults(student);
-
-        studentExamResults.forEach(studentExamResult -> {
-            Subject subject = studentExamResult.getSubject();
-            String subjectName = subject.getName();
-            if (!mathName.equals(subjectName) && !ruName.equals(subjectName)) {
-                passedSubjects.add(subject);
-            }
-        });
-
-        List<Course> availableCourses = new ArrayList<>();
-
-        passedSubjects
-                .forEach(subject -> {
-                    List<Course> subjectCourses =
-                            courseService
-                                    .findCoursesByUniversityAndThirdSubject(university, subject);
-                    availableCourses.addAll(subjectCourses)
-                    ;
-                });
-
-        List<Admission> allAdmissions = new ArrayList<>();
-        // Костыльно берем результат экзамена НЕ математики и НЕ русского и создаем заявления
-        for (int i = 1; i <= admissionsInUniversityCount; i++) {
-            if (availableCourses.size() > 0) {
-                Collections.shuffle(availableCourses);
-                Course course = availableCourses.get(0);
-                int points = 0;
-                Admission admission = new Admission(student, course, points);
-                allAdmissions.add(admission);
-                availableCourses.remove(course);
-            }
-        }
-
-        return allAdmissions;
-    }
+//        List<Admission> allAdmissions = new ArrayList<>();
+//        // Костыльно берем результат экзамена НЕ математики и НЕ русского и создаем заявления
+//        for (int i = 1; i <= admissionsInUniversityCount; i++) {
+//            if (availableCourses.size() > 0) {
+//                Collections.shuffle(availableCourses);
+//                Course course = availableCourses.get(0);
+//                int points = 0;
+//                Admission admission = new Admission(student, course, points);
+//                allAdmissions.add(admission);
+//                availableCourses.remove(course);
+//            }
+//        }
+//
+//        return allAdmissions;
+//    }
 
     public void setRandomBudgetPlacesForAllCourses() {
         Random random = new Random();
@@ -366,23 +369,23 @@ public class TestDataService {
         admissionService.saveAll(allAdmissions);
     }
 
-    private List<Admission> chooseUniversityThenCreateAdmissions(Random random, Student student) {
-        // Берем рандомный уник
-        int id = random.nextInt(100) + 1;
-        University randomUniversity = universityService.get(id);
-        // Берем все заявления из данного уника
-        List<Admission> admissions = admissionService.findAdmissionsByStudentAndCourseUniversity(student, randomUniversity);
-        // Проверяем что он уже туда не подавал
-        List<Admission> allAdmissions = new ArrayList<>();
-
-        if (admissions.size() == 0) {
-            allAdmissions.addAll(chooseCoursesThenCreateAdmissions(random, randomUniversity, student));
-        } else {
-            chooseUniversityThenCreateAdmissions(random, student);
-        }
-
-        return allAdmissions;
-    }
+//    private List<Admission> chooseUniversityThenCreateAdmissions(Random random, Student student) {
+//        // Берем рандомный уник
+//        int id = random.nextInt(100) + 1;
+//        University randomUniversity = universityService.get(id);
+//        // Берем все заявления из данного уника
+//        List<Admission> admissions = admissionService.findAdmissionsByStudentAndCourseUniversity(student, randomUniversity);
+//        // Проверяем что он уже туда не подавал
+//        List<Admission> allAdmissions = new ArrayList<>();
+//
+//        if (admissions.size() == 0) {
+//            allAdmissions.addAll(chooseCoursesThenCreateAdmissions(random, randomUniversity, student));
+//        } else {
+//            chooseUniversityThenCreateAdmissions(random, student);
+//        }
+//
+//        return allAdmissions;
+//    }
 
     private Set<Subject> getRandomSubjects() {
         Set<Subject> subjects = new HashSet<>();
@@ -420,5 +423,22 @@ public class TestDataService {
         List<Student> students = studentService.getAll();
         students.forEach(student -> student.setPreferential(false));
         studentRepository.saveAll(students);
+    }
+
+    public void updateRequiredSubjects() {
+        List<Course> courses = courseService.getAll();
+        courses.forEach(course -> {
+            //Subject firstSubject = course.getFirstSubject();
+            //Subject secondSubject = course.getSecondSubject();
+            //Subject thirdSubject = course.getThirdSubject();
+
+            //CourseRequiredSubject requiredSubject1 = new CourseRequiredSubject(course, firstSubject);
+           // CourseRequiredSubject requiredSubject2 = new CourseRequiredSubject(course, secondSubject);
+            //CourseRequiredSubject requiredSubject3 = new CourseRequiredSubject(course, thirdSubject);
+            //List<CourseRequiredSubject> requiredSubjects = new ArrayList<>(
+               //     Arrays.asList(requiredSubject1, requiredSubject2, requiredSubject3));
+
+           // courseRequiredSubjectRepository.saveAll(requiredSubjects);
+        });
     }
 }

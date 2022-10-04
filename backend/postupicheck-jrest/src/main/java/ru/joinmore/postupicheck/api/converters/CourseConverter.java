@@ -3,9 +3,11 @@ package ru.joinmore.postupicheck.api.converters;
 import org.springframework.stereotype.Component;
 import ru.joinmore.postupicheck.api.dto.CourseDto;
 import ru.joinmore.postupicheck.api.entities.Course;
+import ru.joinmore.postupicheck.api.entities.Subject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class CourseConverter implements Converter<Course, CourseDto> , ListConverter<Course, CourseDto> {
@@ -15,15 +17,10 @@ public class CourseConverter implements Converter<Course, CourseDto> , ListConve
         long universityId = course
                         .getUniversity()
                         .getId();
-        long firstSubjectId = course
-                        .getFirstSubject()
-                        .getId();
-        long secondSubjectId = course
-                        .getSecondSubject()
-                        .getId();
-        long thirdSubjectId = course
-                .getThirdSubject()
-                .getId();
+        List<Long> subjectsId = course.getRequiredSubjects()
+                .stream()
+                .map(Subject::getId).toList();
+
         int curPassingPoints = course
                 .getCurPassingPoints();
         int budgetPlaces = course
@@ -38,9 +35,7 @@ public class CourseConverter implements Converter<Course, CourseDto> , ListConve
                 name,
                 code,
                 universityId,
-                firstSubjectId,
-                secondSubjectId,
-                thirdSubjectId,
+                subjectsId,
                 curPassingPoints,
                 budgetPlaces);
     }

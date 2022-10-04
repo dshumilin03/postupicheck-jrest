@@ -63,8 +63,7 @@ public class StudentAdmissionService {
 
         requiredSubjects.
                 forEach(subject -> result
-                        .addAndGet(
-                                studentExamResultService
+                        .addAndGet(studentExamResultService
                                         .getPointsByStudentAndSubject(student, subject)
                         )
                 );

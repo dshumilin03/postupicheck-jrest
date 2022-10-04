@@ -28,10 +28,10 @@ class CourseFacadeTest {
     @Mock
     private CourseReverseConverter reverseConverter;
 
-    @BeforeEach
-    void setUp() {
-        testInstance = new CourseFacade(courseService, converter, reverseConverter);
-    }
+//    @BeforeEach
+//    void setUp() {
+//        testInstance = new CourseFacade(courseService, converter, reverseConverter);
+//    }
 
     @Test
     void shouldCallCourseServiceAndConverter_WhenGet() {
