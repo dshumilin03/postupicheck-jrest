@@ -77,13 +77,7 @@ public class CourseService {
         return repository.findCoursesByUniversity(university);
     }
 
-    // for test data service
-//    public List<Course> findCoursesByUniversityAndThirdSubject(University university, Subject subject) {
-//        return repository.findCoursesByUniversityAndThirdSubject(university, subject);
-//    }
-
-    public List<Subject> getRequiredSubjects(Course course) {
-
+    public List<CourseRequiredSubject> getRequiredSubjects(Course course) {
         return courseRequiredSubjectRepository.findCourseRequiredSubjectsByCourse(course);
     }
 
@@ -96,12 +90,35 @@ public class CourseService {
         course.setName(updatedCourse.getName());
         course.setCode(updatedCourse.getCode());
         course.setUniversity(updatedCourse.getUniversity());
-        // TODO make possibility of changing required subjects
-        // course.setFirstSubject(updatedCourse.getFirstSubject());
-        // course.setSecondSubject(updatedCourse.getSecondSubject());
-        // course.setThirdSubject(updatedCourse.getThirdSubject());
+        List<Subject> updatedRequiredSubjects = updatedCourse.getRequiredSubjects();
+        List<CourseRequiredSubject> courseRequiredSubjects = courseRequiredSubjectRepository
+                .findCourseRequiredSubjectsByCourse(course);
+
         course.setCurPassingPoints(updatedCourse.getCurPassingPoints());
         course.setBudgetPlaces(updatedCourse.getBudgetPlaces());
+
+        replaceRequiredSubjects(courseRequiredSubjects, updatedRequiredSubjects, course);
+
         return repository.save(course);
+    }
+
+    public void createAndSaveRequiredSubjects(List<Subject> requiredSubjects, Course course) {
+        List<CourseRequiredSubject> courseRequiredSubjects = new ArrayList<>();
+        requiredSubjects.forEach(subject -> {
+            CourseRequiredSubject courseRequiredSubject = new CourseRequiredSubject(course, subject);
+            courseRequiredSubjects.add(courseRequiredSubject);
+        });
+
+        courseRequiredSubjectRepository.saveAll(courseRequiredSubjects);
+    }
+
+    private void replaceRequiredSubjects(
+            List<CourseRequiredSubject> courseRequiredSubjects,
+            List<Subject> updatedRequiredSubjects,
+            Course course) {
+        List<Long> oldRequiredSubjectIds = courseRequiredSubjects.stream()
+                .map(CourseRequiredSubject::getId).toList();
+        courseRequiredSubjectRepository.deleteAllById(oldRequiredSubjectIds);
+        createAndSaveRequiredSubjects(updatedRequiredSubjects, course);
     }
 }

@@ -3,14 +3,11 @@ package ru.joinmore.postupicheck.api.converters;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.joinmore.postupicheck.api.dto.SubjectDto;
-import ru.joinmore.postupicheck.api.dto.UniversityDto;
 import ru.joinmore.postupicheck.api.entities.Subject;
-import ru.joinmore.postupicheck.api.entities.University;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class SubjectConvertersTest {

@@ -126,15 +126,16 @@ class StudentAdmissionServiceTest {
         requiredSubjects.add(subject2);
         requiredSubjects.add(subject3);
 
-        when(studentService.get(studentId)).thenReturn(student);
-        when(admissionService.findAdmissionsByStudentId(studentId)).thenReturn(studentAdmissions);
-        when(courseService.getRequiredSubjects(course1)).thenReturn(requiredSubjects);
-        when(courseService.getRequiredSubjects(course2)).thenReturn(requiredSubjects);
-        when(studentExamResultService.getPointsByStudentAndSubject(student, subject1)).thenReturn(50);
-        when(studentExamResultService.getPointsByStudentAndSubject(student, subject2)).thenReturn(55);
-        when(studentExamResultService.getPointsByStudentAndSubject(student, subject3)).thenReturn(60);
-        when(courseService.getRequiredSubjects(course1)).thenReturn(requiredSubjects);
-        when(courseService.getRequiredSubjects(course2)).thenReturn(requiredSubjects);
+        // TODO rewrite tests
+//        when(studentService.get(studentId)).thenReturn(student);
+//        when(admissionService.findAdmissionsByStudentId(studentId)).thenReturn(studentAdmissions);
+//        when(courseService.getRequiredSubjects(course1)).thenReturn(requiredSubjects);
+//        when(courseService.getRequiredSubjects(course2)).thenReturn(requiredSubjects);
+//        when(studentExamResultService.getPointsByStudentAndSubject(student, subject1)).thenReturn(50);
+//        when(studentExamResultService.getPointsByStudentAndSubject(student, subject2)).thenReturn(55);
+//        when(studentExamResultService.getPointsByStudentAndSubject(student, subject3)).thenReturn(60);
+//        when(courseService.getRequiredSubjects(course1)).thenReturn(requiredSubjects);
+//        when(courseService.getRequiredSubjects(course2)).thenReturn(requiredSubjects);
 
         // when
         List<Admission> result = testInstance.getStudentAvailableAdmissions(studentId);
@@ -164,7 +165,7 @@ class StudentAdmissionServiceTest {
         when(studentExamResultService.getPointsByStudentAndSubject(student, subject1)).thenReturn(50);
         when(studentExamResultService.getPointsByStudentAndSubject(student, subject2)).thenReturn(55);
         when(studentExamResultService.getPointsByStudentAndSubject(student, subject3)).thenReturn(60);
-        when(courseService.getRequiredSubjects(course)).thenReturn(requiredSubjects);
+//        when(courseService.getRequiredSubjects(course)).thenReturn(requiredSubjects);
 
         // when
         int result = testInstance.getStudentAdmissionPoints(student, course);

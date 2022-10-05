@@ -11,6 +11,6 @@ import java.util.List;
 
 @Repository
 public interface CourseRequiredSubjectRepository extends JpaRepository<CourseRequiredSubject, Long> {
-    @Query("select c.subject from CourseRequiredSubject c where c.course = ?1")
-    List<Subject> findCourseRequiredSubjectsByCourse(Course course);
+    @Query("select c from CourseRequiredSubject c where c.course = ?1")
+    List<CourseRequiredSubject> findCourseRequiredSubjectsByCourse(Course course);
 }

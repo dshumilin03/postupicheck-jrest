@@ -27,6 +27,7 @@ class CourseReverseConverterTest {
     @Mock
     SubjectService subjectService;
     private CourseReverseConverter testInstance;
+// TODO rewrite tests
 
 //    @BeforeEach
 //    void setUp() {

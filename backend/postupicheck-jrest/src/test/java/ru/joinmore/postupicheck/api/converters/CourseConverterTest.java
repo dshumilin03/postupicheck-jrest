@@ -18,7 +18,7 @@ class CourseConverterTest {
 
     @BeforeEach
     void setUp() {testInstance = new CourseConverter();}
-
+    //TODO rewrite tests
 //    @Test
 //    void shouldReturnConvertedEntity() {
 //        // given

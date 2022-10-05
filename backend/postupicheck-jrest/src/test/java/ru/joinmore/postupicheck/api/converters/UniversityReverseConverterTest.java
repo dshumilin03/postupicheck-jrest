@@ -6,7 +6,6 @@ import ru.joinmore.postupicheck.api.dto.UniversityDto;
 import ru.joinmore.postupicheck.api.entities.University;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class UniversityReverseConverterTest {
 

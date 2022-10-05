@@ -40,7 +40,7 @@ public class CourseFactory {
         Course course = new Course(courseId, courseName, courseCode, university, curPassingPoints, budgetPlaces);
         Course createdCourse = courseService.create(course);
 
-        createRequiredSubjects(requiredSubjects, createdCourse);
+        courseService.createAndSaveRequiredSubjects(requiredSubjects, createdCourse);
 
         return createdCourse;
     }
@@ -52,18 +52,8 @@ public class CourseFactory {
         Course createdCourse = courseService.create(course);
         List<Subject> requiredSubjects = requiredSubjectsId.stream().map(subjectService::get).toList();
 
-        createRequiredSubjects(requiredSubjects, createdCourse);
+        courseService.createAndSaveRequiredSubjects(requiredSubjects, createdCourse);
 
         return createdCourse;
-    }
-
-    private void createRequiredSubjects(List<Subject> requiredSubjects, Course course) {
-        List<CourseRequiredSubject> courseRequiredSubjects = new ArrayList<>();
-        requiredSubjects.forEach(subject -> {
-            CourseRequiredSubject courseRequiredSubject = new CourseRequiredSubject(course, subject);
-            courseRequiredSubjects.add(courseRequiredSubject);
-        });
-
-        courseRequiredSubjectRepository.saveAll(courseRequiredSubjects);
     }
 }

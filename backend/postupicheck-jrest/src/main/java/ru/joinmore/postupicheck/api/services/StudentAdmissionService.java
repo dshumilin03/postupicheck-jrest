@@ -58,7 +58,7 @@ public class StudentAdmissionService {
     }
 
     public int getStudentAdmissionPoints(Student student, Course course) {
-        List<Subject> requiredSubjects = courseService.getRequiredSubjects(course);
+        List<Subject> requiredSubjects = course.getRequiredSubjects();
         AtomicInteger result = new AtomicInteger();
 
         requiredSubjects.

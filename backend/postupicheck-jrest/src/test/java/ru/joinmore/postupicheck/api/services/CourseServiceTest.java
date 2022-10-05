@@ -26,6 +26,7 @@ class CourseServiceTest {
     @Mock
     private CourseRepository courseRepository;
     private CourseService testInstance;
+// TODO rewrite tests
 
 //    @BeforeEach
 //    void setUp() {
