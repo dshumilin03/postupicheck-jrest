@@ -15,7 +15,6 @@ public class StudentForecast {
     private Admission admission;
 
     public StudentForecast() {
-
     }
 
     public StudentForecast(Long id, Admission admission) {

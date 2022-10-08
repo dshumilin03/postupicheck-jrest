@@ -5,10 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.joinmore.postupicheck.api.entities.Admission;
-import ru.joinmore.postupicheck.api.entities.Course;
-import ru.joinmore.postupicheck.api.entities.Student;
-import ru.joinmore.postupicheck.api.entities.Subject;
+import ru.joinmore.postupicheck.api.entities.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -121,20 +118,20 @@ class StudentAdmissionServiceTest {
         Subject subject2 = mock(Subject.class);
         Subject subject3 = mock(Subject.class);
 
-        List<Subject> requiredSubjects = new ArrayList<>();
-        requiredSubjects.add(subject1);
-        requiredSubjects.add(subject2);
-        requiredSubjects.add(subject3);
+        List<CourseRequiredSubject> requiredSubjects =
+                createCourseRequiredSubjects(course1, subject1, subject2, subject3);
+
+        List<CourseRequiredSubject> requiredSubjects2 =
+                createCourseRequiredSubjects(course2, subject1, subject2, subject3);
+
+        course1.setRequiredSubjects(requiredSubjects);
+        course2.setRequiredSubjects(requiredSubjects2);
 
         when(studentService.get(studentId)).thenReturn(student);
         when(admissionService.findAdmissionsByStudentId(studentId)).thenReturn(studentAdmissions);
-        when(courseService.getRequiredSubjects(course1)).thenReturn(requiredSubjects);
-        when(courseService.getRequiredSubjects(course2)).thenReturn(requiredSubjects);
         when(studentExamResultService.getPointsByStudentAndSubject(student, subject1)).thenReturn(50);
         when(studentExamResultService.getPointsByStudentAndSubject(student, subject2)).thenReturn(55);
         when(studentExamResultService.getPointsByStudentAndSubject(student, subject3)).thenReturn(60);
-        when(courseService.getRequiredSubjects(course1)).thenReturn(requiredSubjects);
-        when(courseService.getRequiredSubjects(course2)).thenReturn(requiredSubjects);
 
         // when
         List<Admission> result = testInstance.getStudentAvailableAdmissions(studentId);
@@ -151,20 +148,19 @@ class StudentAdmissionServiceTest {
     void shouldGetStudentAdmissionPoints() {
         // given
         Student student = mock(Student.class);
-        Course course = mock(Course.class);
+        Course course = new Course();
         Subject subject1 = mock(Subject.class);
         Subject subject2 = mock(Subject.class);
         Subject subject3 = mock(Subject.class);
 
-        List<Subject> requiredSubjects = new ArrayList<>();
-        requiredSubjects.add(subject1);
-        requiredSubjects.add(subject2);
-        requiredSubjects.add(subject3);
+        List<CourseRequiredSubject> requiredSubjects
+                = createCourseRequiredSubjects(course, subject1, subject2, subject3);
+
+        course.setRequiredSubjects(requiredSubjects);
 
         when(studentExamResultService.getPointsByStudentAndSubject(student, subject1)).thenReturn(50);
         when(studentExamResultService.getPointsByStudentAndSubject(student, subject2)).thenReturn(55);
         when(studentExamResultService.getPointsByStudentAndSubject(student, subject3)).thenReturn(60);
-        when(courseService.getRequiredSubjects(course)).thenReturn(requiredSubjects);
 
         // when
         int result = testInstance.getStudentAdmissionPoints(student, course);
@@ -184,5 +180,22 @@ class StudentAdmissionServiceTest {
         admissions.add(admission3);
 
         return admissions;
+    }
+
+    private List<CourseRequiredSubject> createCourseRequiredSubjects(
+            Course course,
+            Subject subject1,
+            Subject subject2,
+            Subject subject3) {
+        CourseRequiredSubject courseRequiredSubject1 = new CourseRequiredSubject(course, subject1);
+        CourseRequiredSubject courseRequiredSubject2 = new CourseRequiredSubject(course, subject2);
+        CourseRequiredSubject courseRequiredSubject3 = new CourseRequiredSubject(course, subject3);
+
+        List<CourseRequiredSubject> courseRequiredSubjects = new ArrayList<>();
+        courseRequiredSubjects.add(courseRequiredSubject1);
+        courseRequiredSubjects.add(courseRequiredSubject2);
+        courseRequiredSubjects.add(courseRequiredSubject3);
+
+        return courseRequiredSubjects;
     }
 }

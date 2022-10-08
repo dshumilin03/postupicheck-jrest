@@ -12,12 +12,14 @@ public class Subject {
     @GeneratedValue( strategy = GenerationType.SEQUENCE, generator = "subject_sequence")
     private long id;
     private String name;
-    @OneToMany(mappedBy="firstSubject", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Course> coursesWithFirstSubject;
-    @OneToMany(mappedBy="secondSubject", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Course> coursesWithSecondSubject;
-    @OneToMany(mappedBy="thirdSubject", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Course> coursesWithThirdSubject;
+//    @OneToMany(mappedBy="firstSubject", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    private List<Course> coursesWithFirstSubject;
+//    @OneToMany(mappedBy="secondSubject", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    private List<Course> coursesWithSecondSubject;
+//    @OneToMany(mappedBy="thirdSubject", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    private List<Course> coursesWithThirdSubject;
+    @OneToMany(mappedBy="subject", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<CourseRequiredSubject> requiredSubjects;
 
     public Subject() {
     }

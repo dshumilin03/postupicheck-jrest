@@ -15,8 +15,9 @@ public class StudentConverter implements Converter<Student, StudentDto>, ListCon
         Long id = student.getId();
         String studentName = student.getName();
         String snils = student.getSnils();
+        Boolean preferential = student.isPreferential();
 
-        return new StudentDto(id, studentName, snils);
+        return new StudentDto(id, studentName, snils, preferential);
 
     }
 

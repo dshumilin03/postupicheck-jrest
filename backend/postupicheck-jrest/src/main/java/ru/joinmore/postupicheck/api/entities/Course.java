@@ -1,6 +1,7 @@
 package ru.joinmore.postupicheck.api.entities;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -15,21 +16,14 @@ public class Course {
     private String code;
     private Integer curPassingPoints;
     private Integer budgetPlaces;
+    private Integer availableBudgetPlaces;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "university_id", referencedColumnName = "id")
     private University university;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "first_subject_id", referencedColumnName = "id")
-    private Subject firstSubject;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "second_subject_id", referencedColumnName = "id")
-    private Subject secondSubject;
-    @ManyToOne
-    @JoinColumn(name = "third_subject_id", referencedColumnName = "id")
-    private Subject thirdSubject;
-
     @OneToMany(mappedBy="course", cascade = CascadeType.ALL)
-    private List<Admission> courses;
+    private List<Admission> admissions;
+    @OneToMany(mappedBy= "course", cascade = CascadeType.ALL)
+    private List<CourseRequiredSubject> requiredSubjects;
 
     public Course() {
     }
@@ -38,17 +32,11 @@ public class Course {
             String name,
             String code,
             University university,
-            Subject firstSubject,
-            Subject secondSubject,
-            Subject thirdSubject,
             Integer curPassingPoints,
             Integer budgetPlaces) {
         this.name = name;
         this.code = code;
         this.university = university;
-        this.firstSubject = firstSubject;
-        this.secondSubject = secondSubject;
-        this.thirdSubject = thirdSubject;
         this.curPassingPoints = curPassingPoints;
         this.budgetPlaces = budgetPlaces;
     }
@@ -57,20 +45,15 @@ public class Course {
                   String name,
                   String code,
                   University university,
-                  Subject firstSubject,
-                  Subject secondSubject,
-                  Subject thirdSubject,
                   Integer curPassingPoints,
                   Integer budgetPlaces) {
         this.id = id;
         this.name = name;
         this.code = code;
         this.university = university;
-        this.firstSubject = firstSubject;
-        this.secondSubject = secondSubject;
-        this.thirdSubject = thirdSubject;
         this.curPassingPoints = curPassingPoints;
         this.budgetPlaces = budgetPlaces;
+        this.availableBudgetPlaces = budgetPlaces;
     }
 
     public Long getId() {
@@ -97,6 +80,16 @@ public class Course {
         this.code = code;
     }
 
+    public List<Subject> getRequiredSubjects() {
+        List<Subject> subjects = new ArrayList<>();
+        requiredSubjects.forEach(requiredSubject -> subjects.add(requiredSubject.getSubject()));
+        return subjects;
+    }
+
+    public void setRequiredSubjects(List<CourseRequiredSubject> requiredSubjects) {
+        this.requiredSubjects = requiredSubjects;
+    }
+
     public Integer getCurPassingPoints() {
         return curPassingPoints;
     }
@@ -121,28 +114,36 @@ public class Course {
         this.university = university;
     }
 
-    public Subject getFirstSubject() {
-        return firstSubject;
+//    public Subject getFirstSubject() {
+//        return firstSubject;
+//    }
+//
+//    public void setFirstSubject(Subject firstSubject) {
+//        this.firstSubject = firstSubject;
+//    }
+//
+//    public Subject getSecondSubject() {
+//        return secondSubject;
+//    }
+//
+//    public void setSecondSubject(Subject secondSubject) {
+//        this.secondSubject = secondSubject;
+//    }
+//
+//    public Subject getThirdSubject() {
+//        return thirdSubject;
+//    }
+//
+//    public void setThirdSubject(Subject thirdSubject) {
+//        this.thirdSubject = thirdSubject;
+//    }
+
+    public Integer getAvailableBudgetPlaces() {
+        return availableBudgetPlaces;
     }
 
-    public void setFirstSubject(Subject firstSubject) {
-        this.firstSubject = firstSubject;
-    }
-
-    public Subject getSecondSubject() {
-        return secondSubject;
-    }
-
-    public void setSecondSubject(Subject secondSubject) {
-        this.secondSubject = secondSubject;
-    }
-
-    public Subject getThirdSubject() {
-        return thirdSubject;
-    }
-
-    public void setThirdSubject(Subject thirdSubject) {
-        this.thirdSubject = thirdSubject;
+    public void setAvailableBudgetPlaces(Integer availableBudgetPlaces) {
+        this.availableBudgetPlaces = availableBudgetPlaces;
     }
 
     @Override
@@ -151,10 +152,11 @@ public class Course {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", code='" + code + '\'' +
+                ", curPassingPoints=" + curPassingPoints +
+                ", budgetPlaces=" + budgetPlaces +
+                ", availableBudgetPlaces=" + availableBudgetPlaces +
                 ", university=" + university +
-                ", firstSubject=" + firstSubject +
-                ", secondSubject=" + secondSubject +
-                ", thirdSubject=" + thirdSubject +
+                ", courses=" + admissions +
                 '}';
     }
 }

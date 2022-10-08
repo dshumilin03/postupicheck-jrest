@@ -446,6 +446,20 @@ class AdmissionServiceTest {
         // then
         assertThat(result).contains(admission1, admission2, admission3);
     }
+
+
+    @Test
+    void shouldCallRepository_For_GetAdmission() {
+        // given
+        Course course = mock(Course.class);
+        Student student = mock(Student.class);
+
+        // when
+        testInstance.getStudentAdmission(course, student);
+
+        // then
+        verify(admissionRepository).findAdmissionByStudentAndCourse(student, course);
+    }
     
     private List<Admission> createAdmissionList() {
         List<Admission> admissions = new ArrayList<>();

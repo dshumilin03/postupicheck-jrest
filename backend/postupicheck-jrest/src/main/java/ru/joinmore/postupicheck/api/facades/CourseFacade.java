@@ -1,6 +1,7 @@
 package ru.joinmore.postupicheck.api.facades;
 
 import org.springframework.stereotype.Component;
+import ru.joinmore.postupicheck.api.Factories.CourseFactory;
 import ru.joinmore.postupicheck.api.converters.CourseConverter;
 import ru.joinmore.postupicheck.api.converters.CourseReverseConverter;
 import ru.joinmore.postupicheck.api.dto.CourseDto;
@@ -15,14 +16,17 @@ public class CourseFacade {
     private final CourseService courseService;
     private final CourseConverter converter;
     private final CourseReverseConverter reverseConverter;
+    private final CourseFactory courseFactory;
 
     public CourseFacade(
             CourseService courseService,
             CourseConverter converter,
-            CourseReverseConverter reverseConverter) {
+            CourseReverseConverter reverseConverter,
+            CourseFactory courseFactory) {
         this.courseService = courseService;
         this.converter = converter;
         this.reverseConverter = reverseConverter;
+        this.courseFactory = courseFactory;
     }
 
     public CourseDto get(long id) {
@@ -39,7 +43,7 @@ public class CourseFacade {
 
     public CourseDto create(CourseDto newCourseDto) {
         Course newCourse = reverseConverter.convert(newCourseDto);
-        Course createdCourse = courseService.create(newCourse);
+        Course createdCourse = courseFactory.create(newCourse, newCourseDto.getSubjectsId());
 
         return converter.convert(createdCourse);
     }

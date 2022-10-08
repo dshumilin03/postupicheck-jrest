@@ -11,6 +11,7 @@ import ru.joinmore.postupicheck.api.entities.*;
 import ru.joinmore.postupicheck.api.exceptions.AlreadyExistsException;
 import ru.joinmore.postupicheck.api.exceptions.ResourceNotExistsException;
 import ru.joinmore.postupicheck.api.repositories.CourseRepository;
+import ru.joinmore.postupicheck.api.repositories.CourseRequiredSubjectRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,11 +26,13 @@ class CourseServiceTest {
 
     @Mock
     private CourseRepository courseRepository;
+    @Mock
+    private CourseRequiredSubjectRepository courseRequiredSubjectRepository;
     private CourseService testInstance;
 
     @BeforeEach
     void setUp() {
-        testInstance = new CourseService(courseRepository);
+        testInstance = new CourseService(courseRepository, courseRequiredSubjectRepository);
     }
 
     @Test
@@ -165,7 +168,7 @@ class CourseServiceTest {
     }
 
     @Test
-    void shouldReplaceOldCourseByNewCourse() {
+    void shouldCallReplaceMethodsForCourseInOrder() {
         // given
         String newName = "newName";
         String newCode = "newName";
@@ -176,20 +179,23 @@ class CourseServiceTest {
         Subject subject2 = mock(Subject.class);
         Subject subject3 = mock(Subject.class);
 
+        List<CourseRequiredSubject> courseRequiredSubjects =
+                createCourseRequiredSubjects(oldCourse, subject1, subject2, subject3);
+
         int curPassingPoints = 200;
         int budgetPlaces = 31;
         Course newCourse = new Course(
                 newName,
                 newCode,
                 newUniversity,
-                subject1,
-                subject2,
-                subject3,
                 curPassingPoints,
                 budgetPlaces);
         long id = 234L;
+        newCourse.setRequiredSubjects(courseRequiredSubjects);
 
         when(courseRepository.findById(id)).thenReturn(Optional.of(oldCourse));
+        when(courseRequiredSubjectRepository.findCourseRequiredSubjectsByCourse(oldCourse))
+                .thenReturn(courseRequiredSubjects);
 
         // when
         testInstance.replace(newCourse, id);
@@ -199,9 +205,7 @@ class CourseServiceTest {
         inOrder.verify(oldCourse).setName(newName);
         inOrder.verify(oldCourse).setCode(newCode);
         inOrder.verify(oldCourse).setUniversity(newUniversity);
-        inOrder.verify(oldCourse).setFirstSubject(subject1);
-        inOrder.verify(oldCourse).setSecondSubject(subject2);
-        inOrder.verify(oldCourse).setThirdSubject(subject3);
+
         inOrder.verify(oldCourse).setCurPassingPoints(curPassingPoints);
         inOrder.verify(oldCourse).setBudgetPlaces(budgetPlaces);
         inOrder.verify(courseRepository).save(oldCourse);
@@ -218,6 +222,8 @@ class CourseServiceTest {
         Subject subject1 = mock(Subject.class);
         Subject subject2 = mock(Subject.class);
         Subject subject3 = mock(Subject.class);
+        List<CourseRequiredSubject> requiredSubjects =
+                createCourseRequiredSubjects(oldCourse, subject1, subject2, subject3);
 
         int curPassingPoints = 200;
         int budgetPlaces = 55;
@@ -225,12 +231,10 @@ class CourseServiceTest {
                 newName,
                 newCode,
                 newUniversity,
-                subject1,
-                subject2,
-                subject3,
                 curPassingPoints,
                 budgetPlaces);
         long id = 234L;
+        newCourse.setRequiredSubjects(requiredSubjects);
 
         when(courseRepository.findById(id)).thenReturn(Optional.of(oldCourse));
         when(courseRepository.save(oldCourse)).thenReturn(oldCourse);
@@ -339,36 +343,15 @@ class CourseServiceTest {
     }
 
     @Test
-    void shouldFindCoursesByUniversityAndThirdSubject() {
-        //given
-        Subject subject = mock(Subject.class);
-        University university = mock(University.class);
-
-        // when
-        testInstance.findCoursesByUniversityAndThirdSubject(university, subject);
-
-        // then
-        verify(courseRepository).findCoursesByUniversityAndThirdSubject(university, subject);
-    }
-
-    @Test
-    void shouldReturnCourses_WhenFindCoursesByUniversityAndThirdSubject() {
+    void shouldCallCourseRequiredSubjectsRepository_WhenGetRequiredSubjects() {
         // given
-        Subject subject = mock(Subject.class);
-        University university = mock(University.class);
-
-        List<Course> courses = createCourseList();
-        Course course1 = courses.get(0);
-        Course course2 = courses.get(1);
-        Course course3 = courses.get(2);
-
-        when(courseRepository.findCoursesByUniversityAndThirdSubject(university, subject)).thenReturn(courses);
+        Course course = mock(Course.class);
 
         // when
-        List<Course> result = testInstance.findCoursesByUniversityAndThirdSubject(university, subject);
+        testInstance.getRequiredSubjects(course);
 
         // then
-        assertThat(result).contains(course1, course2, course3);
+        verify(courseRequiredSubjectRepository).findCourseRequiredSubjectsByCourse(course);
     }
 
     @Test
@@ -379,15 +362,20 @@ class CourseServiceTest {
         Subject subject3 = mock(Subject.class);
 
         Course course = new Course();
-        course.setFirstSubject(subject1);
-        course.setSecondSubject(subject2);
-        course.setThirdSubject(subject3);
+        List<CourseRequiredSubject> courseRequiredSubjects =
+                createCourseRequiredSubjects(course, subject1, subject2, subject3);
+
+        when(courseRequiredSubjectRepository.findCourseRequiredSubjectsByCourse(course))
+                .thenReturn(courseRequiredSubjects);
 
         // when
-        List<Subject> result = testInstance.getRequiredSubjects(course);
+        List<CourseRequiredSubject> result = testInstance.getRequiredSubjects(course);
 
         // then
-        assertThat(result).contains(subject1, subject2, subject3);
+        CourseRequiredSubject requiredSubject1 = courseRequiredSubjects.get(0);
+        CourseRequiredSubject requiredSubject2 = courseRequiredSubjects.get(1);
+        CourseRequiredSubject requiredSubject3 = courseRequiredSubjects.get(2);
+        assertThat(result).contains(requiredSubject1, requiredSubject2, requiredSubject3);
     }
 
     @Test
@@ -430,5 +418,22 @@ class CourseServiceTest {
         courses.add(course3);
 
         return courses;
+    }
+
+    private List<CourseRequiredSubject> createCourseRequiredSubjects(
+            Course course,
+            Subject subject1,
+            Subject subject2,
+            Subject subject3) {
+        CourseRequiredSubject courseRequiredSubject1 = new CourseRequiredSubject(course, subject1);
+        CourseRequiredSubject courseRequiredSubject2 = new CourseRequiredSubject(course, subject2);
+        CourseRequiredSubject courseRequiredSubject3 = new CourseRequiredSubject(course, subject3);
+
+        List<CourseRequiredSubject> courseRequiredSubjects = new ArrayList<>();
+        courseRequiredSubjects.add(courseRequiredSubject1);
+        courseRequiredSubjects.add(courseRequiredSubject2);
+        courseRequiredSubjects.add(courseRequiredSubject3);
+
+        return courseRequiredSubjects;
     }
 }

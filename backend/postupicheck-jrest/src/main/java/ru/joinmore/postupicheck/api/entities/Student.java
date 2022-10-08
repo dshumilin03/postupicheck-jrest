@@ -13,6 +13,7 @@ public class Student {
     private Long id;
     private String name;
     private String snils;
+    private Boolean preferential;
     @OneToMany(mappedBy="student", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Admission> admissions;
     @OneToMany(mappedBy="student", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -23,12 +24,21 @@ public class Student {
     public Student(String name, String snils) {
         this.name = name;
         this.snils = snils;
+        this.preferential = false;
     }
 
     public Student(Long id, String name, String snils) {
         this.id = id;
         this.name = name;
         this.snils = snils;
+        this.preferential = false;
+    }
+
+    public Student(Long id, String name, String snils, Boolean preferential) {
+        this.id = id;
+        this.name = name;
+        this.snils = snils;
+        this.preferential = preferential;
     }
 
     public String getName() {
@@ -53,6 +63,14 @@ public class Student {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Boolean isPreferential() {
+        return preferential;
+    }
+
+    public void setPreferential(Boolean preferential) {
+        this.preferential = preferential;
     }
 
     @Override

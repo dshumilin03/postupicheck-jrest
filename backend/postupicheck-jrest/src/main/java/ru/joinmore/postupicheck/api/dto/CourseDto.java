@@ -1,5 +1,7 @@
 package ru.joinmore.postupicheck.api.dto;
 
+import java.util.List;
+
 public class CourseDto {
 
     private long id;
@@ -7,9 +9,7 @@ public class CourseDto {
     private String code;
 
     private long universityId;
-    private long firstSubjectId;
-    private long secondSubjectId;
-    private long thirdSubjectId;
+    private List<Long> subjectsId;
     private int curPassingPoints;
     private int budgetPlaces;
 
@@ -18,9 +18,7 @@ public class CourseDto {
             String name,
             String code,
             long universityId,
-            long firstSubjectId,
-            long secondSubjectId,
-            long thirdSubjectId,
+            List<Long> subjectsId,
             int curPassingPoints,
             int budgetPlaces) {
 
@@ -28,9 +26,7 @@ public class CourseDto {
         this.name = name;
         this.code = code;
         this.universityId = universityId;
-        this.firstSubjectId = firstSubjectId;
-        this.secondSubjectId = secondSubjectId;
-        this.thirdSubjectId = thirdSubjectId;
+        this.subjectsId = subjectsId;
         this.curPassingPoints = curPassingPoints;
         this.budgetPlaces = budgetPlaces;
     }
@@ -83,27 +79,11 @@ public class CourseDto {
         this.code = code;
     }
 
-    public long getFirstSubjectId() {
-        return firstSubjectId;
+    public List<Long> getSubjectsId() {
+        return subjectsId;
     }
 
-    public void setFirstSubjectId(long firstSubjectId) {
-        this.firstSubjectId = firstSubjectId;
-    }
-
-    public long getSecondSubjectId() {
-        return secondSubjectId;
-    }
-
-    public void setSecondSubjectId(long secondSubjectId) {
-        this.secondSubjectId = secondSubjectId;
-    }
-
-    public long getThirdSubjectId() {
-        return thirdSubjectId;
-    }
-
-    public void setThirdSubjectId(long thirdSubjectId) {
-        this.thirdSubjectId = thirdSubjectId;
+    public void setSubjectsId(List<Long> subjectsId) {
+        this.subjectsId = subjectsId;
     }
 }

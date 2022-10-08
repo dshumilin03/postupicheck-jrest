@@ -5,11 +5,20 @@ public class StudentDto {
     private long id;
     private String name;
     private String snils;
+    private boolean preferential;
 
     public StudentDto(long id, String name, String snils) {
         this.id = id;
         this.name = name;
         this.snils = snils;
+        this.preferential = false;
+    }
+
+    public StudentDto(long id, String name, String snils, boolean preferential) {
+        this.id = id;
+        this.name = name;
+        this.snils = snils;
+        this.preferential = preferential;
     }
 
     public long getId() {
@@ -34,5 +43,13 @@ public class StudentDto {
 
     public void setSnils(String snils) {
         this.snils = snils;
+    }
+
+    public boolean isPreferential() {
+        return preferential;
+    }
+
+    public void setPreferential(boolean preferential) {
+        this.preferential = preferential;
     }
 }
