@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import ru.joinmore.postupicheck.api.Factories.CourseFactory;
 import ru.joinmore.postupicheck.api.converters.CourseConverter;
 import ru.joinmore.postupicheck.api.converters.CourseReverseConverter;
 import ru.joinmore.postupicheck.api.dto.CourseDto;
@@ -24,15 +25,16 @@ class CourseFacadeTest {
     @Mock
     private CourseService courseService;
     @Mock
+    private CourseFactory courseFactory;
+    @Mock
     private CourseConverter converter;
     @Mock
     private CourseReverseConverter reverseConverter;
-// TODO rewrite beforeEach
 
-//    @BeforeEach
-//    void setUp() {
-//        testInstance = new CourseFacade(courseService, converter, reverseConverter);
-//    }
+    @BeforeEach
+    void setUp() {
+        testInstance = new CourseFacade(courseService, converter, reverseConverter, courseFactory);
+    }
 
     @Test
     void shouldCallCourseServiceAndConverter_WhenGet() {
@@ -108,9 +110,10 @@ class CourseFacadeTest {
         CourseDto newCourseDto = mock(CourseDto.class);
         Course newCourse = mock(Course.class);
         Course createdCourse = mock(Course.class);
+        List<Long> subjectsId = new ArrayList<>();
 
         when(reverseConverter.convert(newCourseDto)).thenReturn(newCourse);
-        when(courseService.create(newCourse)).thenReturn(createdCourse);
+        when(courseFactory.create(newCourse, subjectsId)).thenReturn(createdCourse);
 
         // when
         testInstance.create(newCourseDto);
@@ -126,9 +129,10 @@ class CourseFacadeTest {
         Course newCourse = mock(Course.class);
         Course createdCourse = mock(Course.class);
         CourseDto convertedCourse = mock(CourseDto.class);
+        List<Long> subjectsId = new ArrayList<>();
 
         when(reverseConverter.convert(newCourseDto)).thenReturn(newCourse);
-        when(courseService.create(newCourse)).thenReturn(createdCourse);
+        when(courseFactory.create(newCourse, subjectsId)).thenReturn(createdCourse);
         when(converter.convert(createdCourse)).thenReturn(convertedCourse);
 
         // when

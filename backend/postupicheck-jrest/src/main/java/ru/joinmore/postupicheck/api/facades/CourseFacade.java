@@ -50,7 +50,6 @@ public class CourseFacade {
 
     public CourseDto replace(CourseDto updatedCourseDto, long id) {
         Course updatedCourse = reverseConverter.convert(updatedCourseDto);
-        Course newCourse1 = courseFactory.create(updatedCourse, updatedCourseDto.getSubjectsId());
         Course newCourse = courseService.replace(updatedCourse, id);
 
         return converter.convert(newCourse);
