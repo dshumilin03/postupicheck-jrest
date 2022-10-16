@@ -10,6 +10,9 @@ public class UniversityDto {
         this.name = name;
     }
 
+    public UniversityDto() {
+    }
+
     public long getId() {
         return id;
     }

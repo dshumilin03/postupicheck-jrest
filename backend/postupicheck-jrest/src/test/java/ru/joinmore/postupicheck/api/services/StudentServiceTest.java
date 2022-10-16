@@ -172,7 +172,8 @@ class StudentServiceTest {
         Student oldStudent = mock(Student.class);
         String newSnils = "324";
         String newName = "newName";
-        Student newStudent = new Student(newName, newSnils);
+        Boolean newPreferential = true;
+        Student newStudent = new Student(newName, newSnils, newPreferential);
         long id = 2L;
 
         when(studentRepository.findById(id)).thenReturn(Optional.of(oldStudent));
@@ -184,6 +185,7 @@ class StudentServiceTest {
         InOrder inOrder = inOrder(oldStudent, studentRepository);
         inOrder.verify(oldStudent).setName(newName);
         inOrder.verify(oldStudent).setSnils(newSnils);
+        inOrder.verify(oldStudent).setPreferential(newPreferential);
         inOrder.verify(studentRepository).save(oldStudent);
     }
 

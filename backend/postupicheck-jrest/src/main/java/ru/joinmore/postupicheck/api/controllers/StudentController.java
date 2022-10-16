@@ -38,7 +38,8 @@ public class StudentController {
 
     @PutMapping("/{id}")
     @ResponseStatus(code = HttpStatus.OK)
-    StudentDto replaceStudent(@RequestBody StudentDto updatedStudent, Long id) {
+    StudentDto replaceStudent(@RequestBody StudentDto updatedStudent,
+                              @PathVariable Long id) {
         return studentFacade.replace(updatedStudent, id);
     }
 

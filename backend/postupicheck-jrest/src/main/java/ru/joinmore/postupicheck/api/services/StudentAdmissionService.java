@@ -34,7 +34,7 @@ public class StudentAdmissionService {
 
     public Admission getStudentConsentAdmission(Long id) {
         List<Admission> studentAdmissionList = admissionService.findAdmissionsByStudentId(id);
-
+        // TODO make exception if student have no consent yet
         return studentAdmissionList
                 .stream()
                 .filter(Admission::isConsent)

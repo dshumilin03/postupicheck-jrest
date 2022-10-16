@@ -38,7 +38,8 @@ public class UniversityController {
 
     @PutMapping("/{id}")
     @ResponseStatus(code = HttpStatus.OK)
-    UniversityDto replaceUniversity(@RequestBody UniversityDto updatedUniversity, Long id) {
+    UniversityDto replaceUniversity(@RequestBody UniversityDto updatedUniversity,
+                                    @PathVariable Long id) {
         return universityFacade.replace(updatedUniversity, id);
     }
 

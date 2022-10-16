@@ -31,6 +31,9 @@ public class CourseDto {
         this.budgetPlaces = budgetPlaces;
     }
 
+    public CourseDto() {
+    }
+
     public int getBudgetPlaces() {
         return budgetPlaces;
     }

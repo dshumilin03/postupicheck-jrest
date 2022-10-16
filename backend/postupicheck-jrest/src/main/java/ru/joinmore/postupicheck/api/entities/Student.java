@@ -27,6 +27,12 @@ public class Student {
         this.preferential = false;
     }
 
+    public Student(String name, String snils, Boolean preferential) {
+        this.name = name;
+        this.snils = snils;
+        this.preferential = preferential;
+    }
+
     public Student(Long id, String name, String snils) {
         this.id = id;
         this.name = name;

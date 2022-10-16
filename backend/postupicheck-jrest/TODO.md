@@ -7,6 +7,4 @@ TODO
 
 3. Liquibase (optional)
 
-4. Подумать над таблицей CourseRequiredSubject (id, course_id - foreignkey на courseId, requiredSubjectId - foreignkey на subjectId)
-
-5. Исправить тесты, и все остальные зависимости
+4. Проверить все TODO, переписать test-data и создать новые данные(на всякий случай) 

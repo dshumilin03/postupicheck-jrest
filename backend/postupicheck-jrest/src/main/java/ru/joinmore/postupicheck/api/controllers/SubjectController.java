@@ -37,7 +37,8 @@ public class SubjectController {
 
     @PutMapping("/{id}")
     @ResponseStatus(code = HttpStatus.OK)
-    SubjectDto replaceSubject(@RequestBody SubjectDto updatedSubject, Long id) {
+    SubjectDto replaceSubject(@RequestBody SubjectDto updatedSubject,
+                              @PathVariable Long id) {
         return subjectFacade.replace(updatedSubject, id);
     }
 

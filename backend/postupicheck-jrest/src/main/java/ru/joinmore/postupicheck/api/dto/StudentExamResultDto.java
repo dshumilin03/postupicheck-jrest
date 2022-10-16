@@ -14,6 +14,9 @@ public class StudentExamResultDto {
         this.points = points;
     }
 
+    public StudentExamResultDto() {
+    }
+
     public long getStudentId() {
         return studentId;
     }

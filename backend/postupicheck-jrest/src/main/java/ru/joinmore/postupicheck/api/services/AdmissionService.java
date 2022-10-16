@@ -93,6 +93,7 @@ public class AdmissionService {
     }
 
     public List<Admission> findAdmissionsByStudentId(Long id) {
+        // TODO make try catch with exception and think about changing to student.getAdmissions
         return repository.findAdmissionsByStudentId(id);
     }
 

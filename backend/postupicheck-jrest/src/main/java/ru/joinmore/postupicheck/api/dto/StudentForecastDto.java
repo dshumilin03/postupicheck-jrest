@@ -10,6 +10,9 @@ public class StudentForecastDto {
         this.admissionId = admissionId;
     }
 
+    public StudentForecastDto() {
+    }
+
     public long getId() {
         return id;
     }
