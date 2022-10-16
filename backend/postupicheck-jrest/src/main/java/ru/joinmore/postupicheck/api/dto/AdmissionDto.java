@@ -17,6 +17,9 @@ public class AdmissionDto {
 
     }
 
+    public AdmissionDto() {
+    }
+
     public int getPoints() {
         return points;
     }

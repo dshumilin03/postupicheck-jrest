@@ -9,7 +9,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/admissions")
-public class AdmissionController {
+public class  AdmissionController {
 
     private final AdmissionFacade admissionFacade;
 
@@ -35,15 +35,10 @@ public class AdmissionController {
         return admissionFacade.get(id);
     }
 
-    @GetMapping("/course/{id}")
-    @ResponseStatus(code = HttpStatus.OK)
-    List<AdmissionDto> getCourseAdmissions(@PathVariable Long id) {
-        return admissionFacade.getCourseAdmissions(id);
-    }
-
     @PutMapping("/{id}")
     @ResponseStatus(code = HttpStatus.OK)
-    AdmissionDto replaceAdmission(@RequestBody AdmissionDto updatedAdmission, @PathVariable Long id) {
+    AdmissionDto replaceAdmission(@RequestBody AdmissionDto updatedAdmission,
+                                  @PathVariable Long id) {
         return admissionFacade.replace(updatedAdmission, id);
     }
 
@@ -51,6 +46,12 @@ public class AdmissionController {
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     void deleteAdmission(@PathVariable Long id) {
         admissionFacade.delete(id);
+    }
+
+    @GetMapping("/course/{id}")
+    @ResponseStatus(code = HttpStatus.OK)
+    List<AdmissionDto> getCourseAdmissions(@PathVariable Long id) {
+        return admissionFacade.getCourseAdmissions(id);
     }
 
     @DeleteMapping

@@ -247,6 +247,7 @@ public class TestDataService {
 
         return allCourses;
     }
+// TODO разобраться с test data
 
 //    public void createTestAdmissions() {
 //        Random random = new Random();
@@ -343,18 +344,18 @@ public class TestDataService {
 //        return allAdmissions;
 //    }
 
-    public void setRandomBudgetPlacesForAllCourses() {
-        Random random = new Random();
-        List<Course> allCourses = courseService.getAll();
-
-        allCourses
-                .forEach(course -> {
-                    long id = course.getId();
-                    int budgetPlaces = random.nextInt(100) + 1;
-                    course.setBudgetPlaces(budgetPlaces);
-                    courseService.replace(course, id);
-                });
-    }
+//    public void setRandomBudgetPlacesForAllCourses() {
+//        Random random = new Random();
+//        List<Course> allCourses = courseService.getAll();
+//
+//        allCourses
+//                .forEach(course -> {
+//                    long id = course.getId();
+//                    int budgetPlaces = random.nextInt(100) + 1;
+//                    course.setBudgetPlaces(budgetPlaces);
+//                    courseService.replace(course, id);
+//                });
+//    }
 
     public void setPointsForAllAdmissions() {
         List<Admission> allAdmissions = admissionService.getAll();

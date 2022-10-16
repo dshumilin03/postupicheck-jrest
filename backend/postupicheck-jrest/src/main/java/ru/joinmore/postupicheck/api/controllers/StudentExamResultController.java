@@ -8,19 +8,13 @@ import ru.joinmore.postupicheck.api.facades.StudentExamResultFacade;
 import java.util.List;
 
 @RestController
-@RequestMapping("/examresults")
+@RequestMapping("/exam-results")
 public class StudentExamResultController {
 
     private final StudentExamResultFacade studentExamResultFacade;
 
     public StudentExamResultController(StudentExamResultFacade studentExamResultFacade) {
         this.studentExamResultFacade = studentExamResultFacade;
-    }
-
-    @GetMapping("/student")
-    @ResponseStatus(code = HttpStatus.OK)
-    List<StudentExamResultDto> getAllStudentResults(@RequestParam Long id) {
-        return studentExamResultFacade.getAllStudentResults(id);
     }
 
     @GetMapping
@@ -43,7 +37,8 @@ public class StudentExamResultController {
 
     @PutMapping("/{id}")
     @ResponseStatus(code = HttpStatus.OK)
-    StudentExamResultDto replaceExamResult(@RequestBody StudentExamResultDto updatedStudentExamResult, @PathVariable Long id) {
+    StudentExamResultDto replaceExamResult(@RequestBody StudentExamResultDto updatedStudentExamResult,
+                                           @PathVariable Long id) {
         return studentExamResultFacade.replace(updatedStudentExamResult, id);
     }
 
@@ -53,4 +48,9 @@ public class StudentExamResultController {
         studentExamResultFacade.delete(id);
     }
 
+    @GetMapping("/student")
+    @ResponseStatus(code = HttpStatus.OK)
+    List<StudentExamResultDto> getAllStudentResults(@RequestParam Long id) {
+        return studentExamResultFacade.getAllStudentResults(id);
+    }
 }

@@ -2,6 +2,7 @@ package ru.joinmore.postupicheck.api.services;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import ru.joinmore.postupicheck.api.converters.CourseRequiredSubjectsReverseConverter;
 import ru.joinmore.postupicheck.api.entities.Course;
 import ru.joinmore.postupicheck.api.entities.CourseRequiredSubject;
 import ru.joinmore.postupicheck.api.entities.Subject;
@@ -19,11 +20,15 @@ public class CourseService {
 
     private final CourseRepository repository;
     private final CourseRequiredSubjectRepository courseRequiredSubjectRepository;
+    private final CourseRequiredSubjectsReverseConverter courseRequiredSubjectsReverseConverter;
 
     public CourseService(CourseRepository repository,
-                         CourseRequiredSubjectRepository courseRequiredSubjectRepository) {
+                         CourseRequiredSubjectRepository courseRequiredSubjectRepository,
+                         CourseRequiredSubjectsReverseConverter courseRequiredSubjectsReverseConverter
+) {
         this.repository = repository;
         this.courseRequiredSubjectRepository = courseRequiredSubjectRepository;
+        this.courseRequiredSubjectsReverseConverter = courseRequiredSubjectsReverseConverter;
     }
 
     public List<Course> getAll() {
@@ -52,12 +57,12 @@ public class CourseService {
         return repository.save(course);
     }
 
-    public Course replace(Course updatedCourse, long id) {
+    public Course replace(Course updatedCourse, List<Long> subjectsIds, long id) {
         Course course = repository
                 .findById(id) //
                 .orElseThrow(() -> new ResourceNotExistsException("Course with id [" + id + "]"));
 
-        return replaceCourse(course, updatedCourse);
+        return replaceCourse(course, subjectsIds, updatedCourse);
     }
 
     public void delete(long id) {
@@ -85,11 +90,11 @@ public class CourseService {
 
     }
 
-    private Course replaceCourse(Course course, Course updatedCourse) {
+    private Course replaceCourse(Course course, List<Long> subjectsIds, Course updatedCourse) {
         course.setName(updatedCourse.getName());
         course.setCode(updatedCourse.getCode());
         course.setUniversity(updatedCourse.getUniversity());
-        List<Subject> updatedRequiredSubjects = updatedCourse.getRequiredSubjects();
+        List<Subject> updatedRequiredSubjects = courseRequiredSubjectsReverseConverter.convert(subjectsIds);
         List<CourseRequiredSubject> courseRequiredSubjects = courseRequiredSubjectRepository
                 .findCourseRequiredSubjectsByCourse(course);
 
@@ -101,14 +106,14 @@ public class CourseService {
         return repository.save(course);
     }
 
-    public void createAndSaveRequiredSubjects(List<Subject> requiredSubjects, Course course) {
+    public List<CourseRequiredSubject> createAndSaveRequiredSubjects(List<Subject> requiredSubjects, Course course) {
         List<CourseRequiredSubject> courseRequiredSubjects = new ArrayList<>();
         requiredSubjects.forEach(subject -> {
             CourseRequiredSubject courseRequiredSubject = new CourseRequiredSubject(course, subject);
             courseRequiredSubjects.add(courseRequiredSubject);
         });
 
-        courseRequiredSubjectRepository.saveAll(courseRequiredSubjects);
+        return courseRequiredSubjectRepository.saveAll(courseRequiredSubjects);
     }
 
     private void replaceRequiredSubjects(

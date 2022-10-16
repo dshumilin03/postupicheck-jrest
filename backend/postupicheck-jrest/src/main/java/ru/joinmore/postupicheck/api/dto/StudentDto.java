@@ -14,6 +14,9 @@ public class StudentDto {
         this.preferential = false;
     }
 
+    public StudentDto() {
+    }
+
     public StudentDto(long id, String name, String snils, boolean preferential) {
         this.id = id;
         this.name = name;

@@ -37,7 +37,8 @@ public class CourseController {
 
     @PutMapping("/{id}")
     @ResponseStatus(code = HttpStatus.OK)
-    CourseDto replaceCourse(@RequestBody CourseDto updatedCourse, Long id) {
+    CourseDto replaceCourse(@RequestBody CourseDto updatedCourse,
+                            @PathVariable Long id) {
         return courseFacade.replace(updatedCourse, id);
     }
 

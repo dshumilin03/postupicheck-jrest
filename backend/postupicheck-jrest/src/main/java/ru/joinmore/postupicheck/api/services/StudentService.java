@@ -58,6 +58,7 @@ public class StudentService {
     private Student replaceStudent(Student student, Student updatedStudent) {
             student.setName(updatedStudent.getName());
             student.setSnils(updatedStudent.getSnils());
+            student.setPreferential(updatedStudent.isPreferential());
 
             return repository.save(student);
     }
