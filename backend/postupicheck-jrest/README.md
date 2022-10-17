@@ -36,9 +36,14 @@ spring.datasource.password={pass}
   .\mvnw spring-boot:run
 ```
 
-### Import test data (DEPRECATED)
+### Import test data
 
 Currently `test-data` and `data` endpoints are used.
+
+To reset sequences for correct work run sql script for all sequences
+```bash
+ALTER SEQUENCE {sequence_name}_sequence RESTART WITH 1
+```
 
 Import order:
 
@@ -50,20 +55,16 @@ http POST http://localhost:8080/test-data/create-students
 
 http POST http://localhost:8080/test-data/create-universities
 
-	http POST http://localhost:8080/test-data/create-courses
-	
-	http POST http://localhost:8080/test-data/create-examresults
-	
-	http POST http://localhost:8080/test-data/create-admissions
-	
-	http POST http://localhost:8080/test-data/set-points-for-all-admissions
-	
-	http POST http://localhost:8080/data/update-passing-scores
-	
+http POST http://localhost:8080/test-data/create-courses
+
+http POST http://localhost:8080/test-data/create-exam-results
+
+http POST http://localhost:8080/test-data/create-admissions
+
 ```
 
 Import can take several minutes (admissions) depending on hardware
-### Alternative way
+### Alternative way (DEPRECATED)
 
 1. [Download JoinMoreDB backup](https://disk.yandex.ru/d/XS7QdutzKNGcgQ)
 2. [Restore dump file to PostgreSQL](https://www.postgresql.org/docs/current/app-pgrestore.html)

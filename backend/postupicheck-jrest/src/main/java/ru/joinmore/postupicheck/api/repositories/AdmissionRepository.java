@@ -1,6 +1,7 @@
 package ru.joinmore.postupicheck.api.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import ru.joinmore.postupicheck.api.entities.Admission;
 import ru.joinmore.postupicheck.api.entities.Course;
@@ -17,7 +18,8 @@ public interface AdmissionRepository extends JpaRepository<Admission, Long> {
 
     List<Admission> findAdmissionsByStudentId(long id);
 
-    List<Admission> findAdmissionsByStudentAndCourseUniversity(Student student, University university);
+    @Query("select a from Admission a where a.student = ?1 and a.course.university = ?2")
+    List<Admission> findAdmissionsByStudentAndUniversity(Student student, University university);
 
     List<Admission> findAdmissionsByCourseOrderByPoints(Course course);
 

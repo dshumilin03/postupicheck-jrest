@@ -13,7 +13,6 @@ public class TestDataController {
     public TestDataController(TestDataService testDataService) {
         this.testDataService = testDataService;
     }
-// TODO check all endpoints for possible wrong
     @PostMapping("/create-universities")
     @ResponseStatus(code = HttpStatus.CREATED)
     void createTestUniversities() {
@@ -38,49 +37,16 @@ public class TestDataController {
         testDataService.createTestCourses();
     }
 
-//    @Deprecated
-//    @PostMapping("/create-admissions")
-//    @ResponseStatus(code = HttpStatus.CREATED)
-//    void createTestAdmissions() {
-//        //testDataService.createTestAdmissions();
-//    }
+    @Deprecated
+    @PostMapping("/create-admissions")
+    @ResponseStatus(code = HttpStatus.CREATED)
+    void createTestAdmissions() {
+        testDataService.createTestAdmissions();
+    }
 
     @PostMapping("/create-subjects")
     @ResponseStatus(code = HttpStatus.CREATED)
     void createTestSubjects() {
         testDataService.createSubjects();
-    }
-
-    // TODO rewrite (delete post mappings)
-
-//    @PostMapping("/set-random-budget-places")
-//    @ResponseStatus(code = HttpStatus.OK)
-//    void setRandomBudgetPlacesForAllCourses() {
-//        testDataService.setRandomBudgetPlacesForAllCourses();
-//    }
-
-    // TODO delete
-    @Deprecated
-    @PostMapping("/set-points-for-all-admissions")
-    @ResponseStatus(code = HttpStatus.OK)
-    void setPointsForAllAdmissions() {
-        testDataService.setPointsForAllAdmissions();
-    }
-
-    // TODO delete
-    @Deprecated
-    @PostMapping("/set-preferentials")
-    @ResponseStatus(code = HttpStatus.OK)
-    void setPreferentials() {
-        testDataService.setPreferential();
-    }
-
-    // TODO delete
-
-    @Deprecated
-    @PostMapping("/move-required-subjects")
-    @ResponseStatus(code = HttpStatus.OK)
-    void updateRequiredSubjects() {
-        testDataService.updateRequiredSubjects();
     }
 }
