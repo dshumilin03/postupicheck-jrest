@@ -23,15 +23,12 @@ class StudentAdmissionServiceTest {
     @Mock
     private StudentExamResultService studentExamResultService;
     @Mock
-    private CourseService courseService;
-    @Mock
     private AdmissionService admissionService;
 
     @BeforeEach
     void setUp() {
         testInstance = new StudentAdmissionService(
                 studentService,
-                courseService,
                 studentExamResultService,
                 admissionService);
     }

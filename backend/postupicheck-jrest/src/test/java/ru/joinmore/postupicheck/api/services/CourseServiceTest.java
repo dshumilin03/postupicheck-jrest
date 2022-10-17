@@ -7,6 +7,7 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.EmptyResultDataAccessException;
+import ru.joinmore.postupicheck.api.converters.CourseRequiredSubjectsReverseConverter;
 import ru.joinmore.postupicheck.api.entities.*;
 import ru.joinmore.postupicheck.api.exceptions.AlreadyExistsException;
 import ru.joinmore.postupicheck.api.exceptions.ResourceNotExistsException;
@@ -14,6 +15,7 @@ import ru.joinmore.postupicheck.api.repositories.CourseRepository;
 import ru.joinmore.postupicheck.api.repositories.CourseRequiredSubjectRepository;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,11 +30,16 @@ class CourseServiceTest {
     private CourseRepository courseRepository;
     @Mock
     private CourseRequiredSubjectRepository courseRequiredSubjectRepository;
+    @Mock
+    private CourseRequiredSubjectsReverseConverter courseRequiredSubjectsReverseConverter;
     private CourseService testInstance;
 
     @BeforeEach
     void setUp() {
-        testInstance = new CourseService(courseRepository, courseRequiredSubjectRepository);
+        testInstance = new CourseService(
+                courseRepository,
+                courseRequiredSubjectRepository,
+                courseRequiredSubjectsReverseConverter);
     }
 
     @Test
@@ -179,6 +186,7 @@ class CourseServiceTest {
         Subject subject2 = mock(Subject.class);
         Subject subject3 = mock(Subject.class);
 
+        List<Long> subjectIds = new ArrayList<>(Arrays.asList(1L, 2L, 3L));
         List<CourseRequiredSubject> courseRequiredSubjects =
                 createCourseRequiredSubjects(oldCourse, subject1, subject2, subject3);
 
@@ -198,7 +206,7 @@ class CourseServiceTest {
                 .thenReturn(courseRequiredSubjects);
 
         // when
-        testInstance.replace(newCourse, id);
+        testInstance.replace(newCourse, subjectIds, id);
 
         // then
         InOrder inOrder = inOrder(oldCourse, courseRepository);
@@ -224,6 +232,7 @@ class CourseServiceTest {
         Subject subject3 = mock(Subject.class);
         List<CourseRequiredSubject> requiredSubjects =
                 createCourseRequiredSubjects(oldCourse, subject1, subject2, subject3);
+        List<Long> subjectIds = new ArrayList<>();
 
         int curPassingPoints = 200;
         int budgetPlaces = 55;
@@ -240,7 +249,7 @@ class CourseServiceTest {
         when(courseRepository.save(oldCourse)).thenReturn(oldCourse);
 
         // when
-        Course result = testInstance.replace(newCourse, id);
+        Course result = testInstance.replace(newCourse, subjectIds, id);
 
         // then
         assertThat(result).isEqualTo(oldCourse);
@@ -250,12 +259,13 @@ class CourseServiceTest {
     void shouldNotReplaceCourse_WhenDoesntExists() {
         // given
         Course oldCourse = mock(Course.class);
+        List<Long> subjectIds = new ArrayList<>();
         long id = 234L;
 
         when(courseRepository.findById(id)).thenReturn(Optional.empty());
 
         // when
-        assertThatThrownBy(() -> testInstance.replace(new Course(), id));
+        assertThatThrownBy(() -> testInstance.replace(new Course(), subjectIds, id));
 
         // then
         verify(courseRepository, never()).save(oldCourse);
@@ -265,12 +275,13 @@ class CourseServiceTest {
     void shouldThrowResourceNotExistsException_WhenDoesntExistsReplacement() {
         // given
         long id = 234L;
+        List<Long> subjectIds = new ArrayList<>();
 
         // when
         when(courseRepository.findById(id)).thenReturn(Optional.empty());
 
         // then
-        assertThatThrownBy(() -> testInstance.replace(new Course(), id))
+        assertThatThrownBy(() -> testInstance.replace(new Course(), subjectIds, id))
                 .isInstanceOf(ResourceNotExistsException.class)
                 .hasMessageContaining("Course with id [234]");
     }

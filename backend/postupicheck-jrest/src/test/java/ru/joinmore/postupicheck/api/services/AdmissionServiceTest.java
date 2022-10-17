@@ -316,20 +316,20 @@ class AdmissionServiceTest {
     }
 
     @Test
-    void shouldCallRepositoryFindAdmissionsByStudentAndCourseUniversity() {
+    void shouldCallRepositoryFindAdmissionsByStudentAndUniversity() {
         // given
         Student student = mock(Student.class);
         University university = mock(University.class);
 
         // when
-        testInstance.findAdmissionsByStudentAndCourseUniversity(student, university);
+        testInstance.findAdmissionsByStudentAndUniversity(student, university);
 
         // then
-        verify(admissionRepository).findAdmissionsByStudentAndCourseUniversity(student, university);
+        verify(admissionRepository).findAdmissionsByStudentAndUniversity(student, university);
     }
 
     @Test
-    void shouldReturnAdmissions_WhenFindAdmissionsByStudentAndCourseUniversity() {
+    void shouldReturnAdmissions_WhenFindAdmissionsByStudentAndUniversity() {
         // given
         Student student = mock(Student.class);
         University university = mock(University.class);
@@ -340,11 +340,11 @@ class AdmissionServiceTest {
         Admission admission3 = studentAdmissions.get(2);
 
         when(admissionRepository
-                .findAdmissionsByStudentAndCourseUniversity(student, university))
+                .findAdmissionsByStudentAndUniversity(student, university))
                 .thenReturn(studentAdmissions);
 
         // when
-        List<Admission> result = testInstance.findAdmissionsByStudentAndCourseUniversity(student, university);
+        List<Admission> result = testInstance.findAdmissionsByStudentAndUniversity(student, university);
 
         // then
         assertThat(result).contains(admission1, admission2, admission3);

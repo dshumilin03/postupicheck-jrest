@@ -54,7 +54,8 @@ public class AdmissionService {
         return replaceAdmission(admission, updatedAdmission);
     }
 
-    // not used
+    // TODO fix to findAdmissionsByStudentId
+    @Deprecated
     public List<Admission> findAdmissionsByStudent(Student student) {
         return repository.findAdmissionsByStudent(student);
     }
@@ -63,8 +64,8 @@ public class AdmissionService {
         return repository.findAdmissionByStudentAndCourse(student, course);
     }
 
-    public List<Admission> findAdmissionsByStudentAndCourseUniversity(Student student, University university) {
-        return repository.findAdmissionsByStudentAndCourseUniversity(student, university);
+    public List<Admission> findAdmissionsByStudentAndUniversity(Student student, University university) {
+        return repository.findAdmissionsByStudentAndUniversity(student, university);
     }
 
     public List<Admission> getCourseAdmissions(Course course) {
@@ -93,8 +94,13 @@ public class AdmissionService {
     }
 
     public List<Admission> findAdmissionsByStudentId(Long id) {
-        // TODO make try catch with exception and think about changing to student.getAdmissions
-        return repository.findAdmissionsByStudentId(id);
+        List<Admission> studentAdmissions = repository.findAdmissionsByStudentId(id);
+
+        if (studentAdmissions.isEmpty()) {
+            throw new ResourceNotExistsException(String.format("Admissions by student %d", id));
+        }
+
+        return studentAdmissions;
     }
 
     public List<Admission> saveAll(List<Admission> admissions) {

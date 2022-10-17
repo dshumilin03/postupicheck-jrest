@@ -149,9 +149,10 @@ class CourseFacadeTest {
         CourseDto updatedCourseDto = mock(CourseDto.class);
         Course updatedCourse = mock(Course.class);
         Course newCourse = mock(Course.class);
+        List<Long> subjectIds = new ArrayList<>();
 
         when(reverseConverter.convert(updatedCourseDto)).thenReturn(updatedCourse);
-        when(courseService.replace(updatedCourse, id)).thenReturn(newCourse);
+        when(courseService.replace(updatedCourse, subjectIds, id)).thenReturn(newCourse);
 
         // when
         testInstance.replace(updatedCourseDto, id);
@@ -168,9 +169,10 @@ class CourseFacadeTest {
         Course updatedCourse = mock(Course.class);
         Course newCourse = mock(Course.class);
         CourseDto convertedCourse = mock(CourseDto.class);
+        List<Long> subjectIds = new ArrayList<>();
 
         when(reverseConverter.convert(updatedCourseDto)).thenReturn(updatedCourse);
-        when(courseService.replace(updatedCourse, id)).thenReturn(newCourse);
+        when(courseService.replace(updatedCourse, subjectIds, id)).thenReturn(newCourse);
         when(converter.convert(newCourse)).thenReturn(convertedCourse);
 
         // when
